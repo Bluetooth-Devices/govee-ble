@@ -23,7 +23,7 @@ packages = [
 "Changelog" = "https://github.com/bdraco/govee-ble/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 
 # Documentation Dependencies
 Sphinx = {version = "^5.0", optional = true}
