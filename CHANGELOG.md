@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.9.1 (2022-07-19)
+### Fix
+* Add missing device classes to bbq probes ([#16](https://github.com/Bluetooth-Devices/govee-ble/issues/16)) ([`f2cafd7`](https://github.com/Bluetooth-Devices/govee-ble/commit/f2cafd71dba9894cb7dc9ab6706bd23b77c61366))
+
 ## v0.9.0 (2022-07-19)
 ### Feature
 * Set manu for secondary sensor ([#15](https://github.com/Bluetooth-Devices/govee-ble/issues/15)) ([`ec54d57`](https://github.com/Bluetooth-Devices/govee-ble/commit/ec54d57f25bdff968d9430421b64a751f1b2ce13))
