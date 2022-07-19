@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.0 (2022-07-19)
+### Feature
+* Add set_device_manufacturer ([#14](https://github.com/Bluetooth-Devices/govee-ble/issues/14)) ([`f0203b7`](https://github.com/Bluetooth-Devices/govee-ble/commit/f0203b7c50753127f298e7d7c6977580dccb8cd4))
+
 ## v0.7.0 (2022-07-19)
 ### Feature
 * Add support for B5178 local name variation ([#13](https://github.com/Bluetooth-Devices/govee-ble/issues/13)) ([`324b3cd`](https://github.com/Bluetooth-Devices/govee-ble/commit/324b3cd99c833496af7427333e591f23d249ec70))
