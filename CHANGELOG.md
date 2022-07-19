@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.6.0 (2022-07-19)
+### Feature
+* Do not drop mac from title ([#12](https://github.com/Bluetooth-Devices/govee-ble/issues/12)) ([`cd187ed`](https://github.com/Bluetooth-Devices/govee-ble/commit/cd187ed19b0acf5b7b0c3a91dbc0e13fb321cce5))
+
 ## v0.5.0 (2022-07-19)
 ### Feature
 * Set title for outdoor sensors ([#11](https://github.com/Bluetooth-Devices/govee-ble/issues/11)) ([`1031c78`](https://github.com/Bluetooth-Devices/govee-ble/commit/1031c782865e9b6ec74e38df5f3b4a5345d871ce))
