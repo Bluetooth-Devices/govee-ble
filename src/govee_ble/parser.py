@@ -44,7 +44,7 @@ def decode_temps_probes(packet_value: int) -> float:
 class GoveeBluetoothDeviceData(BluetoothData):
     """Data for Govee BLE sensors."""
 
-    def update(self, service_info: BluetoothServiceInfo) -> None:
+    def _start_update(self, service_info: BluetoothServiceInfo) -> None:
         """Update from BLE advertisement data."""
         _LOGGER.debug("Parsing Govee BLE advertisement data: %s", service_info)
         manufacturer_data = service_info.manufacturer_data
@@ -52,12 +52,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if service_info.name.startswith("GV"):
             self.set_device_name(service_info.name[2:])
 
-        for mgr_id, mfr_data in manufacturer_data.items():
-            if mgr_id in NOT_GOVEE_MANUFACTURER:
+        for mfr_id, mfr_data in manufacturer_data.items():
+            if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
-            self._process_update(mgr_id, mfr_data)
+            self._process_mfr_data(mfr_id, mfr_data)
 
-    def _process_update(self, mgr_id: int, data: bytes) -> None:
+    def _process_mfr_data(self, mgr_id: int, data: bytes) -> None:
         """Parser for Govee sensors."""
         _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data)
         msg_length = len(data)
