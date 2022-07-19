@@ -49,6 +49,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         _LOGGER.debug("Parsing Govee BLE advertisement data: %s", service_info)
         manufacturer_data = service_info.manufacturer_data
         local_name = service_info.name
+        self.set_device_manufacturer("Govee")
 
         if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:])
