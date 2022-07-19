@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.0 (2022-07-19)
+### Feature
+* Export all needed objects ([#17](https://github.com/Bluetooth-Devices/govee-ble/issues/17)) ([`3c5ca7b`](https://github.com/Bluetooth-Devices/govee-ble/commit/3c5ca7b42d20c36bcca650ba15b4b32280751a88))
+
 ## v0.9.1 (2022-07-19)
 ### Fix
 * Add missing device classes to bbq probes ([#16](https://github.com/Bluetooth-Devices/govee-ble/issues/16)) ([`f2cafd7`](https://github.com/Bluetooth-Devices/govee-ble/commit/f2cafd71dba9894cb7dc9ab6706bd23b77c61366))
