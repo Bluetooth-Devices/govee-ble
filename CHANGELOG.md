@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.1 (2022-07-19)
+### Fix
+* Bump libs ([#18](https://github.com/Bluetooth-Devices/govee-ble/issues/18)) ([`e818e7c`](https://github.com/Bluetooth-Devices/govee-ble/commit/e818e7c4dc797a571e1d78426f62b940ec60c585))
+
 ## v0.10.0 (2022-07-19)
 ### Feature
 * Export all needed objects ([#17](https://github.com/Bluetooth-Devices/govee-ble/issues/17)) ([`3c5ca7b`](https://github.com/Bluetooth-Devices/govee-ble/commit/3c5ca7b42d20c36bcca650ba15b4b32280751a88))
