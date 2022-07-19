@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.0 (2022-07-19)
+### Feature
+* Add support for B5178 local name variation ([#13](https://github.com/Bluetooth-Devices/govee-ble/issues/13)) ([`324b3cd`](https://github.com/Bluetooth-Devices/govee-ble/commit/324b3cd99c833496af7427333e591f23d249ec70))
+
 ## v0.6.0 (2022-07-19)
 ### Feature
 * Do not drop mac from title ([#12](https://github.com/Bluetooth-Devices/govee-ble/issues/12)) ([`cd187ed`](https://github.com/Bluetooth-Devices/govee-ble/commit/cd187ed19b0acf5b7b0c3a91dbc0e13fb321cce5))
