@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.9.0 (2022-07-19)
+### Feature
+* Set manu for secondary sensor ([#15](https://github.com/Bluetooth-Devices/govee-ble/issues/15)) ([`ec54d57`](https://github.com/Bluetooth-Devices/govee-ble/commit/ec54d57f25bdff968d9430421b64a751f1b2ce13))
+
 ## v0.8.0 (2022-07-19)
 ### Feature
 * Add set_device_manufacturer ([#14](https://github.com/Bluetooth-Devices/govee-ble/issues/14)) ([`f0203b7`](https://github.com/Bluetooth-Devices/govee-ble/commit/f0203b7c50753127f298e7d7c6977580dccb8cd4))

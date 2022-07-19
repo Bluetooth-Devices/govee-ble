@@ -9,6 +9,6 @@ from __future__ import annotations
 
 from .parser import GoveeBluetoothDeviceData
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 __all__ = ["GoveeBluetoothDeviceData"]
