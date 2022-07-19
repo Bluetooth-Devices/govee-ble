@@ -64,7 +64,7 @@ python-versions = "*"
 
 [[package]]
 name = "bluetooth-sensor-state-data"
-version = "1.2.0"
+version = "1.4.1"
 description = "Models for storing and converting Bluetooth Sensor State Data"
 category = "main"
 optional = false
@@ -439,7 +439,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "sensor-state-data"
-version = "1.5.0"
+version = "1.7.0"
 description = "Models for storing and converting Sensor Data state"
 category = "main"
 optional = false
@@ -621,7 +621,7 @@ docs = ["myst-parser", "Sphinx", "sphinx-rtd-theme"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "46bd24b73cfa177cf7c2f7a2dd98eb69ec4805995fbec0837adcfd385cfe1627"
+content-hash = "fca218438a3ecbee7cd071d98720280c47b48414a056b91c552560a35a86aefd"
 
 [metadata.files]
 alabaster = [
@@ -655,8 +655,8 @@ bleak-winrt = [
     {file = "bleak_winrt-1.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:7481aed7d17e8c2aa2bf9e3786206e382f710f516e00887d825df1b7a4c613d5"},
 ]
 bluetooth-sensor-state-data = [
-    {file = "bluetooth-sensor-state-data-1.2.0.tar.gz", hash = "sha256:3f0215930938c24995da2c995d4e4508624a125a4b909d5427817d8675ab23a1"},
-    {file = "bluetooth_sensor_state_data-1.2.0-py3-none-any.whl", hash = "sha256:6bd1239ed4a54e58d17bc37b7e4587ae7046e8f3d82642e623cc03ddffe3da21"},
+    {file = "bluetooth-sensor-state-data-1.4.1.tar.gz", hash = "sha256:64a9743303043fd5b47a34b2f445f065ae0293fb3f2d38a9123f3ae9127e25b4"},
+    {file = "bluetooth_sensor_state_data-1.4.1-py3-none-any.whl", hash = "sha256:1ddd5dc5d28cb149b05a828fcbdd00ab4f7977734162a506058e28975ac6a6f4"},
 ]
 certifi = [
     {file = "certifi-2022.6.15-py3-none-any.whl", hash = "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"},
@@ -908,8 +908,8 @@ requests = [
     {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
 ]
 sensor-state-data = [
-    {file = "sensor-state-data-1.5.0.tar.gz", hash = "sha256:362d27cc216cce669ae81161e32120bef9d50cb3d4cdfa362d991ffa35996576"},
-    {file = "sensor_state_data-1.5.0-py3-none-any.whl", hash = "sha256:4b2f3683d21ae0ca2b476eecefa1761fc98095aa4f7cd1bb4635c421dcd27a8f"},
+    {file = "sensor-state-data-1.7.0.tar.gz", hash = "sha256:1a7a698f8c10d6af94c688a61d3efb4ce6cbffcc7434d50dfc748bb8e84c8d0f"},
+    {file = "sensor_state_data-1.7.0-py3-none-any.whl", hash = "sha256:e3f18526aa3f2821f2a961a039df997c6b066534d7602104419f42a169b400b1"},
 ]
 snowballstemmer = [
     {file = "snowballstemmer-2.2.0-py2.py3-none-any.whl", hash = "sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a"},

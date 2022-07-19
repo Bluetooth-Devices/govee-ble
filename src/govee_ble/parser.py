@@ -116,7 +116,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
             batt = int(data[6])
             sensor_id = data[2]
             device_id = "primary"
-            self.set_title("H5178")
+            if local_name.startswith("H5178"):
+                self.set_title(local_name)
+            else:
+                self.set_title("H5178")
             if sensor_id == 0:
                 self.set_device_name(f"{local_name} Primary", device_id)
                 self.set_device_type("H5178", device_id)
