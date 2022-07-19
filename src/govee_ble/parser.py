@@ -13,7 +13,6 @@ import struct
 from bluetooth_sensor_state_data import BluetoothData
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import SensorLibrary
-from sensor_state_data.units import TEMP_CELSIUS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -158,17 +157,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 14:
             self.set_device_type("H5183")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
-            self.update_sensor(
-                key="temperature_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_probe_1),
-                name="Temperature Probe 1",
-            )
-            self.update_sensor(
-                key="temperature_alarm_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_alarm_1),
-                name="Temperature Alarm Probe 1",
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
             )
             return
 
@@ -181,29 +171,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_probe_2,
                 temp_alarm_2,
             ) = PACKED_hhbhh.unpack(data[8:17])
-            self.update_sensor(
-                key="temperature_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_probe_1),
-                name="Temperature Probe 1",
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
             )
-            self.update_sensor(
-                key="temperature_alarm_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_alarm_1),
-                name="Temperature Alarm Probe 1",
-            )
-            self.update_sensor(
-                key="temperature_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_probe_2),
-                name="Temperature Probe 2",
-            )
-            self.update_sensor(
-                key="temperature_alarm_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_alarm_2),
-                name="Temperature Alarm Probe 2",
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_2), decode_temps_probes(temp_alarm_2), 2
             )
             return
 
@@ -216,28 +188,27 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_probe_2,
                 temp_alarm_2,
             ) = PACKED_hhhhh.unpack(data[8:17])
-            self.update_sensor(
-                key="temperature_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_probe_1),
-                name="Temperature Probe 1",
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
             )
-            self.update_sensor(
-                key="temperature_alarm_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_alarm_1),
-                name="Temperature Alarm Probe 1",
-            )
-            self.update_sensor(
-                key="temperature_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_probe_2),
-                name="Temperature Probe 2",
-            )
-            self.update_sensor(
-                key="temperature_alarm_probe_1",
-                native_unit_of_measurement=TEMP_CELSIUS,
-                native_value=decode_temps_probes(temp_alarm_2),
-                name="Temperature Alarm Probe 2",
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_2), decode_temps_probes(temp_alarm_2), 2
             )
             return
+
+    def update_temp_probe_with_alarm(
+        self, temp: float, alarm_temp: float, probe_id: int
+    ) -> None:
+        """Update the temperature probe with the alarm temperature."""
+        self.update_predefined_sensor(
+            SensorLibrary.TEMPERATURE,
+            temp,
+            key=f"temperature_probe_{probe_id}",
+            name=f"Temperature Probe {probe_id}",
+        )
+        self.update_predefined_sensor(
+            SensorLibrary.TEMPERATURE,
+            alarm_temp,
+            key=f"temperature_alarm_probe_{probe_id}",
+            name=f"Temperature Alarm Probe {probe_id}",
+        )
