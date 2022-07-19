@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2022-07-19)
+### Feature
+* Set title for outdoor sensors ([#11](https://github.com/Bluetooth-Devices/govee-ble/issues/11)) ([`1031c78`](https://github.com/Bluetooth-Devices/govee-ble/commit/1031c782865e9b6ec74e38df5f3b4a5345d871ce))
+
 ## v0.4.1 (2022-07-19)
 ### Fix
 * Fix device_id for remote sensors ([#10](https://github.com/Bluetooth-Devices/govee-ble/issues/10)) ([`198caf2`](https://github.com/Bluetooth-Devices/govee-ble/commit/198caf26a535f070921ee3e24cc66070d64282d2))
