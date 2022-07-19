@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2022-07-19)
+### Fix
+* Fix device_id for remote sensors ([#10](https://github.com/Bluetooth-Devices/govee-ble/issues/10)) ([`198caf2`](https://github.com/Bluetooth-Devices/govee-ble/commit/198caf26a535f070921ee3e24cc66070d64282d2))
+
 ## v0.4.0 (2022-07-19)
 ### Feature
 * Improve support for remote sensors ([#9](https://github.com/Bluetooth-Devices/govee-ble/issues/9)) ([`bf6eca1`](https://github.com/Bluetooth-Devices/govee-ble/commit/bf6eca1d1f64770fd010475afaeeb642c5e175ff))
