@@ -48,16 +48,17 @@ class GoveeBluetoothDeviceData(BluetoothData):
         """Update from BLE advertisement data."""
         _LOGGER.debug("Parsing Govee BLE advertisement data: %s", service_info)
         manufacturer_data = service_info.manufacturer_data
+        local_name = service_info.name
 
-        if service_info.name.startswith("GV"):
+        if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:])
 
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
-            self._process_mfr_data(mfr_id, mfr_data)
+            self._process_mfr_data(local_name, mfr_id, mfr_data)
 
-    def _process_mfr_data(self, mgr_id: int, data: bytes) -> None:
+    def _process_mfr_data(self, local_name: str, mgr_id: int, data: bytes) -> None:
         """Parser for Govee sensors."""
         _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data)
         msg_length = len(data)
@@ -114,12 +115,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
             humi = float((packet % 1000) / 10)
             batt = int(data[6])
             sensor_id = data[2]
-            device_id = "indoor"
+            device_id = "primary"
             if sensor_id == 0:
+                self.set_device_name(f"{local_name} Primary")
                 self.set_device_type("H5178", device_id)
             elif sensor_id == 1:
-                device_id = "outdoor"
-                self.set_device_type("H5178-outdoor", device_id)
+                device_id = "remote"
+                self.set_device_name(f"{local_name} Remote")
+                self.set_device_type("H5178-REMOTE", device_id)
             else:
                 _LOGGER.debug(
                     "Unknown sensor id for Govee H5178,"
