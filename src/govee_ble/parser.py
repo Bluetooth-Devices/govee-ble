@@ -117,11 +117,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
             sensor_id = data[2]
             device_id = "primary"
             if sensor_id == 0:
-                self.set_device_name(f"{local_name} Primary")
+                self.set_device_name(f"{local_name} Primary", device_id)
                 self.set_device_type("H5178", device_id)
             elif sensor_id == 1:
                 device_id = "remote"
-                self.set_device_name(f"{local_name} Remote")
+                self.set_device_name(f"{local_name} Remote", device_id)
                 self.set_device_type("H5178-REMOTE", device_id)
             else:
                 _LOGGER.debug(
