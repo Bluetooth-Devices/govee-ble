@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-07-19)
+### Feature
+* Switch to using bluetooth-sensor-state-data ([#6](https://github.com/Bluetooth-Devices/govee-ble/issues/6)) ([`8ad3ec5`](https://github.com/Bluetooth-Devices/govee-ble/commit/8ad3ec5f8e7117cf1847be79641b1f706eb9478f))
+
 ## v0.1.1 (2022-07-18)
 ### Fix
 * Fix links ([#5](https://github.com/Bluetooth-Devices/govee-ble/issues/5)) ([`455f2d2`](https://github.com/Bluetooth-Devices/govee-ble/commit/455f2d202e80c03bb0e15d1f0385316e3d9dfded))
