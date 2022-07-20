@@ -1,6 +1,6 @@
 """Parser for Govee BLE advertisements.
 
-This file is shamlessly copied from the following repository:
+This file is shamelessly copied from the following repository:
 https://github.com/Ernst79/bleparser/blob/c42ae922e1abed2720c7fac993777e1bd59c0c93/package/bleparser/govee.py
 
 MIT License applies.
@@ -8,7 +8,13 @@ MIT License applies.
 from __future__ import annotations
 
 from bluetooth_sensor_state_data import SIGNAL_STRENGTH_KEY
-from sensor_state_data import DeviceClass, DeviceKey, SensorUpdate
+from sensor_state_data import (
+    DeviceClass,
+    DeviceKey,
+    SensorDescription,
+    SensorUpdate,
+    SensorValue,
+)
 from sensor_state_data.data import (
     ATTR_HW_VERSION,
     ATTR_MANUFACTURER,
@@ -31,9 +37,11 @@ __all__ = [
     "ATTR_NAME",
     "ATTR_SW_VERSION",
     "SIGNAL_STRENGTH_KEY",
+    "SensorDescription",
     "SensorDeviceInfo",
     "DeviceClass",
     "DeviceKey",
     "SensorUpdate",
     "SensorDeviceInfo",
+    "SensorValue",
 ]
