@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.0 (2022-07-20)
+### Feature
+* Export SensorDescription and SensorValue ([#20](https://github.com/Bluetooth-Devices/govee-ble/issues/20)) ([`b61e938`](https://github.com/Bluetooth-Devices/govee-ble/commit/b61e938ce974bf892b2060bc95d6ee808191d1bf))
+
 ## v0.10.2 (2022-07-20)
 ### Fix
 * Bump deps ([#19](https://github.com/Bluetooth-Devices/govee-ble/issues/19)) ([`5fc9ece`](https://github.com/Bluetooth-Devices/govee-ble/commit/5fc9ece3d7502bfab84f9f287912f6375549cf49))
