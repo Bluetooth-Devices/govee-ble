@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.1 (2022-07-21)
+### Fix
+* Bump sensor-state-data to fix typing ([#22](https://github.com/Bluetooth-Devices/govee-ble/issues/22)) ([`d5cdfc5`](https://github.com/Bluetooth-Devices/govee-ble/commit/d5cdfc506abeb4c81bbb0c2d0c7515f7c81266c5))
+
 ## v0.12.0 (2022-07-21)
 ### Feature
 * Refactor for sensor-state-data 2 ([#21](https://github.com/Bluetooth-Devices/govee-ble/issues/21)) ([`b7fb4dc`](https://github.com/Bluetooth-Devices/govee-ble/commit/b7fb4dcef279e1eeb4b53e47e8f684c3a785e3c2))
