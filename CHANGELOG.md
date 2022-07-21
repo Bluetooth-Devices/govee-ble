@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.0 (2022-07-21)
+### Feature
+* Refactor for sensor-state-data 2 ([#21](https://github.com/Bluetooth-Devices/govee-ble/issues/21)) ([`b7fb4dc`](https://github.com/Bluetooth-Devices/govee-ble/commit/b7fb4dcef279e1eeb4b53e47e8f684c3a785e3c2))
+
 ## v0.11.0 (2022-07-20)
 ### Feature
 * Export SensorDescription and SensorValue ([#20](https://github.com/Bluetooth-Devices/govee-ble/issues/20)) ([`b61e938`](https://github.com/Bluetooth-Devices/govee-ble/commit/b61e938ce974bf892b2060bc95d6ee808191d1bf))
