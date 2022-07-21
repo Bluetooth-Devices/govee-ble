@@ -75,9 +75,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             temp = decode_temps(packet)
             humi = float((packet % 1000) / 10)
             batt = int(data[4])
-            self.update_predefined_sensor(SensorLibrary.TEMPERATURE, temp)
-            self.update_predefined_sensor(SensorLibrary.HUMIDITY, humi)
-            self.update_predefined_sensor(SensorLibrary.BATTERY, batt)
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 6 and mgr_id == 0x0001:
@@ -87,25 +87,33 @@ class GoveeBluetoothDeviceData(BluetoothData):
             temp = decode_temps(packet)
             humi = float((packet % 1000) / 10)
             batt = int(data[5])
-            self.update_predefined_sensor(SensorLibrary.TEMPERATURE, temp)
-            self.update_predefined_sensor(SensorLibrary.HUMIDITY, humi)
-            self.update_predefined_sensor(SensorLibrary.BATTERY, batt)
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 7 and mgr_id == 0xEC88:
             self.set_device_type("H5074")
             (temp, humi, batt) = PACKED_hHB.unpack(data[1:6])
-            self.update_predefined_sensor(SensorLibrary.TEMPERATURE, temp / 100)
-            self.update_predefined_sensor(SensorLibrary.HUMIDITY, humi / 100)
-            self.update_predefined_sensor(SensorLibrary.BATTERY, batt)
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
+            )
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 9 and mgr_id == 0xEC88:
             self.set_device_type("H5051/H5071")
             (temp, humi, batt) = PACKED_hHB.unpack(data[1:6])
-            self.update_predefined_sensor(SensorLibrary.TEMPERATURE, temp / 100)
-            self.update_predefined_sensor(SensorLibrary.HUMIDITY, humi / 100)
-            self.update_predefined_sensor(SensorLibrary.BATTERY, batt)
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
+            )
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 9 and mgr_id == 0x0001:
@@ -136,22 +144,26 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     data.hex(),
                 )
             self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE, temp, device_id=device_id
+                SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
             )
             self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY, humi, device_id=device_id
+                SensorLibrary.HUMIDITY__PERCENTAGE, humi, device_id=device_id
             )
             self.update_predefined_sensor(
-                SensorLibrary.BATTERY, batt, device_id=device_id
+                SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
             )
             return
 
         if msg_length == 9 and mgr_id == 0x8801:
             self.set_device_type("H5179")
             (temp, humi, batt) = PACKED_hHB.unpack(data[4:9])
-            self.update_predefined_sensor(SensorLibrary.TEMPERATURE, temp / 100)
-            self.update_predefined_sensor(SensorLibrary.HUMIDITY, humi / 100)
-            self.update_predefined_sensor(SensorLibrary.BATTERY, batt)
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
+            )
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 14:
@@ -201,13 +213,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
     ) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_predefined_sensor(
-            SensorLibrary.TEMPERATURE,
+            SensorLibrary.TEMPERATURE__CELSIUS,
             temp,
             key=f"temperature_probe_{probe_id}",
             name=f"Temperature Probe {probe_id}",
         )
         self.update_predefined_sensor(
-            SensorLibrary.TEMPERATURE,
+            SensorLibrary.TEMPERATURE__CELSIUS,
             alarm_temp,
             key=f"temperature_alarm_probe_{probe_id}",
             name=f"Temperature Alarm Probe {probe_id}",
