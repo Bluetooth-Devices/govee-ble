@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.3 (2022-07-22)
+### Fix
+* Names for bbq devices ([#24](https://github.com/Bluetooth-Devices/govee-ble/issues/24)) ([`4407ed4`](https://github.com/Bluetooth-Devices/govee-ble/commit/4407ed431f4280ca77b7a31cd4fa930f878aee77))
+
 ## v0.12.2 (2022-07-22)
 ### Fix
 * Fixs for bbq sensors ([#23](https://github.com/Bluetooth-Devices/govee-ble/issues/23)) ([`132d04d`](https://github.com/Bluetooth-Devices/govee-ble/commit/132d04d91fc9161ff1a67a34c9b00c46afb2f708))
