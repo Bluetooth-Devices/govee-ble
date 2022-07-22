@@ -25,6 +25,14 @@ PACKED_hhhhh = struct.Struct(">hhhhh")
 NOT_GOVEE_MANUFACTURER = {76}
 
 
+def short_address(address: str) -> str:
+    """Convert a Bluetooth address to a short address."""
+    results = address.replace("-", ":").split(":")
+    if len(results[-1]) == 2:
+        return f"{results[-2].upper()}{results[-1].upper()}"
+    return results[-1].upper()
+
+
 def decode_temps(packet_value: int) -> float:
     """Decode potential negative temperatures."""
     # https://github.com/Thrilleratplay/GoveeWatcher/issues/2
@@ -48,6 +56,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         _LOGGER.debug("Parsing Govee BLE advertisement data: %s", service_info)
         manufacturer_data = service_info.manufacturer_data
         local_name = service_info.name
+        address = service_info.address
         self.set_device_manufacturer("Govee")
 
         if local_name.startswith("GV"):
@@ -56,9 +65,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
-            self._process_mfr_data(local_name, mfr_id, mfr_data)
+            self._process_mfr_data(address, local_name, mfr_id, mfr_data)
 
-    def _process_mfr_data(self, local_name: str, mgr_id: int, data: bytes) -> None:
+    def _process_mfr_data(
+        self, address: str, local_name: str, mgr_id: int, data: bytes
+    ) -> None:
         """Parser for Govee sensors."""
         _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data)
         msg_length = len(data)
@@ -168,6 +179,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 14 and mgr_id == 0x388A:
             self.set_device_type("H5181")
+            self.set_device_name(f"H5181 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
@@ -176,6 +188,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 14 and mgr_id == 0x67DD:
             self.set_device_type("H5183")
+            self.set_device_name(f"H5183 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
@@ -186,6 +199,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         # the supported list yet
         if msg_length == 17 and mgr_id == 0x4A32:
             self.set_device_type("H5182")
+            self.set_device_name(f"H5182 {short_address(address)}")
             (
                 temp_probe_1,
                 temp_alarm_1,
@@ -203,6 +217,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 20 and mgr_id == 0x4A32:
             self.set_device_type("H5185")
+            self.set_device_name(f"H5185 {short_address(address)}")
             (
                 temp_probe_1,
                 temp_alarm_1,
