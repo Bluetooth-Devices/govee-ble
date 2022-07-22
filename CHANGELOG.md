@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.2 (2022-07-22)
+### Fix
+* Fixs for bbq sensors ([#23](https://github.com/Bluetooth-Devices/govee-ble/issues/23)) ([`132d04d`](https://github.com/Bluetooth-Devices/govee-ble/commit/132d04d91fc9161ff1a67a34c9b00c46afb2f708))
+
 ## v0.12.1 (2022-07-21)
 ### Fix
 * Bump sensor-state-data to fix typing ([#22](https://github.com/Bluetooth-Devices/govee-ble/issues/22)) ([`d5cdfc5`](https://github.com/Bluetooth-Devices/govee-ble/commit/d5cdfc506abeb4c81bbb0c2d0c7515f7c81266c5))
