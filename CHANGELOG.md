@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.4 (2022-07-29)
+### Fix
+* Parser for h5182 had the wrong mfgr_id ([#25](https://github.com/Bluetooth-Devices/govee-ble/issues/25)) ([`57abb96`](https://github.com/Bluetooth-Devices/govee-ble/commit/57abb962b32994fe4ec8cb938ad89947838b8294))
+
 ## v0.12.3 (2022-07-22)
 ### Fix
 * Names for bbq devices ([#24](https://github.com/Bluetooth-Devices/govee-ble/issues/24)) ([`4407ed4`](https://github.com/Bluetooth-Devices/govee-ble/commit/4407ed431f4280ca77b7a31cd4fa930f878aee77))
