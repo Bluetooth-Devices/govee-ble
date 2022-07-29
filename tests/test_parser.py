@@ -69,6 +69,18 @@ GVH5181_SERVICE_INFO = BluetoothServiceInfo(
     service_data={},
     source="local",
 )
+GVH5182_SERVICE_INFO = BluetoothServiceInfo(
+    name="F34DC3CB-9CCF-336F-3CB1-3C6F525509E6",
+    address="F34DC3CB-9CCF-336F-3CB1-3C6F525509E6",
+    rssi=-56,
+    manufacturer_data={
+        10032: b"c\x01\x00\x01\x01\xe4\x01\x01\xff\xff\x12\x03\x01"
+        b"\xff\xff\x00\x00L\x00\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c"
+    },
+    service_uuids=["00008251-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
 
 
 def test_can_create():
@@ -373,6 +385,82 @@ def test_gvh5181():
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
                 name="Temperature Alarm Probe 1",
                 native_value=74.4,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-56,
+            ),
+        },
+    )
+
+
+def test_gvh5182():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5182_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5182 3C6F525509E6",
+                model="H5182",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_1", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_2", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                name="Temperature Probe 1",
+                native_value=0.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                name="Temperature Alarm Probe 1",
+                native_value=46.11,
+            ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                name="Temperature Probe 2",
+                native_value=0.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
+                name="Temperature Alarm Probe 2",
+                native_value=0.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
