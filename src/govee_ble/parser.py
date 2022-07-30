@@ -16,6 +16,7 @@ from sensor_state_data import SensorLibrary
 
 _LOGGER = logging.getLogger(__name__)
 
+PACKED_hHB_LITTLE = struct.Struct("<hHB")
 PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
 PACKED_hhbhh = struct.Struct(">hhbhh")
@@ -167,7 +168,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 9 and mgr_id == 0x8801:
             self.set_device_type("H5179")
-            (temp, humi, batt) = PACKED_hHB.unpack(data[4:9])
+            temp, humi, batt = PACKED_hHB_LITTLE.unpack(data[4:9])
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
             )
