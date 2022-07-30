@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.5 (2022-07-30)
+### Fix
+* H5179 is little endian and not big endian like the rest ([#26](https://github.com/Bluetooth-Devices/govee-ble/issues/26)) ([`24a0e92`](https://github.com/Bluetooth-Devices/govee-ble/commit/24a0e922f32ef476d51d0b13e90a737dfdc83676))
+
 ## v0.12.4 (2022-07-29)
 ### Fix
 * Parser for h5182 had the wrong mfgr_id ([#25](https://github.com/Bluetooth-Devices/govee-ble/issues/25)) ([`57abb96`](https://github.com/Bluetooth-Devices/govee-ble/commit/57abb962b32994fe4ec8cb938ad89947838b8294))
