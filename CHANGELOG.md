@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.6 (2022-08-02)
+### Fix
+* The GVH5074 is little endian ([#27](https://github.com/Bluetooth-Devices/govee-ble/issues/27)) ([`28e626c`](https://github.com/Bluetooth-Devices/govee-ble/commit/28e626c2527c395c507fbe00e7f18a184a3484f0))
+
 ## v0.12.5 (2022-07-30)
 ### Fix
 * H5179 is little endian and not big endian like the rest ([#26](https://github.com/Bluetooth-Devices/govee-ble/issues/26)) ([`24a0e92`](https://github.com/Bluetooth-Devices/govee-ble/commit/24a0e922f32ef476d51d0b13e90a737dfdc83676))
