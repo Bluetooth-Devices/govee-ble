@@ -106,7 +106,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 7 and mgr_id == 0xEC88:
             self.set_device_type("H5074")
-            (temp, humi, batt) = PACKED_hHB.unpack(data[1:6])
+            (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
             )
