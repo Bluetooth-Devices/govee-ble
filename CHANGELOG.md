@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.7 (2022-08-07)
+### Fix
+* Add 818 to the manufacturer_ids for the gvh5185 ([#28](https://github.com/Bluetooth-Devices/govee-ble/issues/28)) ([`f3cfb61`](https://github.com/Bluetooth-Devices/govee-ble/commit/f3cfb61c2d562b801570956901f669c27b0d77fb))
+
 ## v0.12.6 (2022-08-02)
 ### Fix
 * The GVH5074 is little endian ([#27](https://github.com/Bluetooth-Devices/govee-ble/issues/27)) ([`28e626c`](https://github.com/Bluetooth-Devices/govee-ble/commit/28e626c2527c395c507fbe00e7f18a184a3484f0))
