@@ -214,7 +214,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 20 and mgr_id == 0x4A32:
+        if msg_length == 20 and mgr_id in (0x4A32, 0x332):
             self.set_device_type("H5185")
             self.set_device_name(f"H5185 {short_address(address)}")
             (
