@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.0 (2022-08-08)
+### Feature
+* Add support for the h5052 ([#30](https://github.com/Bluetooth-Devices/govee-ble/issues/30)) ([`625594c`](https://github.com/Bluetooth-Devices/govee-ble/commit/625594c16ad67801cf2a57fa2534900e6ef28310))
+
 ## v0.13.0 (2022-08-08)
 ### Feature
 * Add support for the 5184 devices ([#29](https://github.com/Bluetooth-Devices/govee-ble/issues/29)) ([`d9d6d6a`](https://github.com/Bluetooth-Devices/govee-ble/commit/d9d6d6a84e7b7647c829be8471915e15fa61ca0d))
