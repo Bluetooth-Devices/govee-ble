@@ -187,15 +187,6 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 14 and mgr_id == 0x67DD:
-            self.set_device_type("H5183")
-            self.set_device_name(f"H5183 {short_address(address)}")
-            (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
-            self.update_temp_probe_with_alarm(
-                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
-            )
-            return
-
         if msg_length == 17 and mgr_id == 0x2730:
             self.set_device_type("H5182")
             self.set_device_name(f"H5182 {short_address(address)}")
@@ -211,6 +202,47 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_2), decode_temps_probes(temp_alarm_2), 2
+            )
+            return
+
+        if msg_length == 14 and mgr_id == 0x67DD:
+            self.set_device_type("H5183")
+            self.set_device_name(f"H5183 {short_address(address)}")
+            (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
+            )
+            return
+
+        if msg_length == 17 and mgr_id == 0x1B36:
+            sensor_id = data[6]
+            self.set_device_type("H5184")
+            self.set_device_name(f"H5184 {short_address(address)}")
+            (
+                temp_probe_first,
+                temp_alarm_first,
+                _,
+                temp_probe_second,
+                temp_alarm_second,
+            ) = PACKED_hhbhh.unpack(data[8:17])
+            if sensor_id == 1:
+                ids = [1, 2]
+            elif sensor_id == 2:
+                ids = [3, 4]
+            else:
+                _LOGGER.debug(
+                    "Unknown sensor id: %s for a H5184, data: %s", sensor_id, data
+                )
+                return
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_first),
+                decode_temps_probes(temp_alarm_first),
+                ids[0],
+            )
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_second),
+                decode_temps_probes(temp_alarm_second),
+                ids[1],
             )
             return
 
@@ -232,9 +264,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-    def update_temp_probe_with_alarm(
-        self, temp: float, alarm_temp: float, probe_id: int
-    ) -> None:
+    def update_temp_probe(self, temp: float, probe_id: int) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_predefined_sensor(
             SensorLibrary.TEMPERATURE__CELSIUS,
@@ -242,6 +272,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
             key=f"temperature_probe_{probe_id}",
             name=f"Temperature Probe {probe_id}",
         )
+
+    def update_temp_probe_with_alarm(
+        self, temp: float, alarm_temp: float, probe_id: int
+    ) -> None:
+        """Update the temperature probe with the alarm temperature."""
+        self.update_temp_probe(temp, probe_id)
         self.update_predefined_sensor(
             SensorLibrary.TEMPERATURE__CELSIUS,
             alarm_temp,
