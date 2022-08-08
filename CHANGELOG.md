@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.0 (2022-08-08)
+### Feature
+* Add support for the 5184 devices ([#29](https://github.com/Bluetooth-Devices/govee-ble/issues/29)) ([`d9d6d6a`](https://github.com/Bluetooth-Devices/govee-ble/commit/d9d6d6a84e7b7647c829be8471915e15fa61ca0d))
+
 ## v0.12.7 (2022-08-07)
 ### Fix
 * Add 818 to the manufacturer_ids for the gvh5185 ([#28](https://github.com/Bluetooth-Devices/govee-ble/issues/28)) ([`f3cfb61`](https://github.com/Bluetooth-Devices/govee-ble/commit/f3cfb61c2d562b801570956901f669c27b0d77fb))
