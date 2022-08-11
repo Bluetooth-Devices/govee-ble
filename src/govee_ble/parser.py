@@ -19,6 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 PACKED_hHB_LITTLE = struct.Struct("<hHB")
 PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
+
 PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 
@@ -193,7 +194,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 14 and mgr_id == 0x388A:
+        if msg_length == 14 and mgr_id in (0x388A, 0xEA42):
             self.set_device_type("H5181")
             self.set_device_name(f"H5181 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
