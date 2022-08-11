@@ -39,8 +39,8 @@ def decode_temps(packet_value: int) -> float:
     """Decode potential negative temperatures."""
     # https://github.com/Thrilleratplay/GoveeWatcher/issues/2
     if packet_value & 0x800000:
-        return float((packet_value ^ 0x800000) / -10000)
-    return float(packet_value / 10000)
+        return round(float((packet_value ^ 0x800000) / -10000), 1)
+    return round(float(packet_value / 10000), 1)
 
 
 def decode_temps_probes(packet_value: int) -> float:
