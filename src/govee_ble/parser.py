@@ -67,6 +67,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:])
 
+        self.set_precision(2)
+
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
