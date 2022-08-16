@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.15.0 (2022-08-16)
+### Feature
+* Implement rounding ([#33](https://github.com/Bluetooth-Devices/govee-ble/issues/33)) ([`eeed1aa`](https://github.com/Bluetooth-Devices/govee-ble/commit/eeed1aa231be0df9f3193511124ca2dfeeeaee51))
+
 ## v0.14.1 (2022-08-11)
 ### Fix
 * Older 5181 firmwares ([#31](https://github.com/Bluetooth-Devices/govee-ble/issues/31)) ([`61eac60`](https://github.com/Bluetooth-Devices/govee-ble/commit/61eac6038177b58c07a80882d3cebe9debc25430))
