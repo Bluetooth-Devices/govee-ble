@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.16.0 (2022-08-16)
+### Feature
+* Add support for H5071 ([#34](https://github.com/Bluetooth-Devices/govee-ble/issues/34)) ([`cf7e809`](https://github.com/Bluetooth-Devices/govee-ble/commit/cf7e8095c3f15a5d2ccde2cd14cf294edb4ba379))
+
 ## v0.15.0 (2022-08-16)
 ### Feature
 * Implement rounding ([#33](https://github.com/Bluetooth-Devices/govee-ble/issues/33)) ([`eeed1aa`](https://github.com/Bluetooth-Devices/govee-ble/commit/eeed1aa231be0df9f3193511124ca2dfeeeaee51))
