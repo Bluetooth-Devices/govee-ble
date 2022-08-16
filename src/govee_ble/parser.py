@@ -122,8 +122,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 9 and mgr_id == 0xEC88 and "H5052" in local_name:
-            self.set_device_type("H5052")
+        if (
+            msg_length == 9
+            and mgr_id == 0xEC88
+            and ("H5071" in local_name or "H5052" in local_name)
+        ):
+            if "H5071" in local_name:
+                self.set_device_type("H5071")
+            else:
+                self.set_device_type("H5052")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
