@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.16.1 (2022-08-25)
+### Fix
+* Use bluetooth-data-tools short_address ([#36](https://github.com/Bluetooth-Devices/govee-ble/issues/36)) ([`e137d93`](https://github.com/Bluetooth-Devices/govee-ble/commit/e137d930d7605a41f7112fd342cfc4bd269dc7da))
+
 ## v0.16.0 (2022-08-16)
 ### Feature
 * Add support for H5071 ([#34](https://github.com/Bluetooth-Devices/govee-ble/issues/34)) ([`cf7e809`](https://github.com/Bluetooth-Devices/govee-ble/commit/cf7e8095c3f15a5d2ccde2cd14cf294edb4ba379))
