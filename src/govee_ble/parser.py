@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 import struct
 
+from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import SensorLibrary
@@ -25,14 +26,6 @@ PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
 NOT_GOVEE_MANUFACTURER = {76}
-
-
-def short_address(address: str) -> str:
-    """Convert a Bluetooth address to a short address."""
-    results = address.replace("-", ":").split(":")
-    if len(results[-1]) == 2:
-        return f"{results[-2].upper()}{results[-1].upper()}"
-    return results[-1].upper()
 
 
 def decode_temps(packet_value: int) -> float:

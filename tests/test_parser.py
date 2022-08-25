@@ -457,7 +457,7 @@ def test_gvh5184_packet_type_1():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5184 6AADDD4CAC3D",
+                name="H5184 AC3D",
                 model="H5184",
                 manufacturer="Govee",
                 sw_version=None,
@@ -532,7 +532,7 @@ def test_gvh5184_packet_type_2():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5184 6AADDD4CAC3D",
+                name="H5184 AC3D",
                 model="H5184",
                 manufacturer="Govee",
                 sw_version=None,
@@ -608,7 +608,7 @@ def test_gvh5185():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5185 6AADDD4CAC3D",
+                name="H5185 AC3D",
                 model="H5185",
                 manufacturer="Govee",
                 sw_version=None,
@@ -684,7 +684,7 @@ def test_gvh5185_variant():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5185 6AADDD4CAC3D",
+                name="H5185 AC3D",
                 model="H5185",
                 manufacturer="Govee",
                 sw_version=None,
@@ -760,7 +760,7 @@ def test_gvh5183():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5183 6AADDD4CAC3D",
+                name="H5183 AC3D",
                 model="H5183",
                 manufacturer="Govee",
                 sw_version=None,
@@ -814,7 +814,7 @@ def test_gvh5181():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5181 6AADDD4CAC3D",
+                name="H5181 AC3D",
                 model="H5181",
                 manufacturer="Govee",
                 sw_version=None,
@@ -868,7 +868,7 @@ def test_gvh5181_variant():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5181 6AADDD4CAC3D",
+                name="H5181 AC3D",
                 model="H5181",
                 manufacturer="Govee",
                 sw_version=None,
@@ -922,7 +922,7 @@ def test_gvh5181_variant_2():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5181 6AADDD4CAC3D",
+                name="H5181 AC3D",
                 model="H5181",
                 manufacturer="Govee",
                 sw_version=None,
@@ -976,7 +976,7 @@ def test_gvh5182():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5182 3C6F525509E6",
+                name="H5182 09E6",
                 model="H5182",
                 manufacturer="Govee",
                 sw_version=None,
