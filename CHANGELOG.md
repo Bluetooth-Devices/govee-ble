@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.17.0 (2022-08-30)
+### Feature
+* Add support for additional H5185 firmware ([#37](https://github.com/Bluetooth-Devices/govee-ble/issues/37)) ([`0a5dfa5`](https://github.com/Bluetooth-Devices/govee-ble/commit/0a5dfa5e4e95d79f3f9a5e076355963ba75d34be))
+
 ## v0.16.1 (2022-08-25)
 ### Fix
 * Use bluetooth-data-tools short_address ([#36](https://github.com/Bluetooth-Devices/govee-ble/issues/36)) ([`e137d93`](https://github.com/Bluetooth-Devices/govee-ble/commit/e137d930d7605a41f7112fd342cfc4bd269dc7da))
