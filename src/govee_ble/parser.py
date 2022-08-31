@@ -79,7 +79,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             msg_length = len(data)
             _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data)
 
-        if msg_length == 6 and mgr_id == 0xEC88:
+        if msg_length == 6 and (
+            "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
+        ):
             self.set_device_type("H5072/H5075")
             packet_5072_5075 = data[1:4].hex()
             packet = int(packet_5072_5075, 16)
@@ -91,7 +93,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 6 and mgr_id == 0x0001:
+        if msg_length == 6 and (
+            "H5101" in local_name
+            or "H5102" in local_name
+            or "H5177" in local_name
+            or mgr_id == 0x0001
+        ):
             self.set_device_type("H5101/H5102/H5177")
             packet_5101_5102 = data[2:5].hex()
             packet = int(packet_5101_5102, 16)
@@ -103,7 +110,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 7 and mgr_id == 0xEC88:
+        if msg_length == 7 and ("H5074" in local_name or mgr_id == 0xEC88):
             self.set_device_type("H5074")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
             self.update_predefined_sensor(
@@ -134,7 +141,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 9 and mgr_id == 0xEC88:
+        if msg_length == 9 and (
+            "H5051" in local_name or "H5071" in local_name or mgr_id == 0xEC88
+        ):
             self.set_device_type("H5051/H5071")
             (temp, humi, batt) = PACKED_hHB.unpack(data[1:6])
             self.update_predefined_sensor(
@@ -146,7 +155,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 9 and mgr_id == 0x0001:
+        if msg_length == 9 and (
+            "H5178" in local_name or "B5178" in local_name or mgr_id == 0x0001
+        ):
             packet_5178 = data[3:6].hex()
             packet = int(packet_5178, 16)
             temp = decode_temps(packet)
@@ -184,7 +195,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 9 and mgr_id == 0x8801:
+        if msg_length == 9 and ("H5179" in local_name or mgr_id == 0x8801):
             self.set_device_type("H5179")
             temp, humi, batt = PACKED_hHB_LITTLE.unpack(data[4:9])
             self.update_predefined_sensor(
@@ -196,7 +207,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 14 and mgr_id in (0x388A, 0xEA42):
+        if msg_length == 14 and (
+            "H5181" in local_name or mgr_id in (0xF861, 0x388A, 0xEA42)
+        ):
             self.set_device_type("H5181")
             self.set_device_name(f"H5181 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
@@ -205,7 +218,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 17 and mgr_id == 0x2730:
+        if msg_length == 17 and ("H5182" in local_name or mgr_id == 0x2730):
             self.set_device_type("H5182")
             self.set_device_name(f"H5182 {short_address(address)}")
             (
@@ -223,7 +236,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 14 and mgr_id == 0x67DD:
+        if msg_length == 14 and ("H5183" in local_name or mgr_id == 0x67DD):
             self.set_device_type("H5183")
             self.set_device_name(f"H5183 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
@@ -232,7 +245,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 17 and mgr_id == 0x1B36:
+        if msg_length == 17 and ("H5184" in local_name or mgr_id == 0x1B36):
             sensor_id = data[6]
             self.set_device_type("H5184")
             self.set_device_name(f"H5184 {short_address(address)}")
@@ -264,7 +277,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 20 and mgr_id in (0x4A32, 0x332, 0x4C32):
+        if msg_length == 20 and (
+            "H5185" in local_name or mgr_id in (0x4A32, 0x332, 0x4C32)
+        ):
             self.set_device_type("H5185")
             self.set_device_name(f"H5185 {short_address(address)}")
             (
