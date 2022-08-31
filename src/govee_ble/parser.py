@@ -207,7 +207,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 14 and ("H5181" in local_name or mgr_id in (0x388A, 0xEA42)):
+        if msg_length == 14 and (
+            "H5181" in local_name or mgr_id in (0xF861, 0x388A, 0xEA42)
+        ):
             self.set_device_type("H5181")
             self.set_device_name(f"H5181 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
