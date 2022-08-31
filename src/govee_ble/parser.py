@@ -80,7 +80,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data)
 
         if msg_length == 6 and (
-            "H5072" in local_name or "H5072" in local_name or mgr_id == 0xEC88
+            "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
         ):
             self.set_device_type("H5072/H5075")
             packet_5072_5075 = data[1:4].hex()
