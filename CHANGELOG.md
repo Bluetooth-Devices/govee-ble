@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.17.1 (2022-08-31)
+### Fix
+* Model H5181 var fixes ([#38](https://github.com/Bluetooth-Devices/govee-ble/issues/38)) ([`42012bc`](https://github.com/Bluetooth-Devices/govee-ble/commit/42012bc8be9028c62054a7b143ea990ffeb67deb))
+
 ## v0.17.0 (2022-08-30)
 ### Feature
 * Add support for additional H5185 firmware ([#37](https://github.com/Bluetooth-Devices/govee-ble/issues/37)) ([`0a5dfa5`](https://github.com/Bluetooth-Devices/govee-ble/commit/0a5dfa5e4e95d79f3f9a5e076355963ba75d34be))
