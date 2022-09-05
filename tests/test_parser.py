@@ -243,7 +243,7 @@ def test_gvh5052():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5052_E81B",
+                name="H5052 E81B",
                 model="H5052",
                 manufacturer="Govee",
                 sw_version=None,
@@ -305,7 +305,7 @@ def test_gvh5071():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5071_FD12",
+                name="H5071 FD12",
                 model="H5071",
                 manufacturer="Govee",
                 sw_version=None,
@@ -367,7 +367,7 @@ def test_gvh5075():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5075_2762",
+                name="H5075 2762",
                 model="H5072/H5075",
                 manufacturer="Govee",
                 sw_version=None,
@@ -429,7 +429,7 @@ def test_gvh5177():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5177_2EC8",
+                name="H5177 2EC8",
                 model="H5101/H5102/H5177",
                 manufacturer="Govee",
                 sw_version=None,
@@ -1219,7 +1219,7 @@ def test_gvh5179():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5179_3CD5",
+                name="H5179 3CD5",
                 model="H5179",
                 manufacturer="Govee",
                 sw_version=None,
@@ -1281,7 +1281,7 @@ def test_gvh5074():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5074_5FF4",
+                name="H5074 5FF4",
                 model="H5074",
                 manufacturer="Govee",
                 sw_version=None,
