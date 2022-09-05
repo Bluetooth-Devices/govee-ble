@@ -55,10 +55,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
         self.set_device_manufacturer("Govee")
 
         if local_name.startswith("Govee_"):
-            self.set_device_name(service_info.name[6:])
+            self.set_device_name(service_info.name[6:].replace("_", " "))
 
         if local_name.startswith("GV"):
-            self.set_device_name(service_info.name[2:])
+            self.set_device_name(service_info.name[2:].replace("_", " "))
 
         self.set_precision(2)
 
@@ -170,12 +170,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
             else:
                 self.set_title("H5178")
             if sensor_id == 0:
-                self.set_device_name(f"{local_name} Primary", device_id)
+                self.set_device_name(
+                    f"{local_name} Primary".replace("_", " "), device_id
+                )
                 self.set_device_type("H5178", device_id)
                 self.set_device_manufacturer("Govee", device_id)
             elif sensor_id == 1:
                 device_id = "remote"
-                self.set_device_name(f"{local_name} Remote", device_id)
+                self.set_device_name(
+                    f"{local_name} Remote".replace("_", " "), device_id
+                )
                 self.set_device_type("H5178-REMOTE", device_id)
                 self.set_device_manufacturer("Govee", device_id)
             else:
