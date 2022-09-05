@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.17.2 (2022-09-05)
+### Fix
+* Names are now human readable ([#39](https://github.com/Bluetooth-Devices/govee-ble/issues/39)) ([`fefc6b4`](https://github.com/Bluetooth-Devices/govee-ble/commit/fefc6b405e62a063234d12c8d812f9581b24369c))
+
 ## v0.17.1 (2022-08-31)
 ### Fix
 * Model H5181 var fixes ([#38](https://github.com/Bluetooth-Devices/govee-ble/issues/38)) ([`42012bc`](https://github.com/Bluetooth-Devices/govee-ble/commit/42012bc8be9028c62054a7b143ea990ffeb67deb))
