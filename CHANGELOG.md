@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.17.3 (2022-09-13)
+### Fix
+* Publish ([#41](https://github.com/Bluetooth-Devices/govee-ble/issues/41)) ([`40ce706`](https://github.com/Bluetooth-Devices/govee-ble/commit/40ce70653f9cd52eb584253f6893d0f20677d2c7))
+
 ## v0.17.2 (2022-09-05)
 ### Fix
 * Names are now human readable ([#39](https://github.com/Bluetooth-Devices/govee-ble/issues/39)) ([`fefc6b4`](https://github.com/Bluetooth-Devices/govee-ble/commit/fefc6b405e62a063234d12c8d812f9581b24369c))
