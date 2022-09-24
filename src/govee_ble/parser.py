@@ -212,7 +212,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length == 14 and (
-            "H5181" in local_name or mgr_id in (0xF861, 0x388A, 0xEA42)
+            "H5181" in local_name or mgr_id in {0xF861, 0x388A, 0xEA42, 0xAAA2}
         ):
             self.set_device_type("H5181")
             self.set_device_name(f"H5181 {short_address(address)}")
@@ -240,7 +240,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 14 and ("H5183" in local_name or mgr_id in (0x67DD, 0xE02F)):
+        if msg_length == 14 and ("H5183" in local_name or mgr_id in {0x67DD, 0xE02F}):
             self.set_device_type("H5183")
             self.set_device_name(f"H5183 {short_address(address)}")
             (temp_probe_1, temp_alarm_1) = PACKED_hh.unpack(data[8:12])
