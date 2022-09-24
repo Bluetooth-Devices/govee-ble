@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.0 (2022-09-24)
+### Feature
+* Add support for yet another H5183 variant ([#44](https://github.com/Bluetooth-Devices/govee-ble/issues/44)) ([`d699552`](https://github.com/Bluetooth-Devices/govee-ble/commit/d699552bef2c3be13b34899f34e355a54914ffdb))
+
 ## v0.18.0 (2022-09-24)
 ### Feature
 * Add support for another H5181 variant ([#43](https://github.com/Bluetooth-Devices/govee-ble/issues/43)) ([`7738d25`](https://github.com/Bluetooth-Devices/govee-ble/commit/7738d25fe6737a2c41d4d1f7af6e3fa41861ba0e))
