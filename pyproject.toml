@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "govee-ble"
-version = "0.17.3"
+version = "0.18.0"
 description = "Manage Govee BLE devices"
 authors = ["J. Nick Koston <nick@koston.org>"]
 license = "Apache Software License 2.0"
