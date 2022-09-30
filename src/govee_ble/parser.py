@@ -50,6 +50,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         """Update from BLE advertisement data."""
         _LOGGER.debug("Parsing Govee BLE advertisement data: %s", service_info)
         manufacturer_data = service_info.manufacturer_data
+        service_uuids = service_info.service_uuids
         local_name = service_info.name
         address = service_info.address
         self.set_device_manufacturer("Govee")
@@ -65,10 +66,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
-            self._process_mfr_data(address, local_name, mfr_id, mfr_data)
+            self._process_mfr_data(address, local_name, mfr_id, mfr_data, service_uuids)
 
     def _process_mfr_data(
-        self, address: str, local_name: str, mgr_id: int, data: bytes
+        self,
+        address: str,
+        local_name: str,
+        mgr_id: int,
+        data: bytes,
+        service_uuids: list[str],
     ) -> None:
         """Parser for Govee sensors."""
         _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data)
@@ -212,7 +218,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length == 14 and (
-            "H5181" in local_name or mgr_id in {0xF861, 0x388A, 0xEA42, 0xAAA2}
+            "H5181" in local_name
+            or mgr_id in {0xF861, 0x388A, 0xEA42, 0xAAA2, 0xD14B}
+            or "00008151-0000-1000-8000-00805f9b34fb" in service_uuids
         ):
             self.set_device_type("H5181")
             self.set_device_name(f"H5181 {short_address(address)}")
@@ -222,7 +230,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 17 and ("H5182" in local_name or mgr_id == 0x2730):
+        if msg_length == 17 and (
+            "H5182" in local_name
+            or mgr_id == 0x2730
+            or "00008251-0000-1000-8000-00805f9b34fb" in service_uuids
+        ):
             self.set_device_type("H5182")
             self.set_device_name(f"H5182 {short_address(address)}")
             (
@@ -241,7 +253,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length == 14 and (
-            "H5183" in local_name or mgr_id in {0x67DD, 0xE02F, 0xF79F}
+            "H5183" in local_name
+            or mgr_id in {0x67DD, 0xE02F, 0xF79F}
+            or "00008351-0000-1000-8000-00805f9b34fb" in service_uuids
         ):
             self.set_device_type("H5183")
             self.set_device_name(f"H5183 {short_address(address)}")
@@ -251,7 +265,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-        if msg_length == 17 and ("H5184" in local_name or mgr_id == 0x1B36):
+        if msg_length == 17 and (
+            "H5184" in local_name
+            or mgr_id == 0x1B36
+            or "00008451-0000-1000-8000-00805f9b34fb" in service_uuids
+        ):
             sensor_id = data[6]
             self.set_device_type("H5184")
             self.set_device_name(f"H5184 {short_address(address)}")
@@ -284,7 +302,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length == 20 and (
-            "H5185" in local_name or mgr_id in (0x4A32, 0x332, 0x4C32)
+            "H5185" in local_name
+            or mgr_id in (0x4A32, 0x332, 0x4C32)
+            or "00008551-0000-1000-8000-00805f9b34fb" in service_uuids
         ):
             self.set_device_type("H5185")
             self.set_device_name(f"H5185 {short_address(address)}")

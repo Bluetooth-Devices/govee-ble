@@ -229,6 +229,18 @@ GVH5181_VARIANT_SERVICE_INFO_4 = BluetoothServiceInfo(
     service_data={},
     source="local",
 )
+GVH5181_VARIANT_SERVICE_INFO_5 = BluetoothServiceInfo(
+    name="",
+    address="AA:BB:CC:DD:EE:FF",
+    rssi=-56,
+    manufacturer_data={
+        53579: b"i\x01\x00\x01\x01\xe4\x01\x86\x07l \x1c\x00\x00",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c",
+    },
+    service_uuids=["00008151-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
 
 GVH5182_SERVICE_INFO = BluetoothServiceInfo(
     name="F34DC3CB-9CCF-336F-3CB1-3C6F525509E6",
@@ -1332,6 +1344,62 @@ def test_gvh5181_variant_4():
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
                 name="Temperature " "Alarm " "Probe " "1",
                 native_value=68.3,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+    )
+
+
+def test_gvh5181_variant_5():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5181_VARIANT_SERVICE_INFO_5
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5181 EEFF",
+                model="H5181",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(
+                key="temperature_alarm_probe_1", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                device_class=SensorDeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                device_class=SensorDeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                name="Temperature " "Alarm " "Probe " "1",
+                native_value=82.2,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-56,
+            ),
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                name="Temperature " "Probe " "1",
+                native_value=19.0,
             ),
         },
         binary_entity_descriptions={},
