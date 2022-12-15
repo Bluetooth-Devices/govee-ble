@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.3 (2022-12-15)
+### Fix
+* Reject impossible temp values take 2 ([#50](https://github.com/Bluetooth-Devices/govee-ble/issues/50)) ([`c0a54eb`](https://github.com/Bluetooth-Devices/govee-ble/commit/c0a54eb3e00afe20bacbb930ea8ce251d760d8bc))
+
 ## v0.19.2 (2022-12-15)
 ### Fix
 * Reject impossible temp values ([#47](https://github.com/Bluetooth-Devices/govee-ble/issues/47)) ([`bb8b6e0`](https://github.com/Bluetooth-Devices/govee-ble/commit/bb8b6e00b8c0a2a8779806e6b25330ef50cb41f8))
