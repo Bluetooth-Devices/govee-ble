@@ -17,7 +17,6 @@ from sensor_state_data import SensorLibrary
 
 _LOGGER = logging.getLogger(__name__)
 
-
 PACKED_hHB_LITTLE = struct.Struct("<hHB")
 PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
@@ -26,24 +25,15 @@ PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
-MIN_TEMP = -17.7778
-MAX_TEMP = 100
-
 NOT_GOVEE_MANUFACTURER = {76}
 
 
-def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
+def decode_temps(packet_value: int) -> float:
     """Decode potential negative temperatures."""
-    base_num = (
-        (temp_humid_bytes[0] << 16) + (temp_humid_bytes[1] << 8) + temp_humid_bytes[2]
-    )
-    is_negative = base_num & 0x800000
-    temp_as_int = base_num & 0x7FFFFF
-    temp_as_float = temp_as_int / 10000.0
-    if is_negative:
-        temp_as_float = -temp_as_float
-    humid = (temp_as_int % 1000) / 10.0
-    return temp_as_float, humid
+    # https://github.com/Thrilleratplay/GoveeWatcher/issues/2
+    if packet_value & 0x800000:
+        return float((packet_value ^ 0x800000) / -10000)
+    return float(packet_value / 10000)
 
 
 def decode_temps_probes(packet_value: int) -> float:
@@ -99,12 +89,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
             "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
         ):
             self.set_device_type("H5072/H5075")
-            temp, humi = decode_temp_humid(data[1:4])
+            packet_5072_5075 = data[1:4].hex()
+            packet = int(packet_5072_5075, 16)
+            temp = decode_temps(packet)
+            humi = float((packet % 1000) / 10)
             batt = int(data[4])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
-                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
-                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
-                self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 6 and (
@@ -114,12 +106,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or mgr_id == 0x0001
         ):
             self.set_device_type("H5101/H5102/H5177")
-            temp, humi = decode_temp_humid(data[2:5])
+            packet_5101_5102 = data[2:5].hex()
+            packet = int(packet_5101_5102, 16)
+            temp = decode_temps(packet)
+            humi = float((packet % 1000) / 10)
             batt = int(data[5])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
-                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
-                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
-                self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 7 and ("H5074" in local_name or mgr_id == 0xEC88):
@@ -170,7 +164,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 9 and (
             "H5178" in local_name or "B5178" in local_name or mgr_id == 0x0001
         ):
-            temp, humi = decode_temp_humid(data[3:5])
+            packet_5178 = data[3:6].hex()
+            packet = int(packet_5178, 16)
+            temp = decode_temps(packet)
+            humi = float((packet % 1000) / 10)
             batt = int(data[6])
             sensor_id = data[2]
             device_id = "primary"
@@ -197,16 +194,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     " please report to the developers, data: %s",
                     data.hex(),
                 )
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
-                self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
-                )
-                self.update_predefined_sensor(
-                    SensorLibrary.HUMIDITY__PERCENTAGE, humi, device_id=device_id
-                )
-                self.update_predefined_sensor(
-                    SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
-                )
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.HUMIDITY__PERCENTAGE, humi, device_id=device_id
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
+            )
             return
 
         if msg_length == 9 and ("H5179" in local_name or mgr_id == 0x8801):
