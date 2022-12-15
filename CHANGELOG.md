@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.2 (2022-12-15)
+### Fix
+* Reject impossible temp values ([#47](https://github.com/Bluetooth-Devices/govee-ble/issues/47)) ([`bb8b6e0`](https://github.com/Bluetooth-Devices/govee-ble/commit/bb8b6e00b8c0a2a8779806e6b25330ef50cb41f8))
+
 ## v0.19.1 (2022-09-30)
 ### Fix
 * Handle another H5181 ([#45](https://github.com/Bluetooth-Devices/govee-ble/issues/45)) ([`af2da30`](https://github.com/Bluetooth-Devices/govee-ble/commit/af2da30574db19674ec5e76bfaa5c84adcbbe9f0))
