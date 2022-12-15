@@ -27,6 +27,7 @@ PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
 MIN_TEMP = -17.7778
+MAX_TEMP = 100
 
 NOT_GOVEE_MANUFACTURER = {76}
 
@@ -100,7 +101,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5072/H5075")
             temp, humi = decode_temp_humid(data[1:4])
             batt = int(data[4])
-            if temp >= MIN_TEMP:
+            if temp >= MIN_TEMP and temp <= MAX_TEMP:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
                 self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
@@ -115,7 +116,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5101/H5102/H5177")
             temp, humi = decode_temp_humid(data[2:5])
             batt = int(data[5])
-            if temp >= MIN_TEMP:
+            if temp >= MIN_TEMP and temp <= MAX_TEMP:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
                 self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
@@ -196,7 +197,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     " please report to the developers, data: %s",
                     data.hex(),
                 )
-            if temp >= MIN_TEMP:
+            if temp >= MIN_TEMP and temp <= MAX_TEMP:
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
                 )

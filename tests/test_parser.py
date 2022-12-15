@@ -30,6 +30,18 @@ GVH5075_SERVICE_INFO_NEGATIVE_VALUES = BluetoothServiceInfo(
     service_data={},
     source="local",
 )
+GVH5075_SERVICE_INFO_OVERSIZED_VALUES = BluetoothServiceInfo(
+    name="GVH5075_2762",
+    address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
+    rssi=-63,
+    manufacturer_data={
+        60552: b"\x00J\x00(;\x00",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\xc2",
+    },
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
 GVH5075_SERVICE_INFO_OTHER_VALUES = BluetoothServiceInfo(
     name="GVH5075_2762",
     address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
@@ -492,6 +504,38 @@ def test_gvh5075():
 def test_gvh5075_negative_values():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5075_SERVICE_INFO_NEGATIVE_VALUES
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5075 2762",
+                model="H5072/H5075",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-63,
+            ),
+        },
+    )
+
+
+def test_gvh5075_oversized_values():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5075_SERVICE_INFO_OVERSIZED_VALUES
     result = parser.update(service_info)
     assert result == SensorUpdate(
         title=None,
