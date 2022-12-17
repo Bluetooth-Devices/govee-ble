@@ -87,13 +87,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
         service_uuids: list[str],
     ) -> None:
         """Parser for Govee sensors."""
-        _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data)
+        _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, data.hex())
         msg_length = len(data)
         if msg_length > 25 and b"INTELLI_ROCKS" in data:
             # INTELLI_ROCKS sometimes ends up glued on to the end of the message
             data = data[:-25]
             msg_length = len(data)
-            _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data)
+            _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data.hex())
 
         if msg_length == 6 and (
             "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
@@ -290,7 +290,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 ids = [3, 4]
             else:
                 _LOGGER.debug(
-                    "Unknown sensor id: %s for a H5184, data: %s", sensor_id, data
+                    "Unknown sensor id: %s for a H5184, data: %s", sensor_id, data.hex()
                 )
                 return
             self.update_temp_probe_with_alarm(
