@@ -39,7 +39,7 @@ def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
     )
     is_negative = base_num & 0x800000
     temp_as_int = base_num & 0x7FFFFF
-    temp_as_float = temp_as_int / 10000.0
+    temp_as_float = int(temp_as_int / 1000) / 10.0
     if is_negative:
         temp_as_float = -temp_as_float
     humid = (temp_as_int % 1000) / 10.0
