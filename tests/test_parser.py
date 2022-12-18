@@ -480,7 +480,7 @@ def test_gvh5075():
             DeviceKey(key="temperature", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
-                native_value=21.34,
+                native_value=21.3,
             ),
             DeviceKey(key="humidity", device_id=None): SensorValue(
                 device_key=DeviceKey(key="humidity", device_id=None),
@@ -606,7 +606,7 @@ def test_gvh5075_other_values():
             DeviceKey(key="temperature", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
-                native_value=20.06,
+                native_value=20.0,
             ),
             DeviceKey(key="humidity", device_id=None): SensorValue(
                 device_key=DeviceKey(key="humidity", device_id=None),
@@ -668,7 +668,7 @@ def test_gvh5177():
             DeviceKey(key="temperature", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
-                native_value=21.05,
+                native_value=21.0,
             ),
             DeviceKey(key="humidity", device_id=None): SensorValue(
                 device_key=DeviceKey(key="humidity", device_id=None),
