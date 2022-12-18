@@ -26,6 +26,9 @@ PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
+UNAVAILABLE = "unavailable"
+
+
 MIN_TEMP = -17.7778
 MAX_TEMP = 100
 
@@ -113,6 +116,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
                 self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            else:
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.BATTERY__PERCENTAGE, UNAVAILABLE
+                )
             return
 
         if msg_length == 6 and (
@@ -129,6 +142,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
                 self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            else:
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.BATTERY__PERCENTAGE, UNAVAILABLE
+                )
             return
 
         if msg_length == 7 and ("H5074" in local_name or mgr_id == 0xEC88):
@@ -216,6 +239,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
                 self.update_predefined_sensor(
                     SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
+                )
+            else:
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE, device_id=device_id
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE, device_id=device_id
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.BATTERY__PERCENTAGE, UNAVAILABLE, device_id=device_id
                 )
             return
 
