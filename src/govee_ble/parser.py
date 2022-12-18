@@ -92,13 +92,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
         service_uuids: list[str],
     ) -> None:
         """Parser for Govee sensors."""
-        _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, hex(data))
+        if _LOGGER.isEnabledFor(logging.DEBUG):
+            _LOGGER.debug("Parsing Govee sensor: %s %s", mgr_id, hex(data))
         msg_length = len(data)
         if msg_length > 25 and b"INTELLI_ROCKS" in data:
             # INTELLI_ROCKS sometimes ends up glued on to the end of the message
             data = data[:-25]
             msg_length = len(data)
-            _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
+            if _LOGGER.isEnabledFor(logging.DEBUG):
+                _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
 
         if msg_length == 6 and (
             "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
@@ -196,7 +198,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
                 self.set_device_type("H5178-REMOTE", device_id)
                 self.set_device_manufacturer("Govee", device_id)
-            else:
+            elif _LOGGER.isEnabledFor(logging.DEBUG):
                 _LOGGER.debug(
                     "Unknown sensor id for Govee H5178,"
                     " please report to the developers, data: %s",
@@ -294,11 +296,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
             elif sensor_id == 2:
                 ids = [3, 4]
             else:
-                _LOGGER.debug(
-                    "Unknown sensor id: %s for a H5184, data: %s",
-                    sensor_id,
-                    hex(data),
-                )
+                if _LOGGER.isEnabledFor(logging.DEBUG):
+                    _LOGGER.debug(
+                        "Unknown sensor id: %s for a H5184, data: %s",
+                        sensor_id,
+                        hex(data),
+                    )
                 return
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_first),
