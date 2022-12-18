@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.4 (2022-12-18)
+### Fix
+* Round temp values ([#52](https://github.com/Bluetooth-Devices/govee-ble/issues/52)) ([`e7ec133`](https://github.com/Bluetooth-Devices/govee-ble/commit/e7ec133fa7a884f67b841a5f1f42c7d98946657e))
+
 ## v0.19.3 (2022-12-15)
 ### Fix
 * Reject impossible temp values take 2 ([#50](https://github.com/Bluetooth-Devices/govee-ble/issues/50)) ([`c0a54eb`](https://github.com/Bluetooth-Devices/govee-ble/commit/c0a54eb3e00afe20bacbb930ea8ce251d760d8bc))
