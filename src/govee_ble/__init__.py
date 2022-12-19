@@ -19,7 +19,7 @@ from sensor_state_data import (
 
 from .parser import GoveeBluetoothDeviceData
 
-__version__ = "0.19.4"
+__version__ = "0.20.0"
 
 __all__ = [
     "GoveeBluetoothDeviceData",

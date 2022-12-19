@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.20.0 (2022-12-19)
+### Feature
+* Log data as hex ([#53](https://github.com/Bluetooth-Devices/govee-ble/issues/53)) ([`d014bfc`](https://github.com/Bluetooth-Devices/govee-ble/commit/d014bfc9e1ed278c8fe2f25b469941748bac19cb))
+
 ## v0.19.4 (2022-12-18)
 ### Fix
 * Round temp values ([#52](https://github.com/Bluetooth-Devices/govee-ble/issues/52)) ([`e7ec133`](https://github.com/Bluetooth-Devices/govee-ble/commit/e7ec133fa7a884f67b841a5f1f42c7d98946657e))
