@@ -1,3 +1,5 @@
+import logging
+
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
 from sensor_state_data import (
     DeviceKey,
@@ -1760,4 +1762,16 @@ def test_gvh5074():
                 native_value=-67,
             ),
         },
+    )
+
+
+def test_gvh5075_debug_hex(caplog):
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5075_SERVICE_INFO
+    with caplog.at_level(logging.DEBUG):
+        parser.update(service_info)
+    assert (
+        "Parsing Govee sensor: 60552 b'\\x00\\x03\\x41\\xc2\\x64\\x00\\x4c\\x00\\x02\\x15\\x49\\x4e\\x54"
+        "\\x45\\x4c\\x4c\\x49\\x5f\\x52\\x4f\\x43\\x4b\\x53\\x5f\\x48\\x57\\x50\\x75\\xf2\\xff\\x0c'"
+        in caplog.text
     )
