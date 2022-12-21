@@ -116,6 +116,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
             else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    temp,
+                    humi,
+                    err,
+                )
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
                 )
@@ -139,6 +145,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
             else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    temp,
+                    humi,
+                    err,
+                )
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
                 )
@@ -232,6 +244,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     SensorLibrary.HUMIDITY__PERCENTAGE, humi, device_id=device_id
                 )
             else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    temp,
+                    humi,
+                    err,
+                )
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE, device_id=device_id
                 )
