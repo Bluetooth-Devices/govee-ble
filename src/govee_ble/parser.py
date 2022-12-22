@@ -111,13 +111,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5072/H5075")
             temp, humi = decode_temp_humid(data[1:4])
             batt = int(data[4] & 0x7F)
-            err = data[4] & 0x80
+            err = bool(data[4] & 0x80)
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
             else:
                 _LOGGER.debug(
-                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
                     temp,
                     humi,
                     err,
@@ -140,13 +140,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5101/H5102/H5177")
             temp, humi = decode_temp_humid(data[2:5])
             batt = int(data[5] & 0x7F)
-            err = data[5] & 0x80
+            err = bool(data[5] & 0x80)
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
             else:
                 _LOGGER.debug(
-                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
                     temp,
                     humi,
                     err,
@@ -210,7 +210,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         ):
             temp, humi = decode_temp_humid(data[3:6])
             batt = int(data[6] & 0x7F)
-            err = data[6] & 0x80
+            err = bool(data[6] & 0x80)
             sensor_id = data[2]
             device_id = "primary"
             if local_name.startswith("H5178") or local_name.startswith("B5178"):
@@ -245,7 +245,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
             else:
                 _LOGGER.debug(
-                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %u",
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
                     temp,
                     humi,
                     err,
