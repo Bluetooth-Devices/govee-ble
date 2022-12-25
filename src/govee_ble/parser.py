@@ -26,7 +26,7 @@ PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
-UNAVAILABLE = "unavailable"
+ERROR = "error"
 
 
 MIN_TEMP = -17.7778
@@ -122,12 +122,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     humi,
                     err,
                 )
-                self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
-                )
-                self.update_predefined_sensor(
-                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE
-                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
@@ -151,12 +147,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     humi,
                     err,
                 )
-                self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE
-                )
-                self.update_predefined_sensor(
-                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE
-                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
@@ -251,10 +243,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     err,
                 )
                 self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS, UNAVAILABLE, device_id=device_id
+                    SensorLibrary.TEMPERATURE__CELSIUS, ERROR, device_id=device_id
                 )
                 self.update_predefined_sensor(
-                    SensorLibrary.HUMIDITY__PERCENTAGE, UNAVAILABLE, device_id=device_id
+                    SensorLibrary.HUMIDITY__PERCENTAGE, ERROR, device_id=device_id
                 )
             self.update_predefined_sensor(
                 SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
