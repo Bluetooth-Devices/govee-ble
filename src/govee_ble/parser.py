@@ -26,6 +26,9 @@ PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 
 
+ERROR = "error"
+
+
 MIN_TEMP = -17.7778
 MAX_TEMP = 100
 
@@ -107,11 +110,21 @@ class GoveeBluetoothDeviceData(BluetoothData):
         ):
             self.set_device_type("H5072/H5075")
             temp, humi = decode_temp_humid(data[1:4])
-            batt = int(data[4])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
+            batt = int(data[4] & 0x7F)
+            err = bool(data[4] & 0x80)
+            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
-                self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
+                    temp,
+                    humi,
+                    err,
+                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 6 and (
@@ -122,11 +135,21 @@ class GoveeBluetoothDeviceData(BluetoothData):
         ):
             self.set_device_type("H5101/H5102/H5177")
             temp, humi = decode_temp_humid(data[2:5])
-            batt = int(data[5])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
+            batt = int(data[5] & 0x7F)
+            err = bool(data[5] & 0x80)
+            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
-                self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
+                    temp,
+                    humi,
+                    err,
+                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
         if msg_length == 7 and ("H5074" in local_name or mgr_id == 0xEC88):
@@ -178,7 +201,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
             "H5178" in local_name or "B5178" in local_name or mgr_id == 0x0001
         ):
             temp, humi = decode_temp_humid(data[3:6])
-            batt = int(data[6])
+            batt = int(data[6] & 0x7F)
+            err = bool(data[6] & 0x80)
             sensor_id = data[2]
             device_id = "primary"
             if local_name.startswith("H5178") or local_name.startswith("B5178"):
@@ -204,16 +228,29 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     " please report to the developers, data: %s",
                     hex(data),
                 )
-            if temp >= MIN_TEMP and temp <= MAX_TEMP:
+            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
                 )
                 self.update_predefined_sensor(
                     SensorLibrary.HUMIDITY__PERCENTAGE, humi, device_id=device_id
                 )
-                self.update_predefined_sensor(
-                    SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
+                    temp,
+                    humi,
+                    err,
                 )
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS, ERROR, device_id=device_id
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.HUMIDITY__PERCENTAGE, ERROR, device_id=device_id
+                )
+            self.update_predefined_sensor(
+                SensorLibrary.BATTERY__PERCENTAGE, batt, device_id=device_id
+            )
             return
 
         if msg_length == 9 and ("H5179" in local_name or mgr_id == 0x8801):
