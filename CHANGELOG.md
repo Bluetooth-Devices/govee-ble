@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.21.0 (2022-12-27)
+### Feature
+* Implement error bit ([#55](https://github.com/Bluetooth-Devices/govee-ble/issues/55)) ([`b4b2f82`](https://github.com/Bluetooth-Devices/govee-ble/commit/b4b2f821e8d1dc6e1517ca76d29d124add369eb7))
+
 ## v0.20.0 (2022-12-19)
 ### Feature
 * Log data as hex ([#53](https://github.com/Bluetooth-Devices/govee-ble/issues/53)) ([`d014bfc`](https://github.com/Bluetooth-Devices/govee-ble/commit/d014bfc9e1ed278c8fe2f25b469941748bac19cb))
