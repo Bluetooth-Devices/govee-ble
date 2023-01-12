@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.21.1 (2023-01-12)
+### Fix
+* Decrease minimum temperature to -30C ([#57](https://github.com/Bluetooth-Devices/govee-ble/issues/57)) ([`c41c9b5`](https://github.com/Bluetooth-Devices/govee-ble/commit/c41c9b5858a469e07cbb6b6666f2bdd4f5eee2c8))
+
 ## v0.21.0 (2022-12-27)
 ### Feature
 * Implement error bit ([#55](https://github.com/Bluetooth-Devices/govee-ble/issues/55)) ([`b4b2f82`](https://github.com/Bluetooth-Devices/govee-ble/commit/b4b2f821e8d1dc6e1517ca76d29d124add369eb7))
