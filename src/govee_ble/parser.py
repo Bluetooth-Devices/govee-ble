@@ -29,7 +29,7 @@ PACKED_hhhhh = struct.Struct(">hhhhh")
 ERROR = "error"
 
 
-MIN_TEMP = -17.7778
+MIN_TEMP = -30
 MAX_TEMP = 100
 
 NOT_GOVEE_MANUFACTURER = {76}
