@@ -337,6 +337,31 @@ GVH5178_SERVICE_INFO_ERROR = BluetoothServiceInfo(
     source="local",
 )
 
+GVHH5122_BUTTON_SERVICE_INFO = (
+    BluetoothServiceInfo(
+        local_name="GV51225880",
+        address="C4:32:37:37:58:80",
+        manufacturer_data={
+            61320: b"\x93E\x00\x01b\xe2#VVc\xca\t\xb1\x1df\xf7\xf0b{u\x03\xeb\xbd\xa3"
+        },
+        rssi=-68,
+        service_uuids=[],
+        service_data={},
+        source="local",
+    ),
+)
+GVHH5122_BUTTON_SERVICE_INFO_2 = BluetoothServiceInfo(
+    local_name="GV51225880",
+    address="C4:32:37:37:58:80",
+    manufacturer_data={
+        61320: b"\x93E\x00\x01l\xc4}\x91\x0f\xbb\x96\xd5m&[4\xd1{\xf1J\xad\x81\x05L"
+    },
+    rssi=-68,
+    service_uuids=[],
+    service_data={},
+    source="local",
+)
+
 
 def test_can_create():
     GoveeBluetoothDeviceData()
