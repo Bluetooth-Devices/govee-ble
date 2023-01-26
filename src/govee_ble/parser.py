@@ -78,7 +78,6 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:].replace("_", " "))
-
         self.set_precision(2)
 
         for mfr_id, mfr_data in manufacturer_data.items():
@@ -164,13 +163,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if (
-            msg_length == 9 and (
-                mgr_id == 0xEC88
-                or "H5051" in local_name
-                or "H5052" in local_name
-                or "H5071" in local_name
-            )
+        if msg_length == 9 and (
+            mgr_id == 0xEC88
+            or "H5051" in local_name
+            or "H5052" in local_name
+            or "H5071" in local_name
         ):
             if "H5071" in local_name:
                 self.set_device_type("H5071")
@@ -370,6 +367,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or mgr_id == 0x3022
             or "00009851-0000-1000-8000-00805f9b34fb" in service_uuids
         ):
+            self.set_device_type("H5198")
             self.set_device_name(f"H5198 {short_address(address)}")
             sensor_id = data[6]
             (
