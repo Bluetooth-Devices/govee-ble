@@ -34,6 +34,13 @@ MAX_TEMP = 100
 
 NOT_GOVEE_MANUFACTURER = {76}
 
+PROBE_MAPPING_1_2 = [1, 2]
+PROBE_MAPPING_3_4 = [3, 4]
+
+FOUR_PROBES_MAPPING = {
+    sensor_id: PROBE_MAPPING_1_2 for sensor_id in (0x01, 0x41, 0x81, 0xC1)
+} | {sensor_id: PROBE_MAPPING_3_4 for sensor_id in (0x02, 0x42, 0x82, 0xC2)}
+
 
 def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
     """Decode potential negative temperatures."""
@@ -317,11 +324,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_probe_second,
                 temp_alarm_second,
             ) = PACKED_hhbhh.unpack(data[8:17])
-            if sensor_id == 1:
-                ids = [1, 2]
-            elif sensor_id == 2:
-                ids = [3, 4]
-            else:
+            if not (ids := FOUR_PROBES_MAPPING.get(sensor_id)):
                 if debug_logging:
                     _LOGGER.debug(
                         "Unknown sensor id: %s for a H5184, data: %s",
@@ -368,9 +371,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or mgr_id == 0x3022
             or "00009851-0000-1000-8000-00805f9b34fb" in service_uuids
         ):
+            sensor_id = data[6]
             self.set_device_type("H5198")
             self.set_device_name(f"H5198 {short_address(address)}")
-            sensor_id = data[6]
             (
                 temp_probe_first,
                 temp_alarm_first,
@@ -378,11 +381,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_probe_second,
                 temp_alarm_second,
             ) = PACKED_hhhhh.unpack(data[8:18])
-            if sensor_id in [0x01, 0x41, 0x81, 0xC1]:
-                ids = [1, 2]
-            elif sensor_id in [0x02, 0x42, 0x82, 0xC2]:
-                ids = [3, 4]
-            else:
+            if not (ids := FOUR_PROBES_MAPPING.get(sensor_id)):
                 if debug_logging:
                     _LOGGER.debug(
                         "Unknown sensor id: %s for a H5198, data: %s",
