@@ -175,6 +175,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5052")
             else:
                 self.set_device_type("H5051")
+                self.set_device_name(f"H5051 {short_address(address)}")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
