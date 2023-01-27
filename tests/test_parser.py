@@ -12,6 +12,15 @@ from sensor_state_data import (
 
 from govee_ble.parser import GoveeBluetoothDeviceData
 
+GVH5051_SERVICE_INFO = BluetoothServiceInfo(
+    name="",
+    address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
+    rssi=-63,
+    manufacturer_data={60552: b"\x00\xba\x0a\xf9\x0f\x63\x02\x01\x01"},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
 GVH5075_SERVICE_INFO = BluetoothServiceInfo(
     name="GVH5075_2762",
     address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
@@ -114,6 +123,39 @@ GVH5184_SERVICE_INFO_2 = BluetoothServiceInfo(
         76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c",
     },
     service_uuids=["00008451-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+GVH5198_SERVICE_INFO = BluetoothServiceInfo(
+    name="",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={
+        12322: b"\x6c\x01\x00\x01\x01\xa4\xc2\x0f\x0e\x10\xff\xff\xff\xff\x08\xfc\xff\xff\xff\xff"
+    },
+    service_uuids=["00009851-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+GVH5198_VARIANT_SERVICE_INFO = BluetoothServiceInfo(
+    name="",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={
+        12322: b"\x6c\x01\x00\x01\x01\xa3\xc1\x0f\x0b\xb8\xff\xff\xff\xff\t`\xff\xff\xff\xff"
+    },
+    service_uuids=["00009851-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+GVH5198_INVALID_SERVICE_INFO = BluetoothServiceInfo(
+    name="",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={
+        12322: b"\x6c\x01\x00\x01\x01\xa3\xd4\x0f\x0b\xb8\xff\xff\xff\xff\t`\xff\xff\xff\xff"
+    },
+    service_uuids=["00009851-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
 )
@@ -340,6 +382,68 @@ GVH5178_SERVICE_INFO_ERROR = BluetoothServiceInfo(
 
 def test_can_create():
     GoveeBluetoothDeviceData()
+
+
+def test_gvh5051():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5051_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5051 8105",
+                model="H5051",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="humidity", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="humidity", device_id=None),
+                device_class=DeviceClass.HUMIDITY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=DeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature", device_id=None),
+                name="Temperature",
+                native_value=27.46,
+            ),
+            DeviceKey(key="humidity", device_id=None): SensorValue(
+                device_key=DeviceKey(key="humidity", device_id=None),
+                name="Humidity",
+                native_value=40.89,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=99,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-63,
+            ),
+        },
+    )
 
 
 def test_gvh5052():
@@ -1983,6 +2087,190 @@ def test_gvh5178_error():
                 device_key=DeviceKey(key="signal_strength", device_id="remote"),
                 name="Signal Strength",
                 native_value=-66,
+            ),
+        },
+    )
+
+
+def test_gvh5198_probe_1_2():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5198_VARIANT_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5198 AC3D",
+                model="H5198",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_1", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_2", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                name="Temperature Probe 1",
+                native_value=30.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+                name="Temperature Alarm Probe 1",
+                native_value=0.0,
+            ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                name="Temperature Probe 2",
+                native_value=24.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
+                name="Temperature Alarm Probe 2",
+                native_value=0.0,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-56,
+            ),
+        },
+    )
+
+
+def test_gvh5198_probe_3_4():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5198_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5198 AC3D",
+                model="H5198",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature_probe_3", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_3", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_3", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_3", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="temperature_probe_4", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_4", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="temperature_alarm_probe_4", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(key="temperature_alarm_probe_4", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature_probe_3", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_3", device_id=None),
+                name="Temperature Probe 3",
+                native_value=36.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_3", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_3", device_id=None),
+                name="Temperature Alarm Probe 3",
+                native_value=0.0,
+            ),
+            DeviceKey(key="temperature_probe_4", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_4", device_id=None),
+                name="Temperature Probe 4",
+                native_value=23.0,
+            ),
+            DeviceKey(key="temperature_alarm_probe_4", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_alarm_probe_4", device_id=None),
+                name="Temperature Alarm Probe 4",
+                native_value=0.0,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-56,
+            ),
+        },
+    )
+
+
+def test_gvh5198_invalid():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5198_INVALID_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5198 AC3D",
+                model="H5198",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-56,
             ),
         },
     )

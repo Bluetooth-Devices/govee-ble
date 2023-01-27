@@ -34,6 +34,13 @@ MAX_TEMP = 100
 
 NOT_GOVEE_MANUFACTURER = {76}
 
+PROBE_MAPPING_1_2 = [1, 2]
+PROBE_MAPPING_3_4 = [3, 4]
+
+FOUR_PROBES_MAPPING = {
+    sensor_id: PROBE_MAPPING_1_2 for sensor_id in (0x01, 0x41, 0x81, 0xC1)
+} | {sensor_id: PROBE_MAPPING_3_4 for sensor_id in (0x02, 0x42, 0x82, 0xC2)}
+
 
 def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
     """Decode potential negative temperatures."""
@@ -78,7 +85,6 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:].replace("_", " "))
-
         self.set_precision(2)
 
         for mfr_id, mfr_data in manufacturer_data.items():
@@ -164,30 +170,20 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if (
-            msg_length == 9
-            and mgr_id == 0xEC88
-            and ("H5071" in local_name or "H5052" in local_name)
+        if msg_length == 9 and (
+            mgr_id == 0xEC88
+            or "H5051" in local_name
+            or "H5052" in local_name
+            or "H5071" in local_name
         ):
             if "H5071" in local_name:
                 self.set_device_type("H5071")
-            else:
+            elif "H5052" in local_name:
                 self.set_device_type("H5052")
+            else:
+                self.set_device_type("H5051")
+                self.set_device_name(f"H5051 {short_address(address)}")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
-            self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
-            )
-            self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
-            )
-            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
-            return
-
-        if msg_length == 9 and (
-            "H5051" in local_name or "H5071" in local_name or mgr_id == 0xEC88
-        ):
-            self.set_device_type("H5051/H5071")
-            (temp, humi, batt) = PACKED_hHB.unpack(data[1:6])
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
             )
@@ -328,11 +324,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_probe_second,
                 temp_alarm_second,
             ) = PACKED_hhbhh.unpack(data[8:17])
-            if sensor_id == 1:
-                ids = [1, 2]
-            elif sensor_id == 2:
-                ids = [3, 4]
-            else:
+            if not (ids := FOUR_PROBES_MAPPING.get(sensor_id)):
                 if debug_logging:
                     _LOGGER.debug(
                         "Unknown sensor id: %s for a H5184, data: %s",
@@ -371,6 +363,41 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_2), decode_temps_probes(temp_alarm_2), 2
+            )
+            return
+
+        if msg_length == 20 and (
+            "H5198" in local_name
+            or mgr_id == 0x3022
+            or "00009851-0000-1000-8000-00805f9b34fb" in service_uuids
+        ):
+            sensor_id = data[6]
+            self.set_device_type("H5198")
+            self.set_device_name(f"H5198 {short_address(address)}")
+            (
+                temp_probe_first,
+                temp_alarm_first,
+                _,
+                temp_probe_second,
+                temp_alarm_second,
+            ) = PACKED_hhhhh.unpack(data[8:18])
+            if not (ids := FOUR_PROBES_MAPPING.get(sensor_id)):
+                if debug_logging:
+                    _LOGGER.debug(
+                        "Unknown sensor id: %s for a H5198, data: %s",
+                        sensor_id,
+                        hex(data),
+                    )
+                return
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_first),
+                decode_temps_probes(temp_alarm_first),
+                ids[0],
+            )
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_second),
+                decode_temps_probes(temp_alarm_second),
+                ids[1],
             )
             return
 
