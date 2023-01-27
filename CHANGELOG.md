@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.0 (2023-01-27)
+### Feature
+* Add govee h5198 ([#60](https://github.com/Bluetooth-Devices/govee-ble/issues/60)) ([`821a55d`](https://github.com/Bluetooth-Devices/govee-ble/commit/821a55d1162b9d87e2a7745e9e015b925f7bf816))
+
 ## v0.21.1 (2023-01-12)
 ### Fix
 * Decrease minimum temperature to -30C ([#57](https://github.com/Bluetooth-Devices/govee-ble/issues/57)) ([`c41c9b5`](https://github.com/Bluetooth-Devices/govee-ble/commit/c41c9b5858a469e07cbb6b6666f2bdd4f5eee2c8))
