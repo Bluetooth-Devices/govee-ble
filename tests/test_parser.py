@@ -2120,6 +2120,15 @@ def test_gvh5198_probe_1_2():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
+            DeviceKey(
+                key="low_temperature_alarm_probe_1", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_1", device_id=None
+                ),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
                 device_class=DeviceClass.TEMPERATURE,
@@ -2129,6 +2138,15 @@ def test_gvh5198_probe_1_2():
                 key="temperature_alarm_probe_2", device_id=None
             ): SensorDescription(
                 device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="low_temperature_alarm_probe_2", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_2", device_id=None
+                ),
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
@@ -2149,6 +2167,13 @@ def test_gvh5198_probe_1_2():
                 name="Temperature Alarm Probe 1",
                 native_value=0.0,
             ),
+            DeviceKey(key="low_temperature_alarm_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_1", device_id=None
+                ),
+                name="Low Temperature Alarm Probe 1",
+                native_value=0.0,
+            ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
                 name="Temperature Probe 2",
@@ -2157,6 +2182,13 @@ def test_gvh5198_probe_1_2():
             DeviceKey(key="temperature_alarm_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
                 name="Temperature Alarm Probe 2",
+                native_value=0.0,
+            ),
+            DeviceKey(key="low_temperature_alarm_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_2", device_id=None
+                ),
+                name="Low Temperature Alarm Probe 2",
                 native_value=0.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
@@ -2196,6 +2228,15 @@ def test_gvh5198_probe_3_4():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
+            DeviceKey(
+                key="low_temperature_alarm_probe_3", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_3", device_id=None
+                ),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
             DeviceKey(key="temperature_probe_4", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="temperature_probe_4", device_id=None),
                 device_class=DeviceClass.TEMPERATURE,
@@ -2205,6 +2246,15 @@ def test_gvh5198_probe_3_4():
                 key="temperature_alarm_probe_4", device_id=None
             ): SensorDescription(
                 device_key=DeviceKey(key="temperature_alarm_probe_4", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(
+                key="low_temperature_alarm_probe_4", device_id=None
+            ): SensorDescription(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_4", device_id=None
+                ),
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
@@ -2225,6 +2275,13 @@ def test_gvh5198_probe_3_4():
                 name="Temperature Alarm Probe 3",
                 native_value=0.0,
             ),
+            DeviceKey(key="low_temperature_alarm_probe_3", device_id=None): SensorValue(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_3", device_id=None
+                ),
+                name="Low Temperature Alarm Probe 3",
+                native_value=0.0,
+            ),
             DeviceKey(key="temperature_probe_4", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_4", device_id=None),
                 name="Temperature Probe 4",
@@ -2233,6 +2290,13 @@ def test_gvh5198_probe_3_4():
             DeviceKey(key="temperature_alarm_probe_4", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_4", device_id=None),
                 name="Temperature Alarm Probe 4",
+                native_value=0.0,
+            ),
+            DeviceKey(key="low_temperature_alarm_probe_4", device_id=None): SensorValue(
+                device_key=DeviceKey(
+                    key="low_temperature_alarm_probe_4", device_id=None
+                ),
+                name="Low Temperature Alarm Probe 4",
                 native_value=0.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(

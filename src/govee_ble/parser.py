@@ -24,6 +24,7 @@ PACKED_hh = struct.Struct(">hh")
 
 PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
+PACKED_hhhhhh = struct.Struct(">hhhhhh")
 
 
 ERROR = "error"
@@ -377,10 +378,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
             (
                 temp_probe_first,
                 temp_alarm_first,
-                _,
+                low_temp_alarm_first,
                 temp_probe_second,
                 temp_alarm_second,
-            ) = PACKED_hhhhh.unpack(data[8:18])
+                low_temp_alarm_second,
+            ) = PACKED_hhhhhh.unpack(data[8:20])
             if not (ids := FOUR_PROBES_MAPPING.get(sensor_id)):
                 if debug_logging:
                     _LOGGER.debug(
@@ -393,11 +395,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 decode_temps_probes(temp_probe_first),
                 decode_temps_probes(temp_alarm_first),
                 ids[0],
+                decode_temps_probes(low_temp_alarm_first),
             )
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_second),
                 decode_temps_probes(temp_alarm_second),
                 ids[1],
+                decode_temps_probes(low_temp_alarm_second),
             )
             return
 
@@ -411,7 +415,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
         )
 
     def update_temp_probe_with_alarm(
-        self, temp: float, alarm_temp: float, probe_id: int
+        self,
+        temp: float,
+        alarm_temp: float,
+        probe_id: int,
+        low_alarm_temp: float | None = None,
     ) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_temp_probe(temp, probe_id)
@@ -421,3 +429,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
             key=f"temperature_alarm_probe_{probe_id}",
             name=f"Temperature Alarm Probe {probe_id}",
         )
+        if low_alarm_temp is not None:
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS,
+                low_alarm_temp,
+                key=f"low_temperature_alarm_probe_{probe_id}",
+                name=f"Low Temperature Alarm Probe {probe_id}",
+            )
