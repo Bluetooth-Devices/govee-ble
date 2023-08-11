@@ -29,8 +29,6 @@ PACKED_hhhhhh = struct.Struct(">hhhhhh")
 
 
 ERROR = "error"
-NO_PROBE = "no_probe"
-
 
 MIN_TEMP = -30
 MAX_TEMP = 100
@@ -441,25 +439,25 @@ class GoveeBluetoothDeviceData(BluetoothData):
                         hex(data),
                     )
                 return
-            first_probe = temp_probe_first if sensor_ids & pids[0][1] else NO_PROBE
-            second_probe = temp_probe_second if sensor_ids & pids[1][1] else NO_PROBE
-            self.update_temp_probe_with_alarm(
-                first_probe,
-                decode_temps_probes_none(temp_max_first),
-                pids[0][0],
-                decode_temps_probes_none(temp_min_first),
-            )
-            self.update_temp_probe_with_alarm(
-                second_probe,
-                decode_temps_probes_none(temp_max_second),
-                pids[1][0],
-                decode_temps_probes_none(temp_min_second),
-            )
+            if sensor_ids & pids[0][1]:
+                self.update_temp_probe_with_alarm(
+                    temp_probe_first,
+                    decode_temps_probes_none(temp_max_first),
+                    pids[0][0],
+                    decode_temps_probes_none(temp_min_first),
+                )
+            if sensor_ids & pids[1][1]:
+                self.update_temp_probe_with_alarm(
+                    temp_probe_second,
+                    decode_temps_probes_none(temp_max_second),
+                    pids[1][0],
+                    decode_temps_probes_none(temp_min_second),
+                )
             batt = int(data[2] & 0x7F)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-    def update_temp_probe(self, temp: float | str, probe_id: int) -> None:
+    def update_temp_probe(self, temp: float, probe_id: int) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_predefined_sensor(
             SensorLibrary.TEMPERATURE__CELSIUS,
@@ -470,7 +468,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
     def update_temp_probe_with_alarm(
         self,
-        temp: float | str,
+        temp: float,
         alarm_temp: float | None,
         probe_id: int,
         low_alarm_temp: float | None = None,

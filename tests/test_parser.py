@@ -415,6 +415,18 @@ GVH5055_SERVICE_INFO_PROBE_56 = BluetoothServiceInfo(
     service_data={},
     source="local",
 )
+GVH5055_SERVICE_INFO_ERROR = BluetoothServiceInfo(
+    name="",
+    address="A4:C1:38:2F:AF:55",
+    rssi=-63,
+    manufacturer_data={
+        44847: b"U\x00d\xfb \x1a\x00\xff\xff\xb1\x00 \x19\x00\xff\xff\xff\xff\x00\x00",
+        76: b"\x02\x15INTELLI_ROCKS_HWPr\xf2\xff\xc2",
+    },
+    service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
 
 
 def test_can_create():
@@ -2409,11 +2421,6 @@ def test_gvh5055_probe_1_2():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-            DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
-                device_class=DeviceClass.TEMPERATURE,
-                native_unit_of_measurement=Units.TEMP_CELSIUS,
-            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -2430,11 +2437,6 @@ def test_gvh5055_probe_1_2():
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
                 name="Temperature Probe 1",
                 native_value=26,
-            ),
-            DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
-                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
-                name="Temperature Probe 2",
-                native_value="no_probe",
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -2609,4 +2611,16 @@ def test_gvh5055_probe_5_6():
                 native_value=-63,
             ),
         },
+    )
+
+
+def test_gvh5055_error(caplog):
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5055_SERVICE_INFO_ERROR
+    with caplog.at_level(logging.DEBUG):
+        parser.update(service_info)
+    print(caplog.text)
+    assert (
+        "Parsing Govee sensor: 44847 b'\\x55\\x00\\x64\\xfb\\x20\\x1a\\x00\\xff\\xff\\xb1"
+        "\\x00\\x20\\x19\\x00\\xff\\xff\\xff\\xff\\x00\\x00'" in caplog.text
     )
