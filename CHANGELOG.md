@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.24.0 (2023-08-11)
+
+### Feature
+
+* Add support for govee h5055 ([#66](https://github.com/Bluetooth-Devices/govee-ble/issues/66)) ([`badd966`](https://github.com/Bluetooth-Devices/govee-ble/commit/badd966b529225f7ce55e97362e0b3c15be5191a))
+
 ## v0.23.0 (2023-02-10)
 ### Feature
 * Add low temperature alarm to h5198 ([#61](https://github.com/Bluetooth-Devices/govee-ble/issues/61)) ([`d2b8e0f`](https://github.com/Bluetooth-Devices/govee-ble/commit/d2b8e0f5ddc0faa1bd2699439605601c0ca58f08))
