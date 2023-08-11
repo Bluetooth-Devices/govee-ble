@@ -21,6 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 PACKED_hHB_LITTLE = struct.Struct("<hHB")
 PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
+PACKED_hhhchhh_LITTLE = struct.Struct("<hhhchhh")
 
 PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
@@ -28,7 +29,6 @@ PACKED_hhhhhh = struct.Struct(">hhhhhh")
 
 
 ERROR = "error"
-
 
 MIN_TEMP = -30
 MAX_TEMP = 100
@@ -41,6 +41,12 @@ PROBE_MAPPING_3_4 = [3, 4]
 FOUR_PROBES_MAPPING = {
     sensor_id: PROBE_MAPPING_1_2 for sensor_id in (0x01, 0x41, 0x81, 0xC1)
 } | {sensor_id: PROBE_MAPPING_3_4 for sensor_id in (0x02, 0x42, 0x82, 0xC2)}
+
+SIX_PROBES_MAPPING = {
+    0: [[1, 0x01], [2, 0x02]],
+    64: [[3, 0x04], [4, 0x08]],
+    128: [[5, 0x10], [6, 0x20]],
+}
 
 
 def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
@@ -62,6 +68,13 @@ def decode_temps_probes(packet_value: int) -> float:
     if packet_value < 0:
         return 0.0
     return float(packet_value / 100)
+
+
+def decode_temps_probes_none(packet_value: int) -> float | None:
+    """Filter potential negative temperatures."""
+    if packet_value < 0:
+        return None
+    return float(packet_value)
 
 
 def hex(data: bytes) -> str:
@@ -405,6 +418,45 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
+        if msg_length == 20 and "00005550-0000-1000-8000-00805f9b34fb" in service_uuids:
+            self.set_device_type("H5055")
+            self.set_device_name(f"H5055 {short_address(address)}")
+            (
+                temp_probe_first,
+                temp_min_first,
+                temp_max_first,
+                _,
+                temp_probe_second,
+                temp_min_second,
+                temp_max_second,
+            ) = PACKED_hhhchhh_LITTLE.unpack(data[5:18])
+            sensor_ids = data[3]
+            if not (pids := SIX_PROBES_MAPPING.get(sensor_ids & 0xC0)):
+                if debug_logging:
+                    _LOGGER.debug(
+                        "Unknown sensor id: %s for a H5055, data: %s",
+                        sensor_ids,
+                        hex(data),
+                    )
+                return
+            if sensor_ids & pids[0][1]:
+                self.update_temp_probe_with_alarm(
+                    temp_probe_first,
+                    decode_temps_probes_none(temp_max_first),
+                    pids[0][0],
+                    decode_temps_probes_none(temp_min_first),
+                )
+            if sensor_ids & pids[1][1]:
+                self.update_temp_probe_with_alarm(
+                    temp_probe_second,
+                    decode_temps_probes_none(temp_max_second),
+                    pids[1][0],
+                    decode_temps_probes_none(temp_min_second),
+                )
+            batt = int(data[2] & 0x7F)
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            return
+
     def update_temp_probe(self, temp: float, probe_id: int) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_predefined_sensor(
@@ -417,18 +469,19 @@ class GoveeBluetoothDeviceData(BluetoothData):
     def update_temp_probe_with_alarm(
         self,
         temp: float,
-        alarm_temp: float,
+        alarm_temp: float | None,
         probe_id: int,
         low_alarm_temp: float | None = None,
     ) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_temp_probe(temp, probe_id)
-        self.update_predefined_sensor(
-            SensorLibrary.TEMPERATURE__CELSIUS,
-            alarm_temp,
-            key=f"temperature_alarm_probe_{probe_id}",
-            name=f"Temperature Alarm Probe {probe_id}",
-        )
+        if alarm_temp is not None:
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS,
+                alarm_temp,
+                key=f"temperature_alarm_probe_{probe_id}",
+                name=f"Temperature Alarm Probe {probe_id}",
+            )
         if low_alarm_temp is not None:
             self.update_predefined_sensor(
                 SensorLibrary.TEMPERATURE__CELSIUS,
