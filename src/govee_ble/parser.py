@@ -147,13 +147,23 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 6 and (
-            "H5101" in local_name
-            or "H5102" in local_name
-            or "H5177" in local_name
+        if msg_length in (6, 8) and (
+            (is_5108 := "H5108" in local_name)
+            or (is_5101 := "H5101" in local_name)
+            or (is_5102 := "H5102" in local_name)
+            or (is_5177 := "H5177" in local_name)
             or mgr_id == 0x0001
         ):
-            self.set_device_type("H5101/H5102/H5177")
+            if is_5108 or msg_length == 8:
+                self.set_device_type("H5108")
+            elif is_5101:
+                self.set_device_type("H5101")
+            elif is_5102:
+                self.set_device_type("H5102")
+            elif is_5177:
+                self.set_device_type("H5177")
+            else:
+                self.set_device_type("H5101/H5102/H5108/H5177")
             temp, humi = decode_temp_humid(data[2:5])
             batt = int(data[5] & 0x7F)
             err = bool(data[5] & 0x80)

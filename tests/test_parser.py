@@ -429,6 +429,20 @@ GVH5055_SERVICE_INFO_ERROR = BluetoothServiceInfo(
 )
 
 
+GVH5108_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51085242",
+    address="A4:C1:38:75:2B:C8",
+    rssi=-66,
+    manufacturer_data={
+        1: b"\x01\x01\x03\xc70d\x00\x00",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c",
+    },
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 def test_can_create():
     GoveeBluetoothDeviceData()
 
@@ -876,7 +890,7 @@ def test_gvh5177():
         devices={
             None: SensorDeviceInfo(
                 name="H5177 2EC8",
-                model="H5101/H5102/H5177",
+                model="H5177",
                 manufacturer="Govee",
                 sw_version=None,
                 hw_version=None,
@@ -2623,4 +2637,66 @@ def test_gvh5055_error(caplog):
     assert (
         "Parsing Govee sensor: 44847 b'\\x55\\x00\\x64\\xfb\\x20\\x1a\\x00\\xff\\xff\\xb1"
         "\\x00\\x20\\x19\\x00\\xff\\xff\\xff\\xff\\x00\\x00'" in caplog.text
+    )
+
+
+def test_gvh5108():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5108_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51085242",
+                model="H5108",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="humidity", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="humidity", device_id=None),
+                device_class=DeviceClass.HUMIDITY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=DeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature", device_id=None),
+                name="Temperature",
+                native_value=24.7,
+            ),
+            DeviceKey(key="humidity", device_id=None): SensorValue(
+                device_key=DeviceKey(key="humidity", device_id=None),
+                name="Humidity",
+                native_value=60.00,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-66,
+            ),
+        },
     )
