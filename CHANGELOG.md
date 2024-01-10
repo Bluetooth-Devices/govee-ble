@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.26.0 (2024-01-10)
+
+### Feature
+
+* Add support for 5104 and 5174 ([#73](https://github.com/Bluetooth-Devices/govee-ble/issues/73)) ([`ce7e266`](https://github.com/Bluetooth-Devices/govee-ble/commit/ce7e266e27afddc46e607ce8cd08f2a941749f69))
+
 ## v0.25.0 (2024-01-10)
 
 ### Feature
