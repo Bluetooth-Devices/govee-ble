@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.2 (2024-01-11)
+
+### Fix
+
+* Ensure H5106 has a name in passive mode ([#76](https://github.com/Bluetooth-Devices/govee-ble/issues/76)) ([`491977e`](https://github.com/Bluetooth-Devices/govee-ble/commit/491977e12363f25fd543e4663e419c9e0c891bcb))
+
 ## v0.27.1 (2024-01-11)
 
 ### Fix
