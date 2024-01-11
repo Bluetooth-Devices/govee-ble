@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.1 (2024-01-11)
+
+### Fix
+
+* Update sensor state data to fix pm25 in library ([#75](https://github.com/Bluetooth-Devices/govee-ble/issues/75)) ([`425d322`](https://github.com/Bluetooth-Devices/govee-ble/commit/425d32230af45990bb5383ee64c8d03a815d64d6))
+
 ## v0.27.0 (2024-01-11)
 
 ### Feature
