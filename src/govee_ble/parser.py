@@ -503,6 +503,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             "H5106" in local_name or mgr_id == 0x0001 and not has_ibeacon
         ):
             self.set_device_type("H5106")
+            self.set_device_name(f"H5106 {short_address(address)}")
             packet_5106 = data[2:6].hex()
             four_bytes = int(packet_5106, 16)
             temp = decode_temps_from_4_bytes(four_bytes)
