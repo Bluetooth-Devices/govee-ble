@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.0 (2024-01-11)
+
+### Feature
+
+* Add support for H5106 ([#74](https://github.com/Bluetooth-Devices/govee-ble/issues/74)) ([`1466f9d`](https://github.com/Bluetooth-Devices/govee-ble/commit/1466f9d680d6bca900677eda9fcef2c02150c374))
+
 ## v0.26.0 (2024-01-10)
 
 ### Feature
