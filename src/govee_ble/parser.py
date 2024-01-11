@@ -510,7 +510,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             pm25 = decode_pm25_from_4_bytes(four_bytes)
             self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
             self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
-            self.update_predefined_sensor(SensorLibrary.PM25, pm25)
+            self.update_predefined_sensor(
+                SensorLibrary.PM25__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, pm25
+            )
             return
 
     def update_temp_probe(self, temp: float, probe_id: int) -> None:
