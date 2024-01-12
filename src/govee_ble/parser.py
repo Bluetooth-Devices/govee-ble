@@ -122,14 +122,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_name(service_info.name[2:].replace("_", " "))
         self.set_precision(2)
 
-        has_ibeacon = 76 in manufacturer_data
-
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
                 continue
-            self._process_mfr_data(
-                address, local_name, mfr_id, mfr_data, service_uuids, has_ibeacon
-            )
+            self._process_mfr_data(address, local_name, mfr_id, mfr_data, service_uuids)
 
     def _process_mfr_data(
         self,
@@ -138,7 +134,6 @@ class GoveeBluetoothDeviceData(BluetoothData):
         mgr_id: int,
         data: bytes,
         service_uuids: list[str],
-        has_ibeacon: bool,
     ) -> None:
         """Parser for Govee sensors."""
         if debug_logging := _LOGGER.isEnabledFor(logging.DEBUG):
@@ -180,7 +175,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or (is_5104 := "H5104" in local_name)
             or (is_5174 := "H5174" in local_name)
             or (is_5177 := "H5177" in local_name)
-            or (mgr_id == 0x0001 and has_ibeacon)
+            or (mgr_id == 0x0001 and msg_length == 8)
         ):
             if is_5108 or msg_length == 8:
                 self.set_device_type("H5108")
@@ -499,9 +494,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 6 and (
-            "H5106" in local_name or mgr_id == 0x0001 and not has_ibeacon
-        ):
+        if msg_length == 6 and "H5106" in local_name:
             self.set_device_type("H5106")
             self.set_device_name(f"H5106 {short_address(address)}")
             packet_5106 = data[2:6].hex()
