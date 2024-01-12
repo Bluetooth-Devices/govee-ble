@@ -190,7 +190,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             elif is_5177:
                 self.set_device_type("H5177")
             else:
-                self.set_device_type("H5101/H5102/H5108/H5177")
+                self.set_device_type("H5101/H5102/H5104/H5108/H5174/H5177")
             temp, humi = decode_temp_humid(data[2:5])
             batt = int(data[5] & 0x7F)
             err = bool(data[5] & 0x80)
@@ -494,7 +494,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 6 and "H5106" in local_name:
+        if msg_length == 6 and ("H5106" in local_name or mgr_id == 0x0001):
             self.set_device_type("H5106")
             self.set_device_name(f"H5106 {short_address(address)}")
             packet_5106 = data[2:6].hex()
