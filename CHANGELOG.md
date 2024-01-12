@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.3 (2024-01-12)
+
+### Fix
+
+* Ensure H5106 is not detected as a H5101 ([#77](https://github.com/Bluetooth-Devices/govee-ble/issues/77)) ([`0f847ea`](https://github.com/Bluetooth-Devices/govee-ble/commit/0f847ea83473d5c385664e62ebd4771aa4a8ba82))
+
 ## v0.27.2 (2024-01-11)
 
 ### Fix
