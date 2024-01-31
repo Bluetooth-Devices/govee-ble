@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.29.0 (2024-01-31)
+
+### Feature
+
+* Add support for h5105 ([#80](https://github.com/Bluetooth-Devices/govee-ble/issues/80)) ([`d1ab246`](https://github.com/Bluetooth-Devices/govee-ble/commit/d1ab246b766df4775ae1c3534b52b66f8f88e39f))
+
 ## v0.28.0 (2024-01-31)
 
 ### Feature
