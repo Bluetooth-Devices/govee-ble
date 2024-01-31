@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.30.0 (2024-01-31)
+
+### Feature
+
+* Add support for h5100 ([#81](https://github.com/Bluetooth-Devices/govee-ble/issues/81)) ([`00d9581`](https://github.com/Bluetooth-Devices/govee-ble/commit/00d9581bfb766f9ab95d3034afc45e4f9dcaf58f))
+
 ## v0.29.0 (2024-01-31)
 
 ### Feature
