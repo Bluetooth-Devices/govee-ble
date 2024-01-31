@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.28.0 (2024-01-31)
+
+### Feature
+
+* Add support for h5103 ([#79](https://github.com/Bluetooth-Devices/govee-ble/issues/79)) ([`0c698bb`](https://github.com/Bluetooth-Devices/govee-ble/commit/0c698bbfd3d30233c60fdec0722d41f86904c120))
+
 ## v0.27.3 (2024-01-12)
 
 ### Fix
