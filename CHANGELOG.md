@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.31.0 (2024-01-31)
+
+### Feature
+
+* Add support for H5108 with external probe ([#82](https://github.com/Bluetooth-Devices/govee-ble/issues/82)) ([`46bccd8`](https://github.com/Bluetooth-Devices/govee-ble/commit/46bccd8a487dc736f4e75b6b584d8610e008c306))
+
 ## v0.30.0 (2024-01-31)
 
 ### Feature
