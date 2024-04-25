@@ -510,7 +510,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 6 and ("H5106" in local_name or mgr_id == 0x0001):
+        if msg_length == 6 and "H5106" in local_name:
             self.set_device_type("H5106")
             self.set_device_name(f"H5106 {short_address(address)}")
             packet_5106 = data[2:6].hex()
