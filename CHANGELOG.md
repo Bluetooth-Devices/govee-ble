@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.31.2 (2024-04-25)
+
+### Fix
+
+* Ryse smart shades where being detected as an h5106 ([#85](https://github.com/Bluetooth-Devices/govee-ble/issues/85)) ([`509977f`](https://github.com/Bluetooth-Devices/govee-ble/commit/509977f0c1e309b496ebbae2f2f930b38548f2b0))
+
 ## v0.31.1 (2024-04-25)
 
 ### Fix
