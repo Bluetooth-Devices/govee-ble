@@ -475,11 +475,12 @@ GVH5106_SERVICE_INFO = BluetoothServiceInfo(
     source="local",
 )
 
-GVH5106_SERVICE_INFO_NO_NAME = BluetoothServiceInfo(
-    name="G",
-    address="CC:32:37:35:4E:05",
+
+NOT_GVH5106_SERVICE_INFO = BluetoothServiceInfo(
+    name="RZSS",
+    address="C5:22:77:8E:E0:1A",
     rssi=-66,
-    manufacturer_data={1: b"\x01\x01\x0e\xd12\x98"},
+    manufacturer_data={1033: b"\x8cd_d", 1: b"\x01\x01\x0b\x00Xd"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
@@ -3297,63 +3298,7 @@ def test_gvh5106():
     )
 
 
-def test_gvh5106_no_name():
+def test_not_gvh5106():
     parser = GoveeBluetoothDeviceData()
-    service_info = GVH5106_SERVICE_INFO_NO_NAME
-    result = parser.update(service_info)
-    assert result == SensorUpdate(
-        title=None,
-        devices={
-            None: SensorDeviceInfo(
-                name="H5106 4E05",
-                model="H5106",
-                manufacturer="Govee",
-                sw_version=None,
-                hw_version=None,
-            )
-        },
-        entity_descriptions={
-            DeviceKey(key="temperature", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="temperature", device_id=None),
-                device_class=DeviceClass.TEMPERATURE,
-                native_unit_of_measurement=Units.TEMP_CELSIUS,
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                device_class=DeviceClass.HUMIDITY,
-                native_unit_of_measurement=Units.PERCENTAGE,
-            ),
-            DeviceKey(key="pm25", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="pm25", device_id=None),
-                device_class=DeviceClass.PM25,
-                native_unit_of_measurement=Units.CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-            ),
-            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="signal_strength", device_id=None),
-                device_class=DeviceClass.SIGNAL_STRENGTH,
-                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-            ),
-        },
-        entity_values={
-            DeviceKey(key="temperature", device_id=None): SensorValue(
-                device_key=DeviceKey(key="temperature", device_id=None),
-                name="Temperature",
-                native_value=24.8,
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorValue(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                name="Humidity",
-                native_value=59.1,
-            ),
-            DeviceKey(key="pm25", device_id=None): SensorValue(
-                device_key=DeviceKey(key="pm25", device_id=None),
-                name="Pm25",
-                native_value=0,
-            ),
-            DeviceKey(key="signal_strength", device_id=None): SensorValue(
-                device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal Strength",
-                native_value=-66,
-            ),
-        },
-    )
+    service_info = NOT_GVH5106_SERVICE_INFO
+    assert not parser.supported(service_info)
