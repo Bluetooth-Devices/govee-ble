@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.31.1 (2024-04-25)
+
+### Fix
+
+* Show h5075 as h5075 instead of h5075/h5072 ([#83](https://github.com/Bluetooth-Devices/govee-ble/issues/83)) ([`8fc22f7`](https://github.com/Bluetooth-Devices/govee-ble/commit/8fc22f7e4183341e02c38667ab830c9edeb27cd3))
+
 ## v0.31.0 (2024-01-31)
 
 ### Feature
