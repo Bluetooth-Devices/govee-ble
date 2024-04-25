@@ -147,9 +147,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
 
         if msg_length == 6 and (
-            "H5072" in local_name or "H5075" in local_name or mgr_id == 0xEC88
+            (is_5072 := "H5072" in local_name)
+            or (is_5075 := "H5075" in local_name)
+            or mgr_id == 0xEC88
         ):
-            self.set_device_type("H5072/H5075")
+            if is_5072:
+                self.set_device_type("H5072")
+            elif is_5075:
+                self.set_device_type("H5075")
+            else:
+                self.set_device_type("H5072/H5075")
             temp, humi = decode_temp_humid(data[1:4])
             batt = int(data[4] & 0x7F)
             err = bool(data[4] & 0x80)
