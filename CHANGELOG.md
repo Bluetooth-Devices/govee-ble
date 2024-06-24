@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.31.3 (2024-06-24)
+
+### Fix
+
+* Fix license classifier ([#86](https://github.com/Bluetooth-Devices/govee-ble/issues/86)) ([`88408cf`](https://github.com/Bluetooth-Devices/govee-ble/commit/88408cfe3c6d075718e0fdddbf7fed38c27e59f1))
+
 ## v0.31.2 (2024-04-25)
 
 ### Fix
