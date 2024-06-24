@@ -3,7 +3,6 @@ name = "govee-ble"
 version = "0.31.2"
 description = "Manage Govee BLE devices"
 authors = ["J. Nick Koston <nick@koston.org>"]
-license = "Apache Software License 2.0"
 readme = "README.md"
 repository = "https://github.com/bluetooth-devices/govee-ble"
 documentation = "https://govee-ble.readthedocs.io"
@@ -13,6 +12,7 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: Apache Software License",
 ]
 packages = [
     { include = "govee_ble", from = "src" },
