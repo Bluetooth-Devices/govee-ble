@@ -166,9 +166,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
 
         if msg_length == 24 and (
-            (is_5125 := "5125" in local_name) or (is_5126 := "5126" in local_name)
+            (is_5122 := "GV5122" in local_name)
+            or (is_5125 := "GV5125" in local_name)
+            or (is_5126 := "GV5126" in local_name)
         ):
-            if is_5125:
+            if is_5122:
+                self.set_device_type("H5122")
+            elif is_5125:
                 self.set_device_type("H5125")
             elif is_5126:
                 self.set_device_type("H5126")
@@ -178,13 +182,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
             enc_data = data[6:22]
             enc_crc = data[22:24]
             if not calculate_crc(enc_data) == int.from_bytes(enc_crc, "big"):
-                _LOGGER.warning("CRC check failed for H5126: %s", hex(data))
+                _LOGGER.warning("CRC check failed for H512x: %s", hex(data))
                 return
             key = time_ms + bytes(12)
             try:
                 decrypted = decrypt_data(key, enc_data)
             except ValueError:
-                _LOGGER.warning("Failed to decrypt H5126: %s", hex(data))
+                _LOGGER.warning("Failed to decrypt H512x: %s", hex(data))
                 return
             battery_percentage = decrypted[4]
             button_number_pressed = decrypted[5]
