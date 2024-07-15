@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.32.0 (2024-07-15)
+
+### Feature
+
+* Add support for GV5121/GV5122/GV5123/GV5125/GV5126 ([#88](https://github.com/Bluetooth-Devices/govee-ble/issues/88)) ([`e71ca98`](https://github.com/Bluetooth-Devices/govee-ble/commit/e71ca9897fc2de04adeb3c70a5777e52a3588c04))
+
 ## v0.31.3 (2024-06-24)
 
 ### Fix
