@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import logging
 import struct
+from enum import Enum
 
 from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from home_assistant_bluetooth import BluetoothServiceInfo
-from sensor_state_data import SensorLibrary
+from sensor_state_data import BinarySensorDeviceClass, SensorLibrary
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -104,6 +106,30 @@ def decode_pm25_from_4_bytes(packet_value: int) -> int:
     return int(packet_value % 1000)
 
 
+def calculate_crc(data: bytes) -> int:
+    crc = 0x1D0F
+    for b in data:
+        for s in range(7, -1, -1):
+            mask = 0
+            if (crc >> 15) ^ (b >> s) & 1:
+                mask = 0x1021
+            crc = ((crc << 1) ^ mask) & 0xFFFF
+    return crc
+
+
+def decrypt_data(key: bytes, data: bytes) -> bytes:
+    cipher = Cipher(algorithms.AES(key[::-1]), modes.ECB())
+    decryptor = cipher.decryptor()
+    return (decryptor.update(data[::-1]) + decryptor.finalize())[::-1]
+
+
+class SensorType(Enum):
+
+    BUTTON = "button"
+    MOTION = "motion"
+    WINDOW = "window"
+
+
 class GoveeBluetoothDeviceData(BluetoothData):
     """Data for Govee BLE sensors."""
 
@@ -146,6 +172,57 @@ class GoveeBluetoothDeviceData(BluetoothData):
             msg_length = len(data)
             if debug_logging:
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
+
+        if msg_length == 24 and (
+            (is_5121 := "GV5121" in local_name)
+            or (is_5122 := "GV5122" in local_name)
+            or (is_5123 := "GV5123" in local_name)
+            or (is_5125 := "GV5125" in local_name)
+            or (is_5126 := "GV5126" in local_name)
+        ):
+            sensor_type = SensorType.BUTTON
+            if is_5121:
+                self.set_device_type("H5121")
+                sensor_type = SensorType.MOTION
+            elif is_5122:
+                self.set_device_type("H5122")
+            elif is_5123:
+                self.set_device_type("H5123")
+                sensor_type = SensorType.WINDOW
+            elif is_5125:
+                self.set_device_type("H5125")
+            elif is_5126:
+                self.set_device_type("H5126")
+            b_front_of_device_id = data[:2]
+            assert b_front_of_device_id
+            time_ms = data[2:6]
+            enc_data = data[6:22]
+            enc_crc = data[22:24]
+            if not calculate_crc(enc_data) == int.from_bytes(enc_crc, "big"):
+                _LOGGER.warning("CRC check failed for H512x: %s", hex(data))
+                return
+            key = time_ms + bytes(12)
+            try:
+                decrypted = decrypt_data(key, enc_data)
+            except ValueError:
+                _LOGGER.warning("Failed to decrypt H512x: %s", hex(data))
+                return
+            battery_percentage = decrypted[4]
+            button_number_pressed = decrypted[5]
+            self.update_predefined_sensor(
+                SensorLibrary.BATTERY__PERCENTAGE, battery_percentage
+            )
+            if sensor_type is SensorType.WINDOW:
+                # H5123 is a door/window sensor
+                self.update_predefined_binary_sensor(
+                    BinarySensorDeviceClass.WINDOW, button_number_pressed == 2
+                )
+            elif sensor_type is SensorType.MOTION:
+                if button_number_pressed == 1:
+                    self.fire_event("motion", "motion")
+            else:
+                self.fire_event(f"button_{button_number_pressed}", "press")
+            return
 
         if msg_length == 6 and (
             (is_5072 := "H5072" in local_name)

@@ -2,7 +2,11 @@ import logging
 
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
 from sensor_state_data import (
+    BinarySensorDescription,
+    BinarySensorDeviceClass,
+    BinarySensorValue,
     DeviceKey,
+    Event,
     SensorDescription,
     SensorDeviceClass,
     SensorDeviceInfo,
@@ -540,6 +544,123 @@ GVH5108_WITH_PROBE_SERVICE_INFO = BluetoothServiceInfo(
     service_data={},
     source="local",
     rssi=-45,
+)
+
+GV5126_BUTTON_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51260F45",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"\x01\xc4\x00\x01k\x98\xd3]\xcb\xbc\x13\x16\xc4\xc9?+\xf9+\xec\x86Y\xce @"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5126_BUTTON_0_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51260F45",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"\x01\xc4\x00\x18\xd8\x96\xd1\xff\x10s\x1fL\x85]\xdfT\xf1\xe7\x7f\xe8\x8b\x0e\xc2?"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5125_BUTTON_0_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51255367",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        60552: b"\x01\n.\xaf\xd9085Sg\x01\x01",
+        61320: b".\xaf\x00\x00b\\\xae\x92\x15\xb6\xa8\n\xd4\x81K\xcaK_s\xd9E40\x02",
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+GV5125_BUTTON_1_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51255367",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        60552: b"\x01\n.\xaf\xd9085Sg\x01\x01",
+        61320: b".\xaf\x00\x00\xfb\x0e\xc9h\xd7\x05l\xaf*\xf3\x1b\xe8w\xf1\xe1\xe8\xe3\xa7\xf8\xc6",
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5122_BUTTON_0_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51225634",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        60552: b"\x01\x08\xf3\n\xd2297V4\x01\x05",
+        61320: b"\xf3\n\x00\x00d\x82H\xe8` b%\x88\xc0/\xd2X\xcb?\x1b\x85D\xd90",
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5123_OPEN_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51230B3D",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"=\xec\x00\x00\xdeCw\xd5^U\xf9\x91In6\xbd\xc6\x7f\x8b,'\x06t\x97"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5123_CLOSED_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51230B3D",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"=\xec\x00\x01Y\xdbk\xd9\xbe\xd7\xaf\xf7*&\xaaK\xd7-\xfa\x94W>[\xe9"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
+GV5121_MOTION_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV5121195A",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"Y\x94\x00\x00\xf0\xb9\x197\xaeP\xb67,\x86j\xc2\xf3\xd0a\xe7\x17\xc0,\xef"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+GV5121_MOTION_SERVICE_INFO_2 = BluetoothServiceInfo(
+    name="GV5121195A",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"Y\x94\x00\x06\xa3f6e\xc8\xe6\xfdv\x04\xaf\xe7k\xbf\xab\xeb\xbf\xb3\xa3\xd5\x19"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
 )
 
 
@@ -1411,6 +1532,484 @@ def test_gvh5108_with_external_probe():
                 name="Signal Strength",
                 native_value=-45,
             ),
+        },
+    )
+
+
+def test_gvh5126_button_1():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5126_BUTTON_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51260F45",
+                model="H5126",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_1", device_id=None): Event(
+                device_key=DeviceKey(key="button_1", device_id=None),
+                name="Button " "1",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5126_button_0():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5126_BUTTON_0_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51260F45",
+                model="H5126",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_0", device_id=None): Event(
+                device_key=DeviceKey(key="button_0", device_id=None),
+                name="Button " "0",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5125_button_0():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5125_BUTTON_0_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51255367",
+                model="H5125",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_0", device_id=None): Event(
+                device_key=DeviceKey(key="button_0", device_id=None),
+                name="Button " "0",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5125_button_1():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5125_BUTTON_1_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51255367",
+                model="H5125",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_1", device_id=None): Event(
+                device_key=DeviceKey(key="button_1", device_id=None),
+                name="Button " "1",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5122_button_0():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5122_BUTTON_0_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51225634",
+                model="H5122",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_0", device_id=None): Event(
+                device_key=DeviceKey(key="button_0", device_id=None),
+                name="Button " "0",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5123_open():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5123_OPEN_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51230B3D",
+                model="H5123",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="window", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="window", device_id=None),
+                device_class=BinarySensorDeviceClass.WINDOW,
+            )
+        },
+        binary_entity_values={
+            DeviceKey(key="window", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="window", device_id=None),
+                name="Window",
+                native_value=True,
+            )
+        },
+        events={},
+    )
+
+
+def test_gvh5123_closed():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5123_CLOSED_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51230B3D",
+                model="H5123",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="window", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="window", device_id=None),
+                device_class=BinarySensorDeviceClass.WINDOW,
+            )
+        },
+        binary_entity_values={
+            DeviceKey(key="window", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="window", device_id=None),
+                name="Window",
+                native_value=False,
+            )
+        },
+        events={},
+    )
+
+
+def test_gvh5121_motion():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5121_MOTION_SERVICE_INFO
+    result = parser.update(service_info)
+
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5121195A",
+                model="H5121",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="motion", device_id=None): Event(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                event_type="motion",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5121_motion_2():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5121_MOTION_SERVICE_INFO_2
+    result = parser.update(service_info)
+
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5121195A",
+                model="H5121",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="motion", device_id=None): Event(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                event_type="motion",
+                event_properties=None,
+            )
         },
     )
 
