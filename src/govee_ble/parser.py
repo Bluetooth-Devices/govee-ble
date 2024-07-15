@@ -13,6 +13,7 @@ import struct
 
 from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import SensorLibrary
 
@@ -104,6 +105,23 @@ def decode_pm25_from_4_bytes(packet_value: int) -> int:
     return int(packet_value % 1000)
 
 
+def calculate_crc(data: bytes) -> int:
+    crc = 0x1D0F
+    for b in data:
+        for s in range(7, -1, -1):
+            mask = 0
+            if (crc >> 15) ^ (b >> s) & 1:
+                mask = 0x1021
+            crc = ((crc << 1) ^ mask) & 0xFFFF
+    return crc
+
+
+def decrypt_data(key: bytes, data: bytes) -> bytes:
+    cipher = Cipher(algorithms.AES(key[::-1]), modes.ECB())
+    decryptor = cipher.decryptor()
+    return (decryptor.update(data[::-1]) + decryptor.finalize())[::-1]
+
+
 class GoveeBluetoothDeviceData(BluetoothData):
     """Data for Govee BLE sensors."""
 
@@ -146,6 +164,31 @@ class GoveeBluetoothDeviceData(BluetoothData):
             msg_length = len(data)
             if debug_logging:
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
+
+        if msg_length == 24 and "5126" in local_name:
+            self.set_device_type("5126")
+            self.set_device_name(f"5126 {short_address(address)}")
+            b_front_of_device_id = data[:2]
+            assert b_front_of_device_id
+            time_ms = data[2:6]
+            enc_data = data[6:22]
+            enc_crc = data[22:24]
+            if not calculate_crc(enc_data) == int.from_bytes(enc_crc, "big"):
+                _LOGGER.warning("CRC check failed for H5126: %s", hex(data))
+                return
+            key = time_ms + bytes(12)
+            try:
+                decrypted = decrypt_data(key, enc_data)
+            except ValueError:
+                _LOGGER.warning("Failed to decrypt H5126: %s", hex(data))
+                return
+            battery_percentage = decrypted[4]
+            button_number_pressed = decrypted[5]
+            self.update_predefined_sensor(
+                SensorLibrary.BATTERY__PERCENTAGE, battery_percentage
+            )
+            self.fire_event(f"button_{button_number_pressed}", "press")
+            return
 
         if msg_length == 6 and (
             (is_5072 := "H5072" in local_name)

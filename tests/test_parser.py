@@ -3,6 +3,7 @@ import logging
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
 from sensor_state_data import (
     DeviceKey,
+    Event,
     SensorDescription,
     SensorDeviceClass,
     SensorDeviceInfo,
@@ -540,6 +541,18 @@ GVH5108_WITH_PROBE_SERVICE_INFO = BluetoothServiceInfo(
     service_data={},
     source="local",
     rssi=-45,
+)
+
+GV5126_BUTTON_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51260F45",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"\x01\xc4\x00\x01k\x98\xd3]\xcb\xbc\x13\x16\xc4\xc9?+\xf9+\xec\x86Y\xce @"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
 )
 
 
@@ -1411,6 +1424,58 @@ def test_gvh5108_with_external_probe():
                 name="Signal Strength",
                 native_value=-45,
             ),
+        },
+    )
+
+
+def test_gvh5126_button():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5126_BUTTON_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5126 0F45",
+                model="5126",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="button_1", device_id=None): Event(
+                device_key=DeviceKey(key="button_1", device_id=None),
+                name="Button " "1",
+                event_type="press",
+                event_properties=None,
+            )
         },
     )
 
