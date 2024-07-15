@@ -10,12 +10,13 @@ from __future__ import annotations
 
 import logging
 import struct
+from enum import Enum
 
 from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from home_assistant_bluetooth import BluetoothServiceInfo
-from sensor_state_data import SensorLibrary
+from sensor_state_data import BinarySensorDeviceClass, SensorLibrary
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -122,6 +123,12 @@ def decrypt_data(key: bytes, data: bytes) -> bytes:
     return (decryptor.update(data[::-1]) + decryptor.finalize())[::-1]
 
 
+class SensorType(Enum):
+
+    BUTTON = "button"
+    WINDOW = "window"
+
+
 class GoveeBluetoothDeviceData(BluetoothData):
     """Data for Govee BLE sensors."""
 
@@ -167,11 +174,16 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 24 and (
             (is_5122 := "GV5122" in local_name)
+            or (is_5123 := "GV5123" in local_name)
             or (is_5125 := "GV5125" in local_name)
             or (is_5126 := "GV5126" in local_name)
         ):
+            sensor_type = SensorType.BUTTON
             if is_5122:
                 self.set_device_type("H5122")
+            elif is_5123:
+                self.set_device_type("H5123")
+                sensor_type = SensorType.WINDOW
             elif is_5125:
                 self.set_device_type("H5125")
             elif is_5126:
@@ -195,7 +207,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(
                 SensorLibrary.BATTERY__PERCENTAGE, battery_percentage
             )
-            self.fire_event(f"button_{button_number_pressed}", "press")
+            if sensor_type is SensorType.WINDOW:
+                # H5123 is a door/window sensor
+                self.update_predefined_binary_sensor(
+                    BinarySensorDeviceClass.WINDOW, button_number_pressed == 2
+                )
+            else:
+                self.fire_event(f"button_{button_number_pressed}", "press")
             return
 
         if msg_length == 6 and (
