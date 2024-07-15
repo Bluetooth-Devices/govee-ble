@@ -639,6 +639,31 @@ GV5123_CLOSED_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+GV5121_MOTION_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV5121195A",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"Y\x94\x00\x00\xf0\xb9\x197\xaeP\xb67,\x86j\xc2\xf3\xd0a\xe7\x17\xc0,\xef"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+GV5121_MOTION_SERVICE_INFO_2 = BluetoothServiceInfo(
+    name="GV5121195A",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"Y\x94\x00\x06\xa3f6e\xc8\xe6\xfdv\x04\xaf\xe7k\xbf\xab\xeb\xbf\xb3\xa3\xd5\x19"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
 def test_can_create():
     GoveeBluetoothDeviceData()
 
@@ -1880,6 +1905,112 @@ def test_gvh5123_closed():
             )
         },
         events={},
+    )
+
+
+def test_gvh5121_motion():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5121_MOTION_SERVICE_INFO
+    result = parser.update(service_info)
+
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5121195A",
+                model="H5121",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="motion", device_id=None): Event(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                event_type="motion",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5121_motion_2():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GV5121_MOTION_SERVICE_INFO_2
+    result = parser.update(service_info)
+
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5121195A",
+                model="H5121",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-36,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+        },
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={
+            DeviceKey(key="motion", device_id=None): Event(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                event_type="motion",
+                event_properties=None,
+            )
+        },
     )
 
 

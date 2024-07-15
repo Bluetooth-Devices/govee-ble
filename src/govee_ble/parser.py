@@ -126,6 +126,7 @@ def decrypt_data(key: bytes, data: bytes) -> bytes:
 class SensorType(Enum):
 
     BUTTON = "button"
+    MOTION = "motion"
     WINDOW = "window"
 
 
@@ -173,13 +174,17 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
 
         if msg_length == 24 and (
-            (is_5122 := "GV5122" in local_name)
+            (is_5121 := "GV5121" in local_name)
+            or (is_5122 := "GV5122" in local_name)
             or (is_5123 := "GV5123" in local_name)
             or (is_5125 := "GV5125" in local_name)
             or (is_5126 := "GV5126" in local_name)
         ):
             sensor_type = SensorType.BUTTON
-            if is_5122:
+            if is_5121:
+                self.set_device_type("H5121")
+                sensor_type = SensorType.MOTION
+            elif is_5122:
                 self.set_device_type("H5122")
             elif is_5123:
                 self.set_device_type("H5123")
@@ -212,6 +217,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.update_predefined_binary_sensor(
                     BinarySensorDeviceClass.WINDOW, button_number_pressed == 2
                 )
+            elif sensor_type is SensorType.MOTION:
+                if button_number_pressed == 1:
+                    self.fire_event("motion", "motion")
             else:
                 self.fire_event(f"button_{button_number_pressed}", "press")
             return
