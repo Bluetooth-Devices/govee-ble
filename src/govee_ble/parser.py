@@ -165,9 +165,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
             if debug_logging:
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
 
-        if msg_length == 24 and "5126" in local_name:
-            self.set_device_type("5126")
-            self.set_device_name(f"5126 {short_address(address)}")
+        if msg_length == 24 and (
+            (is_5125 := "5125" in local_name) or (is_5126 := "5126" in local_name)
+        ):
+            if is_5125:
+                self.set_device_type("H5125")
+            elif is_5126:
+                self.set_device_type("H5126")
             b_front_of_device_id = data[:2]
             assert b_front_of_device_id
             time_ms = data[2:6]
