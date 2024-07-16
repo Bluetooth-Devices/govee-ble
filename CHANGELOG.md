@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.33.0 (2024-07-16)
+
+### Feature
+
+* Add passive support for GV5121/GV5122/GV5123/GV5125/GV5126 ([#89](https://github.com/Bluetooth-Devices/govee-ble/issues/89)) ([`83ac0d5`](https://github.com/Bluetooth-Devices/govee-ble/commit/83ac0d5950d420e35113c38a58553b413b27c1f8))
+
 ## v0.32.0 (2024-07-15)
 
 ### Feature
