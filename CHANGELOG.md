@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.35.1 (2024-07-16)
+
+### Fix
+
+* Handle remote discovered first ([#93](https://github.com/Bluetooth-Devices/govee-ble/issues/93)) ([`ae375f6`](https://github.com/Bluetooth-Devices/govee-ble/commit/ae375f627d66fa505727f6da9388fd94b138b2be))
+
 ## v0.35.0 (2024-07-16)
 
 ### Feature
