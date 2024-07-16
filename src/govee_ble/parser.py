@@ -171,42 +171,61 @@ class GoveeBluetoothDeviceData(BluetoothData):
             data = data[:-25]
             msg_length = len(data)
             if debug_logging:
-                _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, hex(data))
+                _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data.hex())
 
-        if msg_length == 24 and (
-            (is_5121 := "GV5121" in local_name)
-            or (is_5122 := "GV5122" in local_name)
-            or (is_5123 := "GV5123" in local_name)
-            or (is_5125 := "GV5125" in local_name)
-            or (is_5126 := "GV5126" in local_name)
-        ):
-            sensor_type = SensorType.BUTTON
-            if is_5121:
-                self.set_device_type("H5121")
-                sensor_type = SensorType.MOTION
-            elif is_5122:
-                self.set_device_type("H5122")
-            elif is_5123:
-                self.set_device_type("H5123")
-                sensor_type = SensorType.WINDOW
-            elif is_5125:
-                self.set_device_type("H5125")
-            elif is_5126:
-                self.set_device_type("H5126")
-            b_front_of_device_id = data[:2]
-            assert b_front_of_device_id
+        if msg_length == 24:
+            front_of_device_id = data[:2]
+            assert front_of_device_id
             time_ms = data[2:6]
             enc_data = data[6:22]
             enc_crc = data[22:24]
             if not calculate_crc(enc_data) == int.from_bytes(enc_crc, "big"):
                 _LOGGER.warning("CRC check failed for H512x: %s", hex(data))
                 return
+
             key = time_ms + bytes(12)
             try:
                 decrypted = decrypt_data(key, enc_data)
             except ValueError:
                 _LOGGER.warning("Failed to decrypt H512x: %s", hex(data))
                 return
+            model_id = decrypted[2]
+            # GV5121
+            # 01040302640100000000000000000000
+
+            # GV5122
+            # 01050802640000000000000000000000
+            # 01050802640000000000000000000000
+
+            # GV5123
+            # 01050202640200000000000000000000
+
+            # GV5125
+            # 01010a02640000000000000000000000
+
+            # GV5126
+            # 01010b02640100000000000000000000
+            sensor_type = SensorType.BUTTON
+            if "GV5121" in local_name or model_id == 3:
+                self.set_device_type("H5121")
+                self.set_device_name(f"5121{short_address(address)}")
+                sensor_type = SensorType.MOTION
+            elif "GV5122" in local_name or model_id == 8:
+                self.set_device_type("H5122")
+                self.set_device_name(f"5122{short_address(address)}")
+            elif "GV5123" in local_name or model_id == 2:
+                self.set_device_type("H5123")
+                self.set_device_name(f"5123{short_address(address)}")
+                sensor_type = SensorType.WINDOW
+            elif "GV5125" in local_name or model_id == 10:
+                self.set_device_type("H5125")
+                self.set_device_name(f"5125{short_address(address)}")
+            elif "GV5126" in local_name or model_id == 11:
+                self.set_device_type("H5126")
+                self.set_device_name(f"5126{short_address(address)}")
+            else:
+                return
+
             battery_percentage = decrypted[4]
             button_number_pressed = decrypted[5]
             self.update_predefined_sensor(
