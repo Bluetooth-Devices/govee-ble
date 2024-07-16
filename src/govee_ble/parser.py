@@ -181,7 +181,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
     @property
     def device_type(self) -> str:
         """Return the device type."""
-        return self._device_id_to_type[None]
+        # Primary device first
+        return self._device_id_to_type.get(
+            None, next(iter(self._device_id_to_type.values())).partition("-")[0]
+        )
 
     @property
     def button_count(self) -> int:
