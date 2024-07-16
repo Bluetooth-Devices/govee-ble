@@ -3236,6 +3236,7 @@ def test_gvh5178():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5178_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.device_type == "H5178"
     assert result == SensorUpdate(
         title="B51782BC8",
         devices={
