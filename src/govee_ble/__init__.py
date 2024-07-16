@@ -18,7 +18,7 @@ from sensor_state_data import (
     Units,
 )
 
-from .parser import GoveeBluetoothDeviceData, SensorType, get_model_info
+from .parser import GoveeBluetoothDeviceData, SensorType, get_model_info, ModelInfo
 
 __version__ = "0.35.1"
 
@@ -34,4 +34,5 @@ __all__ = [
     "SensorValue",
     "Units",
     "get_model_info",
+    "ModelInfo",
 ]
