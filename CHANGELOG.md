@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.33.1 (2024-07-16)
+
+### Fix
+
+* Remove unused device id code ([#90](https://github.com/Bluetooth-Devices/govee-ble/issues/90)) ([`a071f2e`](https://github.com/Bluetooth-Devices/govee-ble/commit/a071f2ecfd7b14d504cfdaee46e289e530383008))
+
 ## v0.33.0 (2024-07-16)
 
 ### Feature
