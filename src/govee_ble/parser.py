@@ -174,8 +174,6 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 _LOGGER.debug("Cleaned up packet: %s %s", mgr_id, data.hex())
 
         if msg_length == 24:
-            front_of_device_id = data[:2]
-            assert front_of_device_id
             time_ms = data[2:6]
             enc_data = data[6:22]
             enc_crc = data[22:24]
