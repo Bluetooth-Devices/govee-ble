@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.36.1 (2024-07-16)
+
+### Fix
+
+* Handle model not yet set ([#95](https://github.com/Bluetooth-Devices/govee-ble/issues/95)) ([`2083a01`](https://github.com/Bluetooth-Devices/govee-ble/commit/2083a01ecb102e1c9dd2292b898c22da8695b1d3))
+
 ## v0.36.0 (2024-07-16)
 
 ### Feature
