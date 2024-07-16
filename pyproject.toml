@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "govee-ble"
-version = "0.36.1"
+version = "0.37.0"
 description = "Manage Govee BLE devices"
 authors = ["J. Nick Koston <nick@koston.org>"]
 readme = "README.md"

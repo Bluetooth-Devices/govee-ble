@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.37.0 (2024-07-16)
+
+### Feature
+
+* Add support for sleepy devices ([#96](https://github.com/Bluetooth-Devices/govee-ble/issues/96)) ([`bbe36fa`](https://github.com/Bluetooth-Devices/govee-ble/commit/bbe36fa862f022c5f0f47f42cbfddb3fe92f19a3))
+
 ## v0.36.1 (2024-07-16)
 
 ### Fix
