@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import struct
+from dataclasses import dataclass
 from enum import Enum
 
 from bluetooth_data_tools import short_address
@@ -124,24 +125,37 @@ def decrypt_data(key: bytes, data: bytes) -> bytes:
 
 
 class SensorType(Enum):
-
     THERMOMETER = "thermometer"
     BUTTON = "button"
     MOTION = "motion"
     WINDOW = "window"
 
 
-_BUTTON_COUNT_BY_TYPE = {
-    "H5122": 1,
-    "H5125": 6,
-    "H5126": 2,
+@dataclass
+class ModelInfo:
+    """Model information for Govee sensors."""
+
+    model_id: str
+    sensor_type: SensorType
+    button_count: int
+
+
+_MODEL_DB = {
+    "H5121": ModelInfo("H5121", SensorType.MOTION, 0),
+    "H5122": ModelInfo("H5122", SensorType.BUTTON, 1),
+    "H5123": ModelInfo("H5123", SensorType.WINDOW, 0),
+    "H5125": ModelInfo("H5125", SensorType.BUTTON, 6),
+    "H5126": ModelInfo("H5126", SensorType.BUTTON, 2),
 }
+
+
+def get_model_info(model_id: str) -> ModelInfo:
+    """Get model information for a Govee sensor."""
+    return _MODEL_DB.get(model_id, ModelInfo(model_id, SensorType.THERMOMETER, 0))
 
 
 class GoveeBluetoothDeviceData(BluetoothData):
     """Data for Govee BLE sensors."""
-
-    _sensor_type = SensorType.THERMOMETER
 
     def _start_update(self, service_info: BluetoothServiceInfo) -> None:
         """Update from BLE advertisement data."""
@@ -172,12 +186,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
     @property
     def button_count(self) -> int:
         """Return the number of buttons on the device."""
-        return _BUTTON_COUNT_BY_TYPE.get(self.device_type, 0)
+        return get_model_info(self.device_type).button_count
 
     @property
     def sensor_type(self) -> SensorType:
         """Return the sensor type."""
-        return self._sensor_type
+        return get_model_info(self.device_type).sensor_type
 
     def _process_mfr_data(
         self,
@@ -228,18 +242,18 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
             # GV5126
             # 01010b02640100000000000000000000
-            self._sensor_type = SensorType.BUTTON
+            sensor_type = SensorType.BUTTON
             if "GV5121" in local_name or model_id == 3:
                 self.set_device_type("H5121")
                 self.set_device_name(f"5121{short_address(address)}")
-                self._sensor_type = SensorType.MOTION
+                sensor_type = SensorType.MOTION
             elif "GV5122" in local_name or model_id == 8:
                 self.set_device_type("H5122")
                 self.set_device_name(f"5122{short_address(address)}")
             elif "GV5123" in local_name or model_id == 2:
                 self.set_device_type("H5123")
                 self.set_device_name(f"5123{short_address(address)}")
-                self._sensor_type = SensorType.WINDOW
+                sensor_type = SensorType.WINDOW
             elif "GV5125" in local_name or model_id == 10:
                 self.set_device_type("H5125")
                 self.set_device_name(f"5125{short_address(address)}")
@@ -254,12 +268,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(
                 SensorLibrary.BATTERY__PERCENTAGE, battery_percentage
             )
-            if self._sensor_type is SensorType.WINDOW:
+            if sensor_type is SensorType.WINDOW:
                 # H5123 is a door/window sensor
                 self.update_predefined_binary_sensor(
                     BinarySensorDeviceClass.WINDOW, button_number_pressed == 2
                 )
-            elif self._sensor_type is SensorType.MOTION:
+            elif sensor_type is SensorType.MOTION:
                 if button_number_pressed == 1:
                     self.fire_event("motion", "motion")
             else:
