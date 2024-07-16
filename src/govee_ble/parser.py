@@ -179,22 +179,26 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self._process_mfr_data(address, local_name, mfr_id, mfr_data, service_uuids)
 
     @property
-    def device_type(self) -> str:
+    def device_type(self) -> str | None:
         """Return the device type."""
-        # Primary device first
-        return self._device_id_to_type.get(
-            None, next(iter(self._device_id_to_type.values())).partition("-")[0]
-        )
+        primary_device_id = self.primary_device_id
+        if device_type := self._device_id_to_type.get(primary_device_id):
+            return device_type.partition("-")[0]
+        return None
 
     @property
     def button_count(self) -> int:
         """Return the number of buttons on the device."""
-        return get_model_info(self.device_type).button_count
+        device_type = self.device_type
+        assert device_type is not None
+        return get_model_info(device_type).button_count
 
     @property
     def sensor_type(self) -> SensorType:
         """Return the sensor type."""
-        return get_model_info(self.device_type).sensor_type
+        device_type = self.device_type
+        assert device_type is not None
+        return get_model_info(device_type).sensor_type
 
     def _process_mfr_data(
         self,
