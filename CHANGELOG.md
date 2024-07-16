@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.36.0 (2024-07-16)
+
+### Feature
+
+* Expose ModelInfo ([#94](https://github.com/Bluetooth-Devices/govee-ble/issues/94)) ([`9111e16`](https://github.com/Bluetooth-Devices/govee-ble/commit/9111e16a6385258dd11b9756c2ed4d2cbdd7c50a))
+
 ## v0.35.1 (2024-07-16)
 
 ### Fix
