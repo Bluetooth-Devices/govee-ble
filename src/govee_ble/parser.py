@@ -125,7 +125,6 @@ def decrypt_data(key: bytes, data: bytes) -> bytes:
 
 
 class SensorType(Enum):
-
     THERMOMETER = "thermometer"
     BUTTON = "button"
     MOTION = "motion"
