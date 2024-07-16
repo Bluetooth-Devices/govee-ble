@@ -131,7 +131,7 @@ class SensorType(Enum):
     WINDOW = "window"
 
 
-@dataclass(slots=True)
+@dataclass
 class ModelInfo:
     """Model information for Govee sensors."""
 
