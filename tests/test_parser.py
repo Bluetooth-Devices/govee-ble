@@ -4051,4 +4051,11 @@ def test_get_model_info():
     assert get_model_info("H5074").sensor_type == SensorType.THERMOMETER
     assert get_model_info("H5075").sensor_type == SensorType.THERMOMETER
     assert get_model_info("H5072").sensor_type == SensorType.THERMOMETER
-    assert get_model_info("H5122").sensor_type == SensorType.THERMOMETER
+    assert get_model_info("H5121").sensor_type == SensorType.MOTION
+    assert get_model_info("H5122").sensor_type == SensorType.BUTTON
+    assert get_model_info("H5122").button_count == 1
+    assert get_model_info("H5123").sensor_type == SensorType.WINDOW
+    assert get_model_info("H5125").sensor_type == SensorType.BUTTON
+    assert get_model_info("H5125").button_count == 6
+    assert get_model_info("H5126").sensor_type == SensorType.BUTTON
+    assert get_model_info("H5126").button_count == 2
