@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.34.0 (2024-07-16)
+
+### Feature
+
+* Add sensor type and button count ([#91](https://github.com/Bluetooth-Devices/govee-ble/issues/91)) ([`747dcb0`](https://github.com/Bluetooth-Devices/govee-ble/commit/747dcb091c2ff2234d2d3eccc39f551a09d5a878))
+
 ## v0.33.1 (2024-07-16)
 
 ### Fix
