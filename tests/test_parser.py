@@ -1563,6 +1563,7 @@ def test_gvh5126_button_1():
     service_info = GV5126_BUTTON_SERVICE_INFO
     result = parser.update(service_info)
     assert parser.button_count == 2
+    assert parser.sleepy is True
     assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
@@ -3174,6 +3175,7 @@ def test_gvh5074():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5074_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.sleepy is False
     assert result == SensorUpdate(
         title=None,
         devices={

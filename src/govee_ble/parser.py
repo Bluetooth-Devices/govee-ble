@@ -138,20 +138,23 @@ class ModelInfo:
     model_id: str
     sensor_type: SensorType
     button_count: int
+    sleepy: bool
 
 
 _MODEL_DB = {
-    "H5121": ModelInfo("H5121", SensorType.MOTION, 0),
-    "H5122": ModelInfo("H5122", SensorType.BUTTON, 1),
-    "H5123": ModelInfo("H5123", SensorType.WINDOW, 0),
-    "H5125": ModelInfo("H5125", SensorType.BUTTON, 6),
-    "H5126": ModelInfo("H5126", SensorType.BUTTON, 2),
+    "H5121": ModelInfo("H5121", SensorType.MOTION, 0, True),
+    "H5122": ModelInfo("H5122", SensorType.BUTTON, 1, True),
+    "H5123": ModelInfo("H5123", SensorType.WINDOW, 0, True),
+    "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
+    "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
 }
 
 
 def get_model_info(model_id: str) -> ModelInfo:
     """Get model information for a Govee sensor."""
-    return _MODEL_DB.get(model_id, ModelInfo(model_id, SensorType.THERMOMETER, 0))
+    return _MODEL_DB.get(
+        model_id, ModelInfo(model_id, SensorType.THERMOMETER, 0, False)
+    )
 
 
 class GoveeBluetoothDeviceData(BluetoothData):
@@ -199,6 +202,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
         device_type = self.device_type
         assert device_type is not None
         return get_model_info(device_type).sensor_type
+
+    @property
+    def sleepy(self) -> bool:
+        """Return if the device is sleep."""
+        device_type = self.device_type
+        assert device_type is not None
+        return get_model_info(device_type).sleepy
 
     def _process_mfr_data(
         self,
