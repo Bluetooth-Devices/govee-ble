@@ -14,7 +14,7 @@ from sensor_state_data import (
     Units,
 )
 
-from govee_ble.parser import GoveeBluetoothDeviceData
+from govee_ble.parser import GoveeBluetoothDeviceData, SensorType
 
 GVH5051_SERVICE_INFO = BluetoothServiceInfo(
     name="",
@@ -1562,6 +1562,8 @@ def test_gvh5126_button_1():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5126_BUTTON_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 2
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1614,6 +1616,8 @@ def test_gvh5126_button_0():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5126_BUTTON_0_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 2
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1666,6 +1670,8 @@ def test_gvh5125_button_0():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5125_BUTTON_0_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 6
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1718,6 +1724,8 @@ def test_gvh5125_button_1():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5125_BUTTON_1_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 6
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1770,6 +1778,8 @@ def test_gvh5122_button_0():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5122_BUTTON_0_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 1
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1822,6 +1832,8 @@ def test_gvh5122_passive_button_0():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5122_PASSIVE_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 1
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1874,6 +1886,8 @@ def test_gvh5122_passive_2_button_0():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5122_PASSIVE_2_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 1
+    assert parser.sensor_type is SensorType.BUTTON
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1982,6 +1996,8 @@ def test_gvh5123_closed():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5123_CLOSED_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.WINDOW
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -2038,7 +2054,8 @@ def test_gvh5121_motion():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5121_MOTION_SERVICE_INFO
     result = parser.update(service_info)
-
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.MOTION
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -2091,7 +2108,8 @@ def test_gvh5121_motion_2():
     parser = GoveeBluetoothDeviceData()
     service_info = GV5121_MOTION_SERVICE_INFO_2
     result = parser.update(service_info)
-
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.MOTION
     assert result == SensorUpdate(
         title=None,
         devices={
