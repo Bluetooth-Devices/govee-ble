@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.35.0 (2024-07-16)
+
+### Feature
+
+* Refactor to support get_model_info for offline devices ([#92](https://github.com/Bluetooth-Devices/govee-ble/issues/92)) ([`a12d139`](https://github.com/Bluetooth-Devices/govee-ble/commit/a12d139cd29b73bd17225958f13b534425f4f7e1))
+
 ## v0.34.0 (2024-07-16)
 
 ### Feature
