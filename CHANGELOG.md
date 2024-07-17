@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.38.0 (2024-07-17)
+
+### Feature
+
+* Add support for binary sensors ([#97](https://github.com/Bluetooth-Devices/govee-ble/issues/97)) ([`ab22cdb`](https://github.com/Bluetooth-Devices/govee-ble/commit/ab22cdbc291ee95ad107003dad1d7ec001e1f63b))
+
 ## v0.37.0 (2024-07-16)
 
 ### Feature
