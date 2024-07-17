@@ -9,13 +9,18 @@ MIT License applies.
 from __future__ import annotations
 
 from sensor_state_data import (
-    DeviceClass,
+    BinarySensorDeviceClass,
+    BinarySensorValue,
     DeviceKey,
     SensorDescription,
+    SensorDeviceClass,
     SensorDeviceInfo,
     SensorUpdate,
     SensorValue,
     Units,
+)
+from sensor_state_data import (
+    DeviceClass,
 )
 
 from .parser import GoveeBluetoothDeviceData, SensorType, get_model_info, ModelInfo
@@ -24,6 +29,9 @@ __version__ = "0.37.0"
 
 __all__ = [
     "GoveeBluetoothDeviceData",
+    "BinarySensorDeviceClass",
+    "SensorDeviceClass",
+    "BinarySensorValue",
     "SensorType",
     "SensorDescription",
     "SensorDeviceInfo",
