@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.39.1 (2024-07-24)
+
+### Fix
+
+* Vibration sensor is on only and should have been an event ([#100](https://github.com/Bluetooth-Devices/govee-ble/issues/100)) ([`142e7c5`](https://github.com/Bluetooth-Devices/govee-ble/commit/142e7c50bb6db8cdf3f9818c85645280b0bb25fc))
+
 ## v0.39.0 (2024-07-24)
 
 ### Feature
