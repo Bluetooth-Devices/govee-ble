@@ -129,6 +129,7 @@ class SensorType(Enum):
     BUTTON = "button"
     MOTION = "motion"
     WINDOW = "window"
+    VIBRATION = "vibration"
 
 
 @dataclass
@@ -145,6 +146,7 @@ _MODEL_DB = {
     "H5121": ModelInfo("H5121", SensorType.MOTION, 0, True),
     "H5122": ModelInfo("H5122", SensorType.BUTTON, 1, True),
     "H5123": ModelInfo("H5123", SensorType.WINDOW, 0, True),
+    "H5124": ModelInfo("H5124", SensorType.VIBRATION, 0, True),
     "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
     "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
 }
@@ -234,7 +236,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             enc_data = data[6:22]
             enc_crc = data[22:24]
             if not calculate_crc(enc_data) == int.from_bytes(enc_crc, "big"):
-                _LOGGER.warning("CRC check failed for H512x: %s", hex(data))
+                _LOGGER.debug("CRC check failed for H512x: %s", hex(data))
                 return
 
             key = time_ms + bytes(12)
@@ -243,6 +245,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             except ValueError:
                 _LOGGER.warning("Failed to decrypt H512x: %s", hex(data))
                 return
+            _LOGGER.debug("Decrypted H512x: %s - %s", decrypted, decrypted.hex())
             model_id = decrypted[2]
             # GV5121
             # 01040302640100000000000000000000
@@ -253,6 +256,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
             # GV5123
             # 01050202640200000000000000000000
+
+            # GV5124
+            # 01030902640100000000000000000000
 
             # GV5125
             # 01010a02640000000000000000000000
@@ -271,6 +277,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5123")
                 self.set_device_name(f"5123{short_address(address)}")
                 sensor_type = SensorType.WINDOW
+            elif "GV5124" in local_name or model_id == 9:
+                self.set_device_type("H5124")
+                self.set_device_name(f"5124{short_address(address)}")
+                sensor_type = SensorType.VIBRATION
             elif "GV5125" in local_name or model_id == 10:
                 self.set_device_type("H5125")
                 self.set_device_name(f"5125{short_address(address)}")
@@ -289,6 +299,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 # H5123 is a door/window sensor
                 self.update_predefined_binary_sensor(
                     BinarySensorDeviceClass.WINDOW, button_number_pressed == 2
+                )
+            elif sensor_type is SensorType.VIBRATION:
+                # H5124 is a vibration sensor
+                self.update_predefined_binary_sensor(
+                    BinarySensorDeviceClass.VIBRATION, button_number_pressed == 1
                 )
             elif sensor_type is SensorType.MOTION:
                 if button_number_pressed == 1:

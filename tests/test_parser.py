@@ -686,6 +686,19 @@ GV5122_PASSIVE_2_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+GVH5124_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51242F68",
+    address="D3:32:39:37:2F:68",
+    rssi=-67,
+    manufacturer_data={
+        61320: b"\x08\xa2\x00\x01%\xc2YW\xfdzu\x0e\xf24\xa2\x18\xbb\x15F|[s{\x04"
+    },
+    service_data={},
+    service_uuids=[],
+    source="local",
+)
+
+
 def test_can_create():
     GoveeBluetoothDeviceData()
 
@@ -2045,6 +2058,64 @@ def test_gvh5123_closed():
                 device_key=DeviceKey(key="window", device_id=None),
                 name="Window",
                 native_value=False,
+            )
+        },
+        events={},
+    )
+
+
+def test_gvh5124_vibrating():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5124_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.sensor_type is SensorType.VIBRATION
+
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51242F68",
+                model="H5124",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-67,
+            ),
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="vibration", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="vibration", device_id=None),
+                device_class=BinarySensorDeviceClass.VIBRATION,
+            )
+        },
+        binary_entity_values={
+            DeviceKey(key="vibration", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="vibration", device_id=None),
+                name="Vibration",
+                native_value=True,
             )
         },
         events={},
@@ -4062,3 +4133,4 @@ def test_get_model_info():
     assert get_model_info("H5125").button_count == 6
     assert get_model_info("H5126").sensor_type == SensorType.BUTTON
     assert get_model_info("H5126").button_count == 2
+    assert get_model_info("H5124").sensor_type == SensorType.VIBRATION
