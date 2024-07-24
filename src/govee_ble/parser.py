@@ -130,6 +130,7 @@ class SensorType(Enum):
     MOTION = "motion"
     WINDOW = "window"
     VIBRATION = "vibration"
+    PRESENCE = "presence"
 
 
 @dataclass
@@ -149,6 +150,7 @@ _MODEL_DB = {
     "H5124": ModelInfo("H5124", SensorType.VIBRATION, 0, True),
     "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
     "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
+    "H5127": ModelInfo("H5127", SensorType.PRESENCE, 0, True),
 }
 
 
@@ -310,6 +312,20 @@ class GoveeBluetoothDeviceData(BluetoothData):
             else:
                 self.fire_event(f"button_{button_number_pressed}", "press")
             return
+
+        if msg_length == 6 and (
+            data.startswith(b"\xec\x00\x01\x01")
+            and "H5127" in local_name
+            or mgr_id == 0x8803
+        ):
+            self.set_device_type("H5127")
+            self.set_device_name(f"H5127{short_address(address)}")
+            present = data[4] == 1
+            motion = data[5] == 17
+            self.update_predefined_binary_sensor(
+                BinarySensorDeviceClass.OCCUPANCY, present
+            )
+            self.update_predefined_binary_sensor(BinarySensorDeviceClass.MOTION, motion)
 
         if msg_length == 6 and (
             (is_5072 := "H5072" in local_name)
