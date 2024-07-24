@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.40.0 (2024-07-24)
+
+### Feature
+
+* Add support for h5127 ([#101](https://github.com/Bluetooth-Devices/govee-ble/issues/101)) ([`5e84208`](https://github.com/Bluetooth-Devices/govee-ble/commit/5e8420811b07540999bdb8580f13653f2e413a21))
+
 ## v0.39.1 (2024-07-24)
 
 ### Fix
