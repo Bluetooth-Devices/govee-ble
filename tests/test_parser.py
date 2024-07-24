@@ -711,6 +711,37 @@ GVH5124_2_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+GVH5127_MOTION_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH51275E3F",
+    address="D0:C9:07:1B:5E:3F",
+    rssi=-61,
+    manufacturer_data={34819: b"\xec\x00\x01\x01\x01\x11"},
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+GVH5127_PRESENT_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH51275E3F",
+    address="D0:C9:07:1B:5E:3F",
+    rssi=-60,
+    manufacturer_data={34819: b"\xec\x00\x01\x01\x01\x01"},
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+
+
+GVH5127_ABSENT_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH51275E3F",
+    address="D0:C9:07:1B:5E:3F",
+    rssi=-53,
+    manufacturer_data={34819: b"\xec\x00\x01\x01\x00\x00"},
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+
+
 def test_can_create():
     GoveeBluetoothDeviceData()
 
@@ -4196,3 +4227,175 @@ def test_get_model_info():
     assert get_model_info("H5126").sensor_type == SensorType.BUTTON
     assert get_model_info("H5126").button_count == 2
     assert get_model_info("H5124").sensor_type == SensorType.VIBRATION
+    assert get_model_info("H5127").sensor_type == SensorType.PRESENCE
+
+
+def test_gvh5127_motion():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5127_MOTION_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.PRESENCE
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H51275E3F",
+                model="H5127",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            )
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-61,
+            )
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                device_class=BinarySensorDeviceClass.OCCUPANCY,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="motion", device_id=None),
+                device_class=BinarySensorDeviceClass.MOTION,
+            ),
+        },
+        binary_entity_values={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                name="Occupancy",
+                native_value=True,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                native_value=True,
+            ),
+        },
+        events={},
+    )
+
+
+def test_gvh5127_presence():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5127_PRESENT_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.PRESENCE
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H51275E3F",
+                model="H5127",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            )
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-60,
+            )
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                device_class=BinarySensorDeviceClass.OCCUPANCY,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="motion", device_id=None),
+                device_class=BinarySensorDeviceClass.MOTION,
+            ),
+        },
+        binary_entity_values={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                name="Occupancy",
+                native_value=True,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                native_value=False,
+            ),
+        },
+        events={},
+    )
+
+
+def test_gvh5127_absent():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5127_ABSENT_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.PRESENCE
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H51275E3F",
+                model="H5127",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            )
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal " "Strength",
+                native_value=-53,
+            )
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                device_class=BinarySensorDeviceClass.OCCUPANCY,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="motion", device_id=None),
+                device_class=BinarySensorDeviceClass.MOTION,
+            ),
+        },
+        binary_entity_values={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                name="Occupancy",
+                native_value=False,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                native_value=False,
+            ),
+        },
+        events={},
+    )
