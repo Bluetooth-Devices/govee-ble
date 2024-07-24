@@ -302,9 +302,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
             elif sensor_type is SensorType.VIBRATION:
                 # H5124 is a vibration sensor
-                self.update_predefined_binary_sensor(
-                    BinarySensorDeviceClass.VIBRATION, button_number_pressed == 1
-                )
+                if button_number_pressed == 1:
+                    self.fire_event("vibration", "vibration")
             elif sensor_type is SensorType.MOTION:
                 if button_number_pressed == 1:
                     self.fire_event("motion", "motion")
