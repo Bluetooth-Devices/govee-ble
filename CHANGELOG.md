@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.39.0 (2024-07-24)
+
+### Feature
+
+* Add support for h5124 vibration sensors ([#99](https://github.com/Bluetooth-Devices/govee-ble/issues/99)) ([`d88ffd6`](https://github.com/Bluetooth-Devices/govee-ble/commit/d88ffd62e0089b87831ed10b00782a642eca253e))
+
 ## v0.38.0 (2024-07-17)
 
 ### Feature
