@@ -1652,7 +1652,7 @@ def test_gvh5126_button_1():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
         },
@@ -1661,7 +1661,7 @@ def test_gvh5126_button_1():
         events={
             DeviceKey(key="button_1", device_id=None): Event(
                 device_key=DeviceKey(key="button_1", device_id=None),
-                name="Button " "1",
+                name="Button 1",
                 event_type="press",
                 event_properties=None,
             )
@@ -1706,7 +1706,7 @@ def test_gvh5126_button_0():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
         },
@@ -1715,7 +1715,7 @@ def test_gvh5126_button_0():
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
-                name="Button " "0",
+                name="Button 0",
                 event_type="press",
                 event_properties=None,
             )
@@ -1760,7 +1760,7 @@ def test_gvh5125_button_0():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
         },
@@ -1769,7 +1769,7 @@ def test_gvh5125_button_0():
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
-                name="Button " "0",
+                name="Button 0",
                 event_type="press",
                 event_properties=None,
             )
@@ -1814,7 +1814,7 @@ def test_gvh5125_button_1():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
         },
@@ -1823,7 +1823,7 @@ def test_gvh5125_button_1():
         events={
             DeviceKey(key="button_1", device_id=None): Event(
                 device_key=DeviceKey(key="button_1", device_id=None),
-                name="Button " "1",
+                name="Button 1",
                 event_type="press",
                 event_properties=None,
             )
@@ -1868,7 +1868,7 @@ def test_gvh5122_button_0():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
         },
@@ -1877,7 +1877,7 @@ def test_gvh5122_button_0():
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
-                name="Button " "0",
+                name="Button 0",
                 event_type="press",
                 event_properties=None,
             )
@@ -1922,7 +1922,7 @@ def test_gvh5122_passive_button_0():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-68,
             ),
         },
@@ -1931,7 +1931,7 @@ def test_gvh5122_passive_button_0():
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
-                name="Button " "0",
+                name="Button 0",
                 event_type="press",
                 event_properties=None,
             )
@@ -1976,7 +1976,7 @@ def test_gvh5122_passive_2_button_0():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-68,
             ),
         },
@@ -1985,7 +1985,7 @@ def test_gvh5122_passive_2_button_0():
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
-                name="Button " "0",
+                name="Button 0",
                 event_type="press",
                 event_properties=None,
             )
@@ -2023,7 +2023,7 @@ def test_gvh5123_open():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
@@ -2081,7 +2081,7 @@ def test_gvh5123_closed():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
@@ -2144,7 +2144,7 @@ def test_gvh5124_vibrating():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-67,
             ),
         },
@@ -2198,7 +2198,7 @@ def test_gvh5124_vibrating_2():
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-67,
             ),
         },
@@ -2247,7 +2247,7 @@ def test_gvh5121_motion():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
@@ -2301,7 +2301,7 @@ def test_gvh5121_motion_2():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-36,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
@@ -2598,27 +2598,27 @@ def test_gvh5185_variant():
         entity_values={
             DeviceKey(key="temperature_alarm_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
-                name="Temperature " "Alarm " "Probe " "2",
+                name="Temperature Alarm Probe 2",
                 native_value=0.0,
             ),
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=0.0,
             ),
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=25.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
-                name="Temperature " "Probe " "2",
+                name="Temperature Probe 2",
                 native_value=25.0,
             ),
         },
@@ -2674,27 +2674,27 @@ def test_gvh5185_2_variant():
         entity_values={
             DeviceKey(key="temperature_alarm_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_2", device_id=None),
-                name="Temperature " "Alarm " "Probe " "2",
+                name="Temperature Alarm Probe 2",
                 native_value=0.0,
             ),
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=0.0,
             ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
-                name="Temperature " "Probe " "2",
+                name="Temperature Probe 2",
                 native_value=0.0,
             ),
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=0.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
         },
@@ -2848,17 +2848,17 @@ def test_gvh5183_variant():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=28.0,
             ),
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=0.0,
             ),
         },
@@ -3066,17 +3066,17 @@ def test_gvh5181_variant_3():
         entity_values={
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=73.8,
             ),
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=0.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
         },
@@ -3122,17 +3122,17 @@ def test_gvh5181_variant_4():
         entity_values={
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=22.0,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=68.3,
             ),
         },
@@ -3178,17 +3178,17 @@ def test_gvh5181_variant_5():
         entity_values={
             DeviceKey(key="temperature_alarm_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_alarm_probe_1", device_id=None),
-                name="Temperature " "Alarm " "Probe " "1",
+                name="Temperature Alarm Probe 1",
                 native_value=82.2,
             ),
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-56,
             ),
             DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
-                name="Temperature " "Probe " "1",
+                name="Temperature Probe 1",
                 native_value=19.0,
             ),
         },
@@ -4257,7 +4257,7 @@ def test_gvh5127_motion():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-61,
             )
         },
@@ -4314,7 +4314,7 @@ def test_gvh5127_presence():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-60,
             )
         },
@@ -4371,7 +4371,7 @@ def test_gvh5127_absent():
         entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
-                name="Signal " "Strength",
+                name="Signal Strength",
                 native_value=-53,
             )
         },
