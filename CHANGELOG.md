@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.41.0 (2025-01-16)
+
+### Feature
+
+* Add support for H5130 Pressure sensor ([#116](https://github.com/Bluetooth-Devices/govee-ble/issues/116)) ([`5336114`](https://github.com/Bluetooth-Devices/govee-ble/commit/5336114250175ea92217e73d3b5c674e76ffbb2b))
+
 ## v0.40.0 (2024-07-24)
 
 ### Feature
