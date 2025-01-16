@@ -152,7 +152,7 @@ _MODEL_DB = {
     "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
     "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
     "H5127": ModelInfo("H5127", SensorType.PRESENCE, 0, True),
-    "H5130": ModelInfo("H5130", SensorType.PRESSURE, 0, True),
+    "H5130": ModelInfo("H5130", SensorType.PRESSURE, 1, True),
 }
 
 
@@ -320,9 +320,12 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     self.fire_event("motion", "motion")
             elif sensor_type is SensorType.PRESSURE:
                 # H5130 is a pressure sensor
-                self.update_predefined_binary_sensor(
-                    BinarySensorDeviceClass.PRESENCE, button_number_pressed == 1
-                )
+                if button_number_pressed == 16:
+                    self.fire_event("button_0", "press")
+                else:
+                    self.update_predefined_binary_sensor(
+                        BinarySensorDeviceClass.PRESENCE, button_number_pressed == 1
+                    )
             else:
                 self.fire_event(f"button_{button_number_pressed}", "press")
             return
