@@ -4440,7 +4440,7 @@ def test_gvh5130_no_pressure_detected():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5130_OFF_SERVICE_INFO
     result = parser.update(service_info)
-    assert parser.button_count == 0
+    assert parser.button_count == 1
     assert parser.sensor_type is SensorType.PRESSURE
     assert result == SensorUpdate(
         title=None,
@@ -4498,7 +4498,7 @@ def test_gvh5130_pressure_detected():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5130_ON_SERVICE_INFO
     result = parser.update(service_info)
-    assert parser.button_count == 0
+    assert parser.button_count == 1
     assert parser.sensor_type is SensorType.PRESSURE
     assert result == SensorUpdate(
         title=None,
@@ -4556,7 +4556,7 @@ def test_gvh5130_button():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5130_BUTTON_SERVICE_INFO
     result = parser.update(service_info)
-    assert parser.button_count == 0
+    assert parser.button_count == 1
     assert parser.sensor_type is SensorType.PRESSURE
     assert result == SensorUpdate(
         title=None,

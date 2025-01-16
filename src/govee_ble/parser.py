@@ -152,7 +152,7 @@ _MODEL_DB = {
     "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
     "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
     "H5127": ModelInfo("H5127", SensorType.PRESENCE, 0, True),
-    "H5130": ModelInfo("H5130", SensorType.PRESSURE, 0, True),
+    "H5130": ModelInfo("H5130", SensorType.PRESSURE, 1, True),
 }
 
 
