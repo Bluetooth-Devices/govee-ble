@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.42.0 (2025-01-16)
+
+### Feature
+
+* Add support for gvh5130 button ([#117](https://github.com/Bluetooth-Devices/govee-ble/issues/117)) ([`0d499db`](https://github.com/Bluetooth-Devices/govee-ble/commit/0d499db328c19b2403c5d0089224a3fc46300e56))
+
 ## v0.41.0 (2025-01-16)
 
 ### Feature
