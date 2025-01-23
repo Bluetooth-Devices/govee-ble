@@ -464,9 +464,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 9 and (
             "H5178" in local_name or "B5178" in local_name or mgr_id == 0x0001
         ):
-            temp, humi = decode_temp_humid(data[3:6])
-            batt = int(data[6] & 0x7F)
-            err = bool(data[6] & 0x80)
+            temp, humi, batt, err = decode_temp_humid_battery_error(data[3:7])
             sensor_id = data[2]
             device_id = "primary"
             if local_name.startswith("H5178") or local_name.startswith("B5178"):
