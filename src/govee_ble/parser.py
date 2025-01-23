@@ -53,6 +53,13 @@ SIX_PROBES_MAPPING = {
 }
 
 
+def decode_temp_humid_battery_error(data: bytes) -> tuple[float, float, int, bool]:
+    temp, humi = decode_temp_humid(data[0:3])
+    batt = int(data[-1] & 0x7F)
+    err = bool(data[-1] & 0x80)
+    return temp, humi, batt, err
+
+
 def decode_temp_humid(temp_humid_bytes: bytes) -> tuple[float, float]:
     """Decode potential negative temperatures."""
     base_num = (
@@ -355,9 +362,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5075")
             else:
                 self.set_device_type("H5072/H5075")
-            temp, humi = decode_temp_humid(data[1:4])
-            batt = int(data[4] & 0x7F)
-            err = bool(data[4] & 0x80)
+            temp, humi, batt, err = decode_temp_humid_battery_error(data[1:5])
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
@@ -405,9 +410,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5177")
             else:
                 self.set_device_type("H5101/H5102/H5104/H5108/H5174/H5177")
-            temp, humi = decode_temp_humid(data[2:5])
-            batt = int(data[5] & 0x7F)
-            err = bool(data[5] & 0x80)
+            temp, humi, batt, err = decode_temp_humid_battery_error(data[2:6])
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
