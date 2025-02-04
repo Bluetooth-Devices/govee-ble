@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.42.1 (2025-02-04)
+
+### Fix
+
+* Update poetry to v2 + add license to metadata ([#137](https://github.com/Bluetooth-Devices/govee-ble/issues/137)) ([`e61a9cb`](https://github.com/Bluetooth-Devices/govee-ble/commit/e61a9cb4903215bfce3dca7efec140b3a21d6d0b))
+
 ## v0.42.0 (2025-01-16)
 
 ### Feature
