@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.43.0 (2025-02-06)
+
+### Feature
+
+* Add support for newer 5179 firmware ([#140](https://github.com/Bluetooth-Devices/govee-ble/issues/140)) ([`3d0f853`](https://github.com/Bluetooth-Devices/govee-ble/commit/3d0f8535a0ca1b7cf3fa4ed0b7d12c58c776dffb))
+
 ## v0.42.1 (2025-02-04)
 
 ### Fix
