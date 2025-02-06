@@ -388,6 +388,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or (is_5105 := "H5105" in local_name)
             or (is_5174 := "H5174" in local_name)
             or (is_5177 := "H5177" in local_name)
+            or (is_5179 := "GV5179" in local_name)
             or (mgr_id == 0x0001 and msg_length == 8)
         ):
             if is_5108 or msg_length == 8:
@@ -408,8 +409,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5174")
             elif is_5177:
                 self.set_device_type("H5177")
+            elif is_5179:
+                self.set_device_type("GV5179")
             else:
-                self.set_device_type("H5101/H5102/H5104/H5108/H5174/H5177")
+                self.set_device_type("H5101/H5102/H5104/H5108/H5174/H5177/GV5179")
             temp, humi, batt, err = decode_temp_humid_battery_error(data[2:6])
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
