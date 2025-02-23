@@ -52,8 +52,8 @@ pytest-cov = "^6.0"
 
 [tool.semantic_release]
 branch = "main"
-version_toml = "pyproject.toml:project.version"
-version_variable = "src/govee_ble/__init__.py:__version__"
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/govee_ble/__init__.py:__version__"]
 build_command = "pip install poetry && poetry build"
 
 [tool.pytest.ini_options]
