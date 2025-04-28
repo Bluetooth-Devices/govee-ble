@@ -1544,8 +1544,8 @@ def test_gvh5110_1():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5177 2EC8",
-                model="H5177",
+                name="H5110 2EC8",
+                model="H5110",
                 manufacturer="Govee",
                 sw_version=None,
                 hw_version=None,
@@ -1606,8 +1606,8 @@ def test_gvh5110_2():
         title=None,
         devices={
             None: SensorDeviceInfo(
-                name="H5177 2EC8",
-                model="H5177",
+                name="H5110 2EC8",
+                model="H5110",
                 manufacturer="Govee",
                 sw_version=None,
                 hw_version=None,
