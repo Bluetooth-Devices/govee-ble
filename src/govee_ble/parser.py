@@ -1,4 +1,5 @@
-"""Parser for Govee BLE advertisements.
+"""
+Parser for Govee BLE advertisements.
 
 This file is shamelessly copied from the following repository:
 https://github.com/Ernst79/bleparser/blob/c42ae922e1abed2720c7fac993777e1bd59c0c93/package/bleparser/govee.py
@@ -15,9 +16,10 @@ from enum import Enum
 
 from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import BinarySensorDeviceClass, SensorLibrary
+
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,9 +44,9 @@ NOT_GOVEE_MANUFACTURER = {76}
 PROBE_MAPPING_1_2 = [1, 2]
 PROBE_MAPPING_3_4 = [3, 4]
 
-FOUR_PROBES_MAPPING = {
-    sensor_id: PROBE_MAPPING_1_2 for sensor_id in (0x01, 0x41, 0x81, 0xC1)
-} | {sensor_id: PROBE_MAPPING_3_4 for sensor_id in (0x02, 0x42, 0x82, 0xC2)}
+FOUR_PROBES_MAPPING = dict.fromkeys(
+    (1, 65, 129, 193), PROBE_MAPPING_1_2
+) | dict.fromkeys((2, 66, 130, 194), PROBE_MAPPING_3_4)
 
 SIX_PROBES_MAPPING = {
     0: [[1, 0x01], [2, 0x02]],
@@ -338,8 +340,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length == 6 and (
-            data.startswith(b"\xec\x00\x01\x01")
-            and "H5127" in local_name
+            (data.startswith(b"\xec\x00\x01\x01") and "H5127" in local_name)
             or mgr_id == 0x8803
         ):
             self.set_device_type("H5127")
@@ -388,6 +389,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or (is_5105 := "H5105" in local_name)
             or (is_5174 := "H5174" in local_name)
             or (is_5177 := "H5177" in local_name)
+            or (is_5110 := "H5110" in local_name)
             or (is_5179 := "GV5179" in local_name)
             or (mgr_id == 0x0001 and msg_length == 8)
         ):
@@ -409,6 +411,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5174")
             elif is_5177:
                 self.set_device_type("H5177")
+            elif is_5110:
+                self.set_device_type("H5110")
             elif is_5179:
                 self.set_device_type("GV5179")
             else:
