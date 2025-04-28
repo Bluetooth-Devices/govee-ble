@@ -116,7 +116,7 @@ GVH5177_SERVICE_INFO = BluetoothServiceInfo(
 
 
 GVH5110_SERVICE_INFO_1 = BluetoothServiceInfo(
-    name="GVH5177_2EC8",
+    name="GVH5110_2EC8",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
     manufacturer_data={1: b"\x01\x01\x03\x8e\xfed"},
@@ -127,7 +127,7 @@ GVH5110_SERVICE_INFO_1 = BluetoothServiceInfo(
 
 
 GVH5110_SERVICE_INFO_2 = BluetoothServiceInfo(
-    name="GVH5177_2EC8",
+    name="GVH5110_2EC8",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
     manufacturer_data={
