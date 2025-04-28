@@ -1,6 +1,100 @@
 # CHANGELOG
 
 
+## v0.44.0 (2025-04-28)
+
+### Chores
+
+- **ci**: Bump the github-actions group with 2 updates
+  ([#144](https://github.com/Bluetooth-Devices/govee-ble/pull/144),
+  [`29cab59`](https://github.com/Bluetooth-Devices/govee-ble/commit/29cab597fb7ae1790e698afe9188ef729de08bdc))
+
+Bumps the github-actions group with 2 updates:
+  [python-semantic-release/python-semantic-release](https://github.com/python-semantic-release/python-semantic-release)
+  and
+  [python-semantic-release/publish-action](https://github.com/python-semantic-release/publish-action).
+
+Updates `python-semantic-release/python-semantic-release` from 9.17.0 to 9.21.0 - [Release
+  notes](https://github.com/python-semantic-release/python-semantic-release/releases) -
+  [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.rst)
+  -
+  [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/v9.17.0...v9.21.0)
+
+Updates `python-semantic-release/publish-action` from 9.17.0 to 9.21.0 - [Release
+  notes](https://github.com/python-semantic-release/publish-action/releases) -
+  [Changelog](https://github.com/python-semantic-release/publish-action/blob/main/releaserc.toml) -
+  [Commits](https://github.com/python-semantic-release/publish-action/compare/v9.17.0...v9.21.0)
+
+--- updated-dependencies: - dependency-name: python-semantic-release/python-semantic-release
+  dependency-type: direct:production
+
+update-type: version-update:semver-minor
+
+dependency-group: github-actions
+
+- dependency-name: python-semantic-release/publish-action dependency-type: direct:production
+
+dependency-group: github-actions ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#143](https://github.com/Bluetooth-Devices/govee-ble/pull/143),
+  [`8758806`](https://github.com/Bluetooth-Devices/govee-ble/commit/87588061637edba85ef17ca90eb92df2544d0801))
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#146](https://github.com/Bluetooth-Devices/govee-ble/pull/146),
+  [`f224903`](https://github.com/Bluetooth-Devices/govee-ble/commit/f224903ad94662ecd68229ec7001db26e4bf0188))
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#147](https://github.com/Bluetooth-Devices/govee-ble/pull/147),
+  [`b434381`](https://github.com/Bluetooth-Devices/govee-ble/commit/b434381b21b477c40a7b0752fd0097b8f3f84490))
+
+updates: - [github.com/astral-sh/ruff-pre-commit: v0.11.0 →
+  v0.11.2](https://github.com/astral-sh/ruff-pre-commit/compare/v0.11.0...v0.11.2)
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#148](https://github.com/Bluetooth-Devices/govee-ble/pull/148),
+  [`3d01fa8`](https://github.com/Bluetooth-Devices/govee-ble/commit/3d01fa8b868e508449131f80cb252323982aa367))
+
+updates: - [github.com/PyCQA/flake8: 7.1.2 →
+  7.2.0](https://github.com/PyCQA/flake8/compare/7.1.2...7.2.0)
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#149](https://github.com/Bluetooth-Devices/govee-ble/pull/149),
+  [`bde11e7`](https://github.com/Bluetooth-Devices/govee-ble/commit/bde11e75948b23b802ee66b9fa1fc217d17208d8))
+
+updates: - [github.com/commitizen-tools/commitizen: v4.4.1 →
+  v4.5.0](https://github.com/commitizen-tools/commitizen/compare/v4.4.1...v4.5.0) -
+  [github.com/astral-sh/ruff-pre-commit: v0.11.2 →
+  v0.11.4](https://github.com/astral-sh/ruff-pre-commit/compare/v0.11.2...v0.11.4)
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#150](https://github.com/Bluetooth-Devices/govee-ble/pull/150),
+  [`d1fdcd3`](https://github.com/Bluetooth-Devices/govee-ble/commit/d1fdcd3e0b15645ee7228139e096b0767ba3c881))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#152](https://github.com/Bluetooth-Devices/govee-ble/pull/152),
+  [`e6ffe35`](https://github.com/Bluetooth-Devices/govee-ble/commit/e6ffe35bb907fe6654fddd67eab95df097ff1566))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+### Features
+
+- Add support for H5110 ([#153](https://github.com/Bluetooth-Devices/govee-ble/pull/153),
+  [`9fd67ef`](https://github.com/Bluetooth-Devices/govee-ble/commit/9fd67ef312af0b602e7b94ef1594dc0fa772c9b8))
+
+
 ## v0.43.1 (2025-03-05)
 
 ### Bug Fixes
@@ -119,9 +213,7 @@ Bumps [sphinx-rtd-theme](https://github.com/readthedocs/sphinx_rtd_theme) from 2
 
 --- updated-dependencies: - dependency-name: sphinx-rtd-theme dependency-type: direct:production
 
-update-type: version-update:semver-major
-
-...
+update-type: version-update:semver-major ...
 
 Signed-off-by: dependabot[bot] <support@github.com>
 
