@@ -9,7 +9,7 @@ ci:
 
 repos:
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.6.1
+    rev: v4.8.3
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -34,12 +34,12 @@ repos:
       - id: prettier
         args: ["--tab-width", "2"]
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.20.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.8
+    rev: v0.12.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -49,11 +49,11 @@ repos:
     hooks:
       - id: codespell
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.2.0
+    rev: 7.3.0
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
+    rev: v1.16.1
     hooks:
       - id: mypy
         additional_dependencies: []
