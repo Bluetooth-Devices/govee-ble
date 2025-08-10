@@ -892,7 +892,7 @@ GVH5191_SERVICE_INFO = BluetoothServiceInfo(
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
     manufacturer_data={
-        44131: b"\x63\xac\x83\x01\x00\x01\x01L]\x04\x0f\xa0\x13$\xff\xff\n\xf0\xff\xff\xff\xff"
+        44131: b"\x83\x01\x00\x01\x01L]\x04\x0f\xa0\x13$\xff\xff\n\xf0\xff\xff\xff\xff"
     },
     service_uuids=["00009151-0000-1000-8000-00805f9b34fb"],
     service_data={},
