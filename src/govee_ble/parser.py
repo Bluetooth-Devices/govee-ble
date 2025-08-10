@@ -651,7 +651,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_alarm_1,
                 _,
                 temp,
-            ) = PACKED_hhhhh.unpack(data[8:16])
+            ) = PACKED_hhhh.unpack(data[8:16])
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
             )
