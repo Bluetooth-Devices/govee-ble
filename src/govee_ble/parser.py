@@ -29,6 +29,7 @@ PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
 PACKED_hhhchhh_LITTLE = struct.Struct("<hhhchhh")
 
+PACKED_hhhh = struct.Struct(">hhhh")
 PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 PACKED_hhhhhh = struct.Struct(">hhhhhh")
