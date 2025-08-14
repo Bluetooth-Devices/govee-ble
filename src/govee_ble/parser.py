@@ -29,6 +29,7 @@ PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
 PACKED_hhhchhh_LITTLE = struct.Struct("<hhhchhh")
 
+PACKED_hhhh = struct.Struct(">hhhh")
 PACKED_hhbhh = struct.Struct(">hhbhh")
 PACKED_hhhhh = struct.Struct(">hhhhh")
 PACKED_hhhhhh = struct.Struct(">hhhhhh")
@@ -636,6 +637,27 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             self.update_temp_probe_with_alarm(
                 decode_temps_probes(temp_probe_2), decode_temps_probes(temp_alarm_2), 2
+            )
+            return
+
+        if msg_length == 20 and (
+            "H5191" in local_name
+            or mgr_id == 0xAC63
+            or "00009151-0000-1000-8000-00805f9b34fb" in service_uuids
+        ):
+            self.set_device_type("H5191")
+            self.set_device_name(f"H5191 {short_address(address)}")
+            (
+                temp_probe_1,
+                temp_alarm_1,
+                _,
+                temp,
+            ) = PACKED_hhhh.unpack(data[8:16])
+            self.update_temp_probe_with_alarm(
+                decode_temps_probes(temp_probe_1), decode_temps_probes(temp_alarm_1), 1
+            )
+            self.update_predefined_sensor(
+                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
             )
             return
 
