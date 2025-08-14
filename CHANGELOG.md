@@ -1,6 +1,168 @@
 # CHANGELOG
 
 
+## v0.45.0 (2025-08-14)
+
+### Chores
+
+- Add more coverage for GVH5110 ([#170](https://github.com/Bluetooth-Devices/govee-ble/pull/170),
+  [`44071f8`](https://github.com/Bluetooth-Devices/govee-ble/commit/44071f8b280319e0b69c3c51595c9d2ef8934a8c))
+
+- **deps**: Bump bluetooth-data-tools from 1.23.3 to 1.28.1
+  ([#162](https://github.com/Bluetooth-Devices/govee-ble/pull/162),
+  [`0489c2a`](https://github.com/Bluetooth-Devices/govee-ble/commit/0489c2a1db9da807db735c221c97df651a871d6c))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump bluetooth-data-tools from 1.28.1 to 1.28.2
+  ([#179](https://github.com/Bluetooth-Devices/govee-ble/pull/179),
+  [`57e45a5`](https://github.com/Bluetooth-Devices/govee-ble/commit/57e45a5dde203a0285c32a5096eb2ed6c0c08944))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump bluetooth-sensor-state-data from 1.7.1 to 1.7.5
+  ([#156](https://github.com/Bluetooth-Devices/govee-ble/pull/156),
+  [`620b44f`](https://github.com/Bluetooth-Devices/govee-ble/commit/620b44fcf1ee8bfced833da0555a34e30b8c023f))
+
+- **deps**: Bump cryptography from 44.0.0 to 44.0.1
+  ([#155](https://github.com/Bluetooth-Devices/govee-ble/pull/155),
+  [`18d0edf`](https://github.com/Bluetooth-Devices/govee-ble/commit/18d0edf47baa593765ec3fb59ec2d88737581be7))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump cryptography from 44.0.1 to 44.0.2
+  ([#159](https://github.com/Bluetooth-Devices/govee-ble/pull/159),
+  [`cc525de`](https://github.com/Bluetooth-Devices/govee-ble/commit/cc525decab60271826bcd36226b662f96d5bc032))
+
+- **deps**: Bump cryptography from 44.0.2 to 44.0.3
+  ([#164](https://github.com/Bluetooth-Devices/govee-ble/pull/164),
+  [`4ed69e1`](https://github.com/Bluetooth-Devices/govee-ble/commit/4ed69e16c410832a45c28d52caefc2c2f4e655c2))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump cryptography from 44.0.3 to 45.0.2
+  ([#167](https://github.com/Bluetooth-Devices/govee-ble/pull/167),
+  [`a94ccce`](https://github.com/Bluetooth-Devices/govee-ble/commit/a94ccce1618eccd44334d3af499b262a5accdcee))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump cryptography from 45.0.2 to 45.0.3
+  ([#168](https://github.com/Bluetooth-Devices/govee-ble/pull/168),
+  [`ef97655`](https://github.com/Bluetooth-Devices/govee-ble/commit/ef9765529ec403f688cb40e3d797dec151d2ccf0))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump cryptography from 45.0.3 to 45.0.5
+  ([#177](https://github.com/Bluetooth-Devices/govee-ble/pull/177),
+  [`190e57c`](https://github.com/Bluetooth-Devices/govee-ble/commit/190e57cadb1beb4759c83ded460495e2bc9956c9))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump cryptography from 45.0.5 to 45.0.6
+  ([#182](https://github.com/Bluetooth-Devices/govee-ble/pull/182),
+  [`ddbce27`](https://github.com/Bluetooth-Devices/govee-ble/commit/ddbce27ee6d6d553a2747f63ae8064b048a57c2c))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump jinja2 from 3.1.5 to 3.1.6
+  ([#154](https://github.com/Bluetooth-Devices/govee-ble/pull/154),
+  [`a2fd9d1`](https://github.com/Bluetooth-Devices/govee-ble/commit/a2fd9d1afd2f4c3f1a5df7b35c2cf3e98c0e829d))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump myst-parser from 3.0.1 to 4.0.1
+  ([#158](https://github.com/Bluetooth-Devices/govee-ble/pull/158),
+  [`9324b62`](https://github.com/Bluetooth-Devices/govee-ble/commit/9324b6295d3bbe3ba7cdce102254e30a6f2b8108))
+
+Bumps [myst-parser](https://github.com/executablebooks/MyST-Parser) from 3.0.1 to 4.0.1. - [Release
+  notes](https://github.com/executablebooks/MyST-Parser/releases) -
+  [Changelog](https://github.com/executablebooks/MyST-Parser/blob/master/CHANGELOG.md) -
+  [Commits](https://github.com/executablebooks/MyST-Parser/compare/v3.0.1...v4.0.1)
+
+--- updated-dependencies: - dependency-name: myst-parser dependency-version: 4.0.1
+
+dependency-type: direct:production
+
+update-type: version-update:semver-major ...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump requests from 2.32.3 to 2.32.4
+  ([#172](https://github.com/Bluetooth-Devices/govee-ble/pull/172),
+  [`1ef32dd`](https://github.com/Bluetooth-Devices/govee-ble/commit/1ef32dd4a9e617f04c277c734442e06e8727a369))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump sensor-state-data from 2.18.1 to 2.19.0
+  ([#180](https://github.com/Bluetooth-Devices/govee-ble/pull/180),
+  [`42e09f6`](https://github.com/Bluetooth-Devices/govee-ble/commit/42e09f6fe6d404557db59420a504d6b438f3d737))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump sphinx from 7.4.7 to 8.1.3
+  ([#163](https://github.com/Bluetooth-Devices/govee-ble/pull/163),
+  [`4c9d9c4`](https://github.com/Bluetooth-Devices/govee-ble/commit/4c9d9c48f80cc8cf71ceeb4ba8ee15ef55b90d31))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps**: Bump urllib3 from 2.3.0 to 2.5.0
+  ([#175](https://github.com/Bluetooth-Devices/govee-ble/pull/175),
+  [`4053e68`](https://github.com/Bluetooth-Devices/govee-ble/commit/4053e6812a7e5759f70d4095f58a1f68935d16a4))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps-dev**: Bump pytest from 8.3.4 to 8.3.5
+  ([#157](https://github.com/Bluetooth-Devices/govee-ble/pull/157),
+  [`ec2a87f`](https://github.com/Bluetooth-Devices/govee-ble/commit/ec2a87f8d071ce05db5f7b562309ee36aea54f06))
+
+- **deps-dev**: Bump pytest from 8.3.5 to 8.4.1
+  ([#176](https://github.com/Bluetooth-Devices/govee-ble/pull/176),
+  [`24bc49d`](https://github.com/Bluetooth-Devices/govee-ble/commit/24bc49d5f4e18c2f52993b27209952296692dd5f))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **deps-dev**: Bump pytest-cov from 6.0.0 to 6.1.1
+  ([#160](https://github.com/Bluetooth-Devices/govee-ble/pull/160),
+  [`3a38e71`](https://github.com/Bluetooth-Devices/govee-ble/commit/3a38e71ec342bf677abab7b546dc3ca2c00140ca))
+
+- **deps-dev**: Bump pytest-cov from 6.1.1 to 6.2.1
+  ([#173](https://github.com/Bluetooth-Devices/govee-ble/pull/173),
+  [`8c993c1`](https://github.com/Bluetooth-Devices/govee-ble/commit/8c993c1df8307e874b3c53ee3a5c74fe98c97d24))
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#161](https://github.com/Bluetooth-Devices/govee-ble/pull/161),
+  [`a0f7c41`](https://github.com/Bluetooth-Devices/govee-ble/commit/a0f7c4148449fb3815144dde71c73f7f4eb9a3c8))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#165](https://github.com/Bluetooth-Devices/govee-ble/pull/165),
+  [`0a19fdf`](https://github.com/Bluetooth-Devices/govee-ble/commit/0a19fdf8bd6414144ed1c1cad539a226a9a8a843))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#166](https://github.com/Bluetooth-Devices/govee-ble/pull/166),
+  [`3289ead`](https://github.com/Bluetooth-Devices/govee-ble/commit/3289ead82c96546fdab26e44349fed196360152c))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+- **pre-commit.ci**: Pre-commit autoupdate
+  ([#178](https://github.com/Bluetooth-Devices/govee-ble/pull/178),
+  [`a6d4ede`](https://github.com/Bluetooth-Devices/govee-ble/commit/a6d4ede722ec1e82d7f8fa68a0e51d0cb3c5f4d9))
+
+Co-authored-by: pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
+
+### Features
+
+- Add support for H5191 ([#181](https://github.com/Bluetooth-Devices/govee-ble/pull/181),
+  [`363f8e2`](https://github.com/Bluetooth-Devices/govee-ble/commit/363f8e286e208869bbcc41db7ff9ee5e99a87e65))
+
+
 ## v0.44.0 (2025-04-28)
 
 ### Chores
