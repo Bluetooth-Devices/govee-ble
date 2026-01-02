@@ -380,6 +380,64 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
+        if msg_length == 8 and ("GV5112" in local_name or "H5112" in local_name):
+            self.set_device_type("H5112")
+            self.set_device_name(f"H5112 {short_address(address)}")
+
+            # Last byte specifies the probe id: 41 for probe 1, 82 for probe 2
+            probe_id = 0
+            if data[7] == 0x41:
+                probe_id = 1
+            elif data[7] == 0x82:
+                probe_id = 2
+            else:
+                _LOGGER.debug(
+                    "Unknown probe id: %s for a H5112, data: %s",
+                    data[7],
+                    hex(data),
+                )
+                return
+
+            temp, humi, batt, err = decode_temp_humid_battery_error(data[2:6])
+            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS,
+                    temp,
+                    key=f"temperature_probe_{probe_id}",
+                    name=f"Temperature Probe {probe_id}",
+                )
+                if probe_id == 1:
+                    self.update_predefined_sensor(
+                        SensorLibrary.HUMIDITY__PERCENTAGE,
+                        humi,
+                        key=f"humidity_probe_{probe_id}",
+                        name=f"Humidity Probe {probe_id}"
+                    )
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, probe: %d, temperature: %.1f, humidity: %.1f, error: %s",
+                    probe_id,
+                    temp,
+                    humi,
+                    err,
+                )
+                self.update_predefined_sensor(
+                    SensorLibrary.TEMPERATURE__CELSIUS,
+                    ERROR,
+                    key=f"temperature_probe_{probe_id}",
+                    name=f"Temperature Probe {probe_id}",
+                )
+                if probe_id == 1:
+                    self.update_predefined_sensor(
+                        SensorLibrary.HUMIDITY__PERCENTAGE,
+                        ERROR,
+                        key=f"humidity_probe_{probe_id}",
+                        name=f"Humidity Probe {probe_id}"
+                    )
+
+            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            return
+
         if msg_length in (6, 8) and (
             (is_5108 := "H5108" in local_name)
             or (is_5100 := "H5100" in local_name)
