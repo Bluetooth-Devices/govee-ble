@@ -942,9 +942,7 @@ GVH5112_SERVICE_INFO_PROBE_1 = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
-    manufacturer_data={
-        1: b"\x01\x01\x03\x3D\x70\x64\x00\x41"
-    },
+    manufacturer_data={1: b"\x01\x01\x03\x3d\x70\x64\x00\x41"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
@@ -954,13 +952,12 @@ GVH5112_SERVICE_INFO_PROBE_2 = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
-    manufacturer_data={
-        1: b"\x01\x01\x03\x49\x28\x64\x00\x82"
-    },
+    manufacturer_data={1: b"\x01\x01\x03\x49\x28\x64\x00\x82"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
 )
+
 
 def test_can_create():
     GoveeBluetoothDeviceData()
@@ -1088,6 +1085,7 @@ def test_gvh5052():
             ),
         },
     )
+
 
 def test_gvh5054():
     parser = GoveeBluetoothDeviceData()

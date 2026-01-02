@@ -411,7 +411,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                         SensorLibrary.HUMIDITY__PERCENTAGE,
                         humi,
                         key=f"humidity_probe_{probe_id}",
-                        name=f"Humidity Probe {probe_id}"
+                        name=f"Humidity Probe {probe_id}",
                     )
             else:
                 _LOGGER.debug(
@@ -432,7 +432,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                         SensorLibrary.HUMIDITY__PERCENTAGE,
                         ERROR,
                         key=f"humidity_probe_{probe_id}",
-                        name=f"Humidity Probe {probe_id}"
+                        name=f"Humidity Probe {probe_id}",
                     )
 
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
