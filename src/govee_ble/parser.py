@@ -401,12 +401,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             if MIN_TEMP <= temp <= MAX_TEMP and not err:
                 self.update_temp_probe(temp, probe_id)
                 if probe_id == 1:
-                    self.update_predefined_sensor(
-                        SensorLibrary.HUMIDITY__PERCENTAGE,
-                        humi,
-                        key=f"humidity_probe_{probe_id}",
-                        name=f"Humidity Probe {probe_id}",
-                    )
+                    self.update_humidity_probe(humi, probe_id)
             else:
                 _LOGGER.debug(
                     "Ignoring invalid sensor values, probe: %d, temperature: %.1f, humidity: %.1f, error: %s",
@@ -417,12 +412,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
                 self.update_temp_probe(ERROR, probe_id)
                 if probe_id == 1:
-                    self.update_predefined_sensor(
-                        SensorLibrary.HUMIDITY__PERCENTAGE,
-                        ERROR,
-                        key=f"humidity_probe_{probe_id}",
-                        name=f"Humidity Probe {probe_id}",
-                    )
+                    self.update_humidity_probe(ERROR, probe_id)
 
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
@@ -801,12 +791,21 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
     def update_temp_probe(self, temp: float | str, probe_id: int) -> None:
-        """Update the temperature probe with the alarm temperature."""
+        """Update the temperature probe."""
         self.update_predefined_sensor(
             SensorLibrary.TEMPERATURE__CELSIUS,
             temp,
             key=f"temperature_probe_{probe_id}",
             name=f"Temperature Probe {probe_id}",
+        )
+
+    def update_humidity_probe(self, humi: float | str, probe_id: int) -> None:
+        """Update the humidity probe."""
+        self.update_predefined_sensor(
+            SensorLibrary.HUMIDITY__PERCENTAGE,
+            humi,
+            key=f"humidity_probe_{probe_id}",
+            name=f"Humidity Probe {probe_id}",
         )
 
     def update_temp_probe_with_alarm(
