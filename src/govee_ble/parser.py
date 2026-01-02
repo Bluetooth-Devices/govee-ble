@@ -16,10 +16,9 @@ from enum import Enum
 
 from bluetooth_data_tools import short_address
 from bluetooth_sensor_state_data import BluetoothData
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import BinarySensorDeviceClass, SensorLibrary
-
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -399,13 +398,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 return
 
             temp, humi, batt, err = decode_temp_humid_battery_error(data[2:6])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
-                self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS,
-                    temp,
-                    key=f"temperature_probe_{probe_id}",
-                    name=f"Temperature Probe {probe_id}",
-                )
+            if MIN_TEMP <= temp <= MAX_TEMP and not err:
+                self.update_temp_probe(temp, probe_id)
                 if probe_id == 1:
                     self.update_predefined_sensor(
                         SensorLibrary.HUMIDITY__PERCENTAGE,
@@ -421,12 +415,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     humi,
                     err,
                 )
-                self.update_predefined_sensor(
-                    SensorLibrary.TEMPERATURE__CELSIUS,
-                    ERROR,
-                    key=f"temperature_probe_{probe_id}",
-                    name=f"Temperature Probe {probe_id}",
-                )
+                self.update_temp_probe(ERROR, probe_id)
                 if probe_id == 1:
                     self.update_predefined_sensor(
                         SensorLibrary.HUMIDITY__PERCENTAGE,
@@ -811,7 +800,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             )
             return
 
-    def update_temp_probe(self, temp: float, probe_id: int) -> None:
+    def update_temp_probe(self, temp: float | str, probe_id: int) -> None:
         """Update the temperature probe with the alarm temperature."""
         self.update_predefined_sensor(
             SensorLibrary.TEMPERATURE__CELSIUS,
