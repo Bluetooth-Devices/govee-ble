@@ -5382,7 +5382,7 @@ def test_gvh5112_probe_unknown():
             )
         },
         entity_descriptions={
-           DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
                 device_class=DeviceClass.SIGNAL_STRENGTH,
                 native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
@@ -5481,7 +5481,7 @@ def test_gvh5112_probe_2_error():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-           DeviceKey(key="battery", device_id=None): SensorDescription(
+            DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
                 native_unit_of_measurement=Units.PERCENTAGE,
