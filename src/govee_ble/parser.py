@@ -417,6 +417,32 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
+        if msg_length == 8 and "5140" in local_name:
+            self.set_device_type("H5140")
+            temp, humi = decode_temp_humid(data[2:5])
+            co2 = int.from_bytes(data[5:7], "big")
+            err = bool(data[7])
+            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+                self.update_predefined_sensor(
+                    SensorLibrary.CO2__CONCENTRATION_PARTS_PER_MILLION, co2
+                )
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, co2: %d, error: %s",
+                    temp,
+                    humi,
+                    co2,
+                    err,
+                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+                self.update_predefined_sensor(
+                    SensorLibrary.CO2__CONCENTRATION_PARTS_PER_MILLION, ERROR
+                )
+            return
+
         if msg_length in (6, 8) and (
             (is_5108 := "H5108" in local_name)
             or (is_5100 := "H5100" in local_name)
