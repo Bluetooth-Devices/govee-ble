@@ -27,6 +27,7 @@ PACKED_hHB_LITTLE = struct.Struct("<hHB")
 PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
 PACKED_hhhchhh_LITTLE = struct.Struct("<hhhchhh")
+PACKED_H = struct.Struct(">H")
 
 PACKED_hhhh = struct.Struct(">hhhh")
 PACKED_hhbhh = struct.Struct(">hhbhh")
@@ -415,6 +416,32 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     self.update_humidity_probe(ERROR, probe_id)
 
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            return
+
+        if msg_length == 8 and "5140" in local_name:
+            self.set_device_type("H5140")
+            temp, humi = decode_temp_humid(data[2:5])
+            (co2,) = PACKED_H.unpack(data[5:7])
+            err = bool(data[7])
+            if MIN_TEMP <= temp <= MAX_TEMP and not err:
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+                self.update_predefined_sensor(
+                    SensorLibrary.CO2__CONCENTRATION_PARTS_PER_MILLION, co2
+                )
+            else:
+                _LOGGER.debug(
+                    "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, co2: %d, error: %s",
+                    temp,
+                    humi,
+                    co2,
+                    err,
+                )
+                self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+                self.update_predefined_sensor(
+                    SensorLibrary.CO2__CONCENTRATION_PARTS_PER_MILLION, ERROR
+                )
             return
 
         if msg_length in (6, 8) and (
