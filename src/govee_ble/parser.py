@@ -422,7 +422,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             temp, humi = decode_temp_humid(data[2:5])
             co2 = int.from_bytes(data[5:7], "big")
             err = bool(data[7])
-            if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
+            if MIN_TEMP <= temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
                 self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
                 self.update_predefined_sensor(
