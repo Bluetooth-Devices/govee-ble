@@ -5804,6 +5804,122 @@ def test_gvh5112_probe_2_error():
     )
 
 
+# Real-world raw packets reported in issue #227.
+# Setup: probe 1 in refrigerator (~+4.5°C), probe 2 in freezer (~-19°C).
+# The "BAD" packets show byte 7 (probe id) disagreeing with the sign bit
+# encoded in byte 2 — almost certainly a Govee firmware/proxy mislabeling.
+# The parser currently trusts byte 7 unconditionally and routes the reading
+# to the wrong probe.
+GVH5112_ISSUE_227_PROBE_2_NEGATIVE = BluetoothServiceInfo(
+    name="GV5112AC3D",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={1: bytes.fromhex("010182eaa9640082")},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+GVH5112_ISSUE_227_PROBE_1_REFRIGERATOR = BluetoothServiceInfo(
+    name="GV5112AC3D",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={1: bytes.fromhex("010100a0b9640041")},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+# BAD packet from issue #227: byte 2 = 0x00 (positive temp / probe 1 sign)
+# but byte 7 = 0x82 (probe 2). Decodes to +4.5°C and routes to probe 2.
+GVH5112_ISSUE_227_BAD_PROBE_ID_HIGH = BluetoothServiceInfo(
+    name="GV5112AC3D",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={1: bytes.fromhex("010100b0c2640082")},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+# BAD packet from issue #227: byte 2 = 0x82 (negative temp / probe 2 sign)
+# but byte 7 = 0x41 (probe 1). Decodes to -17.5°C and routes to probe 1.
+GVH5112_ISSUE_227_BAD_PROBE_ID_LOW = BluetoothServiceInfo(
+    name="GV5112AC3D",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={1: bytes.fromhex("010182acae640041")},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
+def test_gvh5112_negative_temperature_probe_2():
+    """Real-world packet: freezer probe at -19.10°C with humidity 14.5%."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5112_ISSUE_227_PROBE_2_NEGATIVE)
+    values = result.entity_values
+    assert (
+        values[DeviceKey(key="temperature_probe_2", device_id=None)].native_value
+        == -19.1
+    )
+    assert values[DeviceKey(key="battery", device_id=None)].native_value == 100
+    # Humidity probe 2 is not exposed (only probe 1 has a humidity sensor)
+    assert DeviceKey(key="humidity_probe_2", device_id=None) not in values
+
+
+def test_gvh5112_real_world_probe_1():
+    """Real-world packet: refrigerator probe at +4.10°C with humidity 14.5%."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5112_ISSUE_227_PROBE_1_REFRIGERATOR)
+    values = result.entity_values
+    assert (
+        values[DeviceKey(key="temperature_probe_1", device_id=None)].native_value == 4.1
+    )
+    assert (
+        values[DeviceKey(key="humidity_probe_1", device_id=None)].native_value == 14.5
+    )
+
+
+def test_gvh5112_issue_227_bad_probe_id_high_documents_bug():
+    """Issue #227: byte 7 says probe 2, but byte 2 (sign) and the decoded
+    +4.5°C reading point to probe 1.
+
+    Parser currently trusts byte 7 and routes this stray reading to probe 2,
+    causing the freezer history to spike to refrigerator-range temperatures.
+    Test pins the buggy behaviour so a future fix has a clear before/after.
+    """
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5112_ISSUE_227_BAD_PROBE_ID_HIGH)
+    values = result.entity_values
+    # Currently wrongly routed to probe 2:
+    assert (
+        values[DeviceKey(key="temperature_probe_2", device_id=None)].native_value == 4.5
+    )
+
+
+def test_gvh5112_issue_227_bad_probe_id_low_documents_bug():
+    """Issue #227: byte 7 says probe 1, but byte 2 sign bit and the decoded
+    -17.5°C reading point to probe 2.
+
+    Parser currently trusts byte 7 and routes this stray reading to probe 1,
+    causing the refrigerator history to dip to freezer-range temperatures.
+    """
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5112_ISSUE_227_BAD_PROBE_ID_LOW)
+    values = result.entity_values
+    # Currently wrongly routed to probe 1:
+    assert (
+        values[DeviceKey(key="temperature_probe_1", device_id=None)].native_value
+        == -17.5
+    )
+    # Humidity from the same bad packet also lands on probe 1
+    assert (
+        values[DeviceKey(key="humidity_probe_1", device_id=None)].native_value == 27.8
+    )
+
+
 def test_get_model_info():
     assert get_model_info("H5074").sensor_type == SensorType.THERMOMETER
     assert get_model_info("H5075").sensor_type == SensorType.THERMOMETER

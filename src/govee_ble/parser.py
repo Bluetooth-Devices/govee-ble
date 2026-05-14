@@ -384,7 +384,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5112")
             self.set_device_name(f"H5112 {short_address(address)}")
 
-            # Last byte specifies the probe id: 41 for probe 1, 82 for probe 2
+            # Last byte specifies the probe id: 41 for probe 1, 82 for probe 2.
+            # NOTE: Real-world traces (see issue #227) show that this byte is
+            # occasionally inconsistent with the temperature payload in
+            # bytes [2:5] — e.g. a positive-sign reading arrives with the
+            # probe 2 marker, or vice versa. The parser currently trusts byte 7,
+            # which causes one probe's history to be polluted with the other
+            # probe's readings. A protocol-level fix requires more data on the
+            # actual H5112 encoding; for now we expose the raw behaviour.
             probe_id = 0
             if data[7] == 0x41:
                 probe_id = 1
