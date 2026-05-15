@@ -384,22 +384,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5112")
             self.set_device_name(f"H5112 {short_address(address)}")
 
-            # Bit 7 of byte 7 is a redundant copy of the temperature sign bit
-            # (bit 7 of byte 2). On a well-formed packet the two always agree:
-            # probe 1 (byte 7 == 0x41, bit 7 clear) ↔ positive sign; probe 2
-            # (byte 7 == 0x82, bit 7 set) ↔ negative sign. A 1001-packet
-            # capture in #227 shows ~0.8% of advertisements arriving with the
-            # two bits disagreeing — a firmware race between the temperature
-            # payload and the probe-id update. Drop those rather than route
-            # one probe's reading into the other probe's history.
-            if (data[2] & 0x80) != (data[7] & 0x80):
-                _LOGGER.debug(
-                    "Ignoring H5112 packet with sign/probe-id mismatch: %s",
-                    data.hex(),
-                )
-                return
-
             # Last byte specifies the probe id: 41 for probe 1, 82 for probe 2.
+            # NOTE: Real-world traces (see issue #227) show that this byte is
+            # occasionally inconsistent with the temperature payload in
+            # bytes [2:5] — e.g. a positive-sign reading arrives with the
+            # probe 2 marker, or vice versa. The parser currently trusts byte 7,
+            # which causes one probe's history to be polluted with the other
+            # probe's readings. A protocol-level fix requires more data on the
+            # actual H5112 encoding; for now we expose the raw behaviour.
             probe_id = 0
             if data[7] == 0x41:
                 probe_id = 1
