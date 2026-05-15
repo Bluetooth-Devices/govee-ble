@@ -1,5 +1,6 @@
 import logging
 
+import pytest
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
 from govee_ble.parser import GoveeBluetoothDeviceData, SensorType, get_model_info
 from sensor_state_data import (
@@ -996,17 +997,21 @@ GVH5112_SERVICE_INFO_PROBE_2 = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
-    manufacturer_data={1: b"\x01\x01\x03\x49\x28\x64\x00\x82"},
+    # Byte 2 sign bit set (negative temp) is consistent with byte 7 = 0x82
+    # (probe 2). See issue #227.
+    manufacturer_data={1: b"\x01\x01\x83\x49\x28\x64\x00\x82"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
 )
 
+# Unknown probe id (0x99): bit 7 set, so byte 2 sign must also be set to
+# pass the consistency check and reach the unknown-probe handler.
 GVH5112_SERVICE_INFO_PROBE_UNKNOWN = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
-    manufacturer_data={1: b"\x01\x01\x03\x49\x28\x64\x00\x99"},
+    manufacturer_data={1: b"\x01\x01\x83\x49\x28\x64\x00\x99"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
@@ -1026,7 +1031,7 @@ GVH5112_SERVICE_INFO_PROBE_2_ERROR = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
     rssi=-56,
-    manufacturer_data={1: b"\x01\x01\x03\x49\x28\xe4\x00\x82"},
+    manufacturer_data={1: b"\x01\x01\x83\x49\x28\xe4\x00\x82"},
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
     source="local",
@@ -5642,7 +5647,7 @@ def test_gvh5112_probe_2():
             DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
                 name="Temperature Probe 2",
-                native_value=21.5,
+                native_value=-21.5,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -5807,9 +5812,11 @@ def test_gvh5112_probe_2_error():
 # Real-world raw packets reported in issue #227.
 # Setup: probe 1 in refrigerator (~+4.5°C), probe 2 in freezer (~-19°C).
 # The "BAD" packets show byte 7 (probe id) disagreeing with the sign bit
-# encoded in byte 2 — almost certainly a Govee firmware/proxy mislabeling.
-# The parser currently trusts byte 7 unconditionally and routes the reading
-# to the wrong probe.
+# encoded in byte 2. A 1001-packet capture from the same device confirms
+# bit 7 of byte 7 is a redundant copy of the byte-2 sign bit on every
+# well-formed packet (993/993), and is violated on every corrupt packet
+# (8/8). The parser drops mismatched packets to avoid polluting one
+# probe's history with the other probe's readings.
 GVH5112_ISSUE_227_PROBE_2_NEGATIVE = BluetoothServiceInfo(
     name="GV5112AC3D",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
@@ -5882,42 +5889,63 @@ def test_gvh5112_real_world_probe_1():
     )
 
 
-def test_gvh5112_issue_227_bad_probe_id_high_documents_bug():
-    """Issue #227: byte 7 says probe 2, but byte 2 (sign) and the decoded
-    +4.5°C reading point to probe 1.
+def test_gvh5112_issue_227_bad_probe_id_high_dropped():
+    """Issue #227: byte 7 says probe 2 (0x82) but byte 2 sign is positive.
 
-    Parser currently trusts byte 7 and routes this stray reading to probe 2,
-    causing the freezer history to spike to refrigerator-range temperatures.
-    Test pins the buggy behaviour so a future fix has a clear before/after.
+    Packet is dropped — neither probe receives a reading.
     """
     parser = GoveeBluetoothDeviceData()
     result = parser.update(GVH5112_ISSUE_227_BAD_PROBE_ID_HIGH)
     values = result.entity_values
-    # Currently wrongly routed to probe 2:
-    assert (
-        values[DeviceKey(key="temperature_probe_2", device_id=None)].native_value == 4.5
-    )
+    assert DeviceKey(key="temperature_probe_1", device_id=None) not in values
+    assert DeviceKey(key="temperature_probe_2", device_id=None) not in values
 
 
-def test_gvh5112_issue_227_bad_probe_id_low_documents_bug():
-    """Issue #227: byte 7 says probe 1, but byte 2 sign bit and the decoded
-    -17.5°C reading point to probe 2.
+def test_gvh5112_issue_227_bad_probe_id_low_dropped():
+    """Issue #227: byte 7 says probe 1 (0x41) but byte 2 sign is negative.
 
-    Parser currently trusts byte 7 and routes this stray reading to probe 1,
-    causing the refrigerator history to dip to freezer-range temperatures.
+    Packet is dropped — neither probe receives a reading.
     """
     parser = GoveeBluetoothDeviceData()
     result = parser.update(GVH5112_ISSUE_227_BAD_PROBE_ID_LOW)
     values = result.entity_values
-    # Currently wrongly routed to probe 1:
-    assert (
-        values[DeviceKey(key="temperature_probe_1", device_id=None)].native_value
-        == -17.5
+    assert DeviceKey(key="temperature_probe_1", device_id=None) not in values
+    assert DeviceKey(key="temperature_probe_2", device_id=None) not in values
+
+
+# All 8 corrupt packets observed in the 1001-packet capture from
+# #issuecomment-4456837225. Each is rejected by the sign/probe-id rule;
+# none should reach either probe.
+GVH5112_ISSUE_227_CAPTURE_BAD_PACKETS = [
+    "010182c01c640041",  # #0033
+    "010100c406640082",  # #0039
+    "010182db0d640041",  # #0196
+    "010100c019640082",  # #0304
+    "010182c3af640041",  # #0352
+    "01018309eb640041",  # #0380
+    "0101827589640041",  # #0502
+    "0101831182640041",  # #0752
+]
+
+
+@pytest.mark.parametrize("raw_hex", GVH5112_ISSUE_227_CAPTURE_BAD_PACKETS)
+def test_gvh5112_issue_227_capture_bad_packets_dropped(raw_hex: str) -> None:
+    """Every corrupt packet from the 1001-packet capture is dropped."""
+    service_info = BluetoothServiceInfo(
+        name="GV5112AC3D",
+        address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+        rssi=-56,
+        manufacturer_data={1: bytes.fromhex(raw_hex)},
+        service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
     )
-    # Humidity from the same bad packet also lands on probe 1
-    assert (
-        values[DeviceKey(key="humidity_probe_1", device_id=None)].native_value == 27.8
-    )
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(service_info)
+    values = result.entity_values
+    assert DeviceKey(key="temperature_probe_1", device_id=None) not in values
+    assert DeviceKey(key="temperature_probe_2", device_id=None) not in values
+    assert DeviceKey(key="humidity_probe_1", device_id=None) not in values
 
 
 def test_get_model_info():
