@@ -43,12 +43,12 @@ accumulated on the instance.
 
 After at least one successful `update()`, the instance exposes:
 
-| Attribute | Description |
-|---|---|
-| `device.device_type` | Govee model id, e.g. `"H5075"`. `None` until the first packet is decoded. |
-| `device.sensor_type` | A `SensorType` enum: `THERMOMETER`, `BUTTON`, `MOTION`, `WINDOW`, `VIBRATION`, `PRESENCE`, or `PRESSURE`. |
-| `device.button_count` | Number of buttons, for button-bearing models. |
-| `device.sleepy` | `True` for battery-powered sleep-and-wake devices that only advertise on events. |
+| Attribute             | Description                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------- |
+| `device.device_type`  | Govee model id, e.g. `"H5075"`. `None` until the first packet is decoded.                                 |
+| `device.sensor_type`  | A `SensorType` enum: `THERMOMETER`, `BUTTON`, `MOTION`, `WINDOW`, `VIBRATION`, `PRESENCE`, or `PRESSURE`. |
+| `device.button_count` | Number of buttons, for button-bearing models.                                                             |
+| `device.sleepy`       | `True` for battery-powered sleep-and-wake devices that only advertise on events.                          |
 
 `get_model_info(model_id)` returns the same metadata without needing
 an instance:
