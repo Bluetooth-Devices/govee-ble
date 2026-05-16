@@ -687,6 +687,34 @@ GVH5178_SERVICE_INFO_ERROR = BluetoothServiceInfo(
 )
 
 
+GVH5178_PRIMARY_SERVICE_INFO = BluetoothServiceInfo(
+    name="B51782BC8",
+    address="A4:C1:38:75:2B:C8",
+    rssi=-66,
+    manufacturer_data={
+        1: b"\x01\x01\x00\x00\x2a\xf7\x64\x00\x03",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\xc2",
+    },
+    service_data={},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    source="local",
+)
+
+
+GVH5178_UNKNOWN_SENSOR_SERVICE_INFO = BluetoothServiceInfo(
+    name="B51782BC8",
+    address="A4:C1:38:75:2B:C8",
+    rssi=-66,
+    manufacturer_data={
+        1: b"\x01\x01\x07\x00\x2a\xf7\x64\x00\x03",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\xc2",
+    },
+    service_data={},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    source="local",
+)
+
+
 GVH5179_SERVICE_INFO = BluetoothServiceInfo(
     name="Govee_H5179_3CD5",
     address="10F1A254-16A5-9F35-BE40-7034507A6967",
@@ -876,6 +904,20 @@ GVH5184_SERVICE_INFO_2 = BluetoothServiceInfo(
     rssi=-56,
     manufacturer_data={
         6966: b" \x01\x00\x01\x01\xe4\x02\x86\x0b\xb8\xff\xff\x86\x0bT\xff\xff",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c",
+    },
+    service_uuids=["00008451-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
+GVH5184_UNKNOWN_SENSOR_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH5184_XXXX",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={
+        6966: b" \x01\x00\x01\x01\xe4\xff\x86\x0c\x1c\xff\xff\x86\n\xf0\xff\xff",
         76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c",
     },
     service_uuids=["00008451-0000-1000-8000-00805f9b34fb"],
@@ -4155,6 +4197,106 @@ def test_gvh5178_error():
     )
 
 
+def test_gvh5178_primary():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5178_PRIMARY_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.device_type == "H5178"
+    assert result == SensorUpdate(
+        title="B51782BC8",
+        devices={
+            None: SensorDeviceInfo(
+                name=None,
+                model=None,
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            ),
+            "primary": SensorDeviceInfo(
+                name="B51782BC8 Primary",
+                model="H5178",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            ),
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature", device_id="primary"): SensorDescription(
+                device_key=DeviceKey(key="temperature", device_id="primary"),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="humidity", device_id="primary"): SensorDescription(
+                device_key=DeviceKey(key="humidity", device_id="primary"),
+                device_class=DeviceClass.HUMIDITY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="battery", device_id="primary"): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id="primary"),
+                device_class=DeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id="primary"): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id="primary"),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature", device_id="primary"): SensorValue(
+                device_key=DeviceKey(key="temperature", device_id="primary"),
+                name="Temperature",
+                native_value=1.0,
+            ),
+            DeviceKey(key="humidity", device_id="primary"): SensorValue(
+                device_key=DeviceKey(key="humidity", device_id="primary"),
+                name="Humidity",
+                native_value=99.9,
+            ),
+            DeviceKey(key="battery", device_id="primary"): SensorValue(
+                device_key=DeviceKey(key="battery", device_id="primary"),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id="primary"): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id="primary"),
+                name="Signal Strength",
+                native_value=-66,
+            ),
+        },
+    )
+
+
+def test_gvh5178_unknown_sensor_id():
+    """Pins current behaviour for an unknown H5178 sensor_id (not 0 or 1).
+
+    The parser still sets the title, decodes the readings, and emits them
+    under device_id="primary" (the initial default) — but never registers a
+    SensorDeviceInfo for that device_id because the set_device_name/type/
+    manufacturer calls live behind the ``sensor_id == 0`` branch. Values
+    therefore arrive orphaned from any device entry, which is a latent
+    inconsistency worth pinning before any future fix.
+    """
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5178_UNKNOWN_SENSOR_SERVICE_INFO
+    result = parser.update(service_info)
+    # set_device_type also lives inside the sensor_id branches, so an unknown
+    # id leaves device_type unset on the parser.
+    assert parser.device_type is None
+    assert result.title == "B51782BC8"
+    # No SensorDeviceInfo is registered for "primary" on an unknown sensor_id.
+    assert "primary" not in result.devices
+    assert set(result.devices) == {None}
+    # Readings still route to device_id="primary" — the default initial value
+    # before the sensor_id branches.
+    temp_key = DeviceKey(key="temperature", device_id="primary")
+    humi_key = DeviceKey(key="humidity", device_id="primary")
+    batt_key = DeviceKey(key="battery", device_id="primary")
+    assert result.entity_values[temp_key].native_value == 1.0
+    assert result.entity_values[humi_key].native_value == 99.9
+    assert result.entity_values[batt_key].native_value == 100
+
+
 def test_gvh5179():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5179_SERVICE_INFO
@@ -4993,6 +5135,44 @@ def test_gvh5184_packet_type_2():
                 name="Temperature Alarm Probe 4",
                 native_value=0.0,
             ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-56,
+            ),
+        },
+    )
+
+
+def test_gvh5184_unknown_sensor_id():
+    """Pins current H5184 behaviour for a sensor_id outside FOUR_PROBES_MAPPING.
+
+    The parser sets the device type/name and reports signal_strength, then
+    returns early before emitting any temperature probes — so an unrecognised
+    sensor_id silently drops the probe data instead of guessing a mapping.
+    """
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5184_UNKNOWN_SENSOR_SERVICE_INFO
+    result = parser.update(service_info)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5184 AC3D",
+                model="H5184",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
             DeviceKey(key="signal_strength", device_id=None): SensorValue(
                 device_key=DeviceKey(key="signal_strength", device_id=None),
                 name="Signal Strength",
