@@ -429,6 +429,22 @@ GVH5121_MOTION_SERVICE_INFO_2 = BluetoothServiceInfo(
 )
 
 
+# Same payload as GVH5121_MOTION_SERVICE_INFO but the trailing CRC bytes
+# (data[22:24]) were overwritten with 0x0000 to force a CRC mismatch on the
+# 24-byte encrypted H512/3x dispatch path.
+GVH5121_MOTION_BAD_CRC_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV5121195A",
+    address="C1:37:37:32:0F:45",
+    rssi=-36,
+    manufacturer_data={
+        61320: b"Y\x94\x00\x00\xf0\xb9\x197\xaeP\xb67,\x86j\xc2\xf3\xd0a\xe7\x17\xc0\x00\x00"
+    },
+    service_data={},
+    service_uuids=[],
+    source="24:4C:AB:03:E6:B8",
+)
+
+
 GVH5122_PASSIVE_SERVICE_INFO = BluetoothServiceInfo(
     name="D2:32:39:37:56:34",
     address="D2:32:39:37:56:34",
@@ -3009,6 +3025,34 @@ def test_gvh5121_motion_2():
                 event_properties=None,
             )
         },
+    )
+
+
+def test_gvh512x_bad_crc_dropped():
+    """A 24-byte encrypted packet with a corrupted CRC is silently dropped.
+
+    Pins the parser's defensive early-return at the CRC check: no model is
+    set, no entity descriptions/values are emitted, and no events fire. Only
+    the device name and manufacturer from `_start_update` survive.
+    """
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5121_MOTION_BAD_CRC_SERVICE_INFO)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="5121195A",
+                model=None,
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={},
+        entity_values={},
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={},
     )
 
 
