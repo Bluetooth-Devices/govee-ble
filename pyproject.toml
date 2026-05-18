@@ -71,10 +71,6 @@ exclude_lines = [
     "raise NotImplementedError",
 ]
 
-[tool.isort]
-profile = "black"
-known_first_party = ["govee_ble", "tests"]
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_any_generics = true
