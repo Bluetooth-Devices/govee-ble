@@ -16,7 +16,7 @@ dynamic = ["classifiers", "dependencies", "optional-dependencies"]
 
 [tool.poetry]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Operating System :: OS Independent",
