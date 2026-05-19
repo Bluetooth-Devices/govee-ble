@@ -35,7 +35,7 @@ diff against device captures.
 poetry install                    # install (incl. dev deps)
 poetry run pytest                 # run tests with coverage
 poetry run pytest tests/test_parser.py::test_h5075 -v   # single test
-poetry run pre-commit run -a      # full lint pass (ruff, mypy, flake8, codespell, …)
+poetry run pre-commit run -a      # full lint pass (ruff, mypy, codespell, …)
 ```
 
 `make` is not used here — Poetry + pre-commit only.
@@ -44,9 +44,8 @@ poetry run pre-commit run -a      # full lint pass (ruff, mypy, flake8, codespel
 
 - **Python 3.10+** (`from __future__ import annotations` everywhere).
   `pyupgrade --py310-plus` runs in pre-commit.
-- **Line length: 88** (ruff default). `.flake8` allows 120 but ruff-format
-  rewrites to 88, so write to 88. Long log/error strings that ruff leaves alone
-  are the only exception.
+- **Line length: 88** (ruff default). ruff-format rewrites to 88, so write to
+  88. Long log/error strings that ruff leaves alone are the only exception.
 - **Type hints required** on all non-test code (`disallow_untyped_defs = true`
   in mypy strict config). Tests are exempt.
 - **Conventional Commits** are enforced by commitlint in CI and by commitizen
@@ -70,7 +69,7 @@ poetry run pre-commit run -a      # full lint pass (ruff, mypy, flake8, codespel
 
 ## CI gates a PR must pass
 
-1. `pre-commit.ci` — ruff, ruff-format, flake8, mypy, codespell, pyupgrade,
+1. `pre-commit.ci` — ruff, ruff-format, mypy, codespell, pyupgrade,
    prettier, commitizen, plus the standard pre-commit-hooks.
 2. `Lint Commit Messages` — commitlint, conventional commits.
 3. `test (3.10 / 3.11 / 3.12 / 3.13 / 3.14, ubuntu-latest)` — full pytest.
