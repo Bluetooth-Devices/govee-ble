@@ -44,8 +44,7 @@ poetry run pre-commit run -a      # full lint pass (ruff, mypy, codespell, …)
 
 - **Python 3.10+** (`from __future__ import annotations` everywhere).
   `pyupgrade --py310-plus` runs in pre-commit.
-- **Line length: 88** (ruff default). ruff-format rewrites to 88, so write to
-  88. Long log/error strings that ruff leaves alone are the only exception.
+- **Line length: 88** (ruff default). ruff-format rewrites to 88, so write to 88. Long log/error strings that ruff leaves alone are the only exception.
 - **Type hints required** on all non-test code (`disallow_untyped_defs = true`
   in mypy strict config). Tests are exempt.
 - **Conventional Commits** are enforced by commitlint in CI and by commitizen
