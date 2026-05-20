@@ -48,10 +48,6 @@ repos:
     rev: v2.4.2
     hooks:
       - id: codespell
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v2.0.0
     hooks:
