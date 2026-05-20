@@ -11,6 +11,7 @@ from __future__ import annotations
 from sensor_state_data import (
     BinarySensorDeviceClass,
     BinarySensorValue,
+    DeviceClass,
     DeviceKey,
     SensorDescription,
     SensorDeviceClass,
@@ -19,11 +20,8 @@ from sensor_state_data import (
     SensorValue,
     Units,
 )
-from sensor_state_data import (
-    DeviceClass,
-)
 
-from .parser import GoveeBluetoothDeviceData, SensorType, get_model_info, ModelInfo
+from .parser import GoveeBluetoothDeviceData, ModelInfo, SensorType, get_model_info
 
 __version__ = "1.2.0"
 
