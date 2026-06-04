@@ -112,7 +112,7 @@ def decode_humi_from_4_bytes(packet_value: int) -> float:
 
 
 def decode_pm25_from_4_bytes(packet_value: int) -> int:
-    """Decode humidity values"""
+    """Decode PM2.5 values"""
     packet_value &= 0x7FFFFFFF
     return int(packet_value % 1000)
 
