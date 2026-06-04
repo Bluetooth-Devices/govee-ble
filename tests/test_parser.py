@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from sensor_state_data import (
     BinarySensorDescription,
     BinarySensorDeviceClass,
@@ -15,7 +16,57 @@ from sensor_state_data import (
     Units,
 )
 
-from govee_ble.parser import GoveeBluetoothDeviceData, SensorType, get_model_info
+from govee_ble.parser import (
+    GoveeBluetoothDeviceData,
+    SensorType,
+    calculate_crc,
+    get_model_info,
+)
+
+
+def _build_h512x_packet(
+    model_id: int,
+    battery: int,
+    button: int,
+    *,
+    time_ms: bytes = b"\x00\x00\x00\x00",
+    prefix: bytes = b"\x01\x01",
+) -> bytes:
+    """Build a synthetic 24-byte encrypted H512/3x advertisement payload.
+
+    The real captures decode the same way: ``data[2:6]`` is the AES key seed
+    (``time_ms``), ``data[6:22]`` is the AES-ECB ciphertext, and ``data[22:24]``
+    is the CRC over the ciphertext. The parser decrypts with
+    ``key = time_ms + bytes(12)`` and reads ``model_id`` at plaintext byte 2,
+    battery at byte 4, and the button/state code at byte 5.
+
+    This re-encryption rig lets tests exercise the encrypted-model dispatch and
+    its error branches without a captured packet for every model/state pair.
+    ``decrypt_data`` reverses the byte order around the cipher, so encryption
+    mirrors that to round-trip cleanly.
+    """
+    key = time_ms + bytes(12)
+    plaintext = bytes([0x01, 0x04, model_id, 0x02, battery, button] + [0] * 10)
+    cipher = Cipher(algorithms.AES(key[::-1]), modes.ECB())
+    encryptor = cipher.encryptor()
+    enc_data = (encryptor.update(plaintext[::-1]) + encryptor.finalize())[::-1]
+    crc = calculate_crc(enc_data)
+    packet = prefix + time_ms + enc_data + crc.to_bytes(2, "big")
+    assert len(packet) == 24
+    return packet
+
+
+def _h512x_service_info(name: str, payload: bytes) -> BluetoothServiceInfo:
+    return BluetoothServiceInfo(
+        name=name,
+        address="C1:37:37:32:0F:45",
+        rssi=-36,
+        manufacturer_data={61320: payload},
+        service_data={},
+        service_uuids=[],
+        source="local",
+    )
+
 
 GVH5051_SERVICE_INFO = BluetoothServiceInfo(
     name="",
@@ -3426,6 +3477,25 @@ def test_gvh5121_motion_2():
     )
 
 
+def test_gvh5121_motion_idle():
+    """An H5121 packet with state code != 1 registers the device but fires no
+    motion event.
+
+    Pins the ``button_number_pressed == 1`` guard on the MOTION branch: battery
+    and signal strength are still emitted, but the motion event is suppressed.
+    """
+    parser = GoveeBluetoothDeviceData()
+    packet = _build_h512x_packet(model_id=3, battery=100, button=0)
+    result = parser.update(_h512x_service_info("GV5121195A", packet))
+    assert parser.sensor_type is SensorType.MOTION
+    assert result.events == {}
+    assert result.devices[None].model == "H5121"
+    assert (
+        result.entity_values[DeviceKey(key="battery", device_id=None)].native_value
+        == 100
+    )
+
+
 def test_gvh512x_bad_crc_dropped():
     """A 24-byte encrypted packet with a corrupted CRC is silently dropped.
 
@@ -3440,6 +3510,36 @@ def test_gvh512x_bad_crc_dropped():
         devices={
             None: SensorDeviceInfo(
                 name="5121195A",
+                model=None,
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={},
+        entity_values={},
+        binary_entity_descriptions={},
+        binary_entity_values={},
+        events={},
+    )
+
+
+def test_gvh512x_unknown_model_dropped():
+    """A 24-byte encrypted packet whose decrypted model id is unknown is dropped.
+
+    Pins the ``else: return`` at the end of the encrypted-model dispatch: a
+    valid CRC and a clean AES decrypt still yield nothing when the model id
+    matches no known device and the local name carries no ``GV512x`` hint. Only
+    the device name and manufacturer from ``_start_update`` survive.
+    """
+    parser = GoveeBluetoothDeviceData()
+    packet = _build_h512x_packet(model_id=99, battery=100, button=0)
+    result = parser.update(_h512x_service_info("GVxxxxxx", packet))
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="xxxxxx",
                 model=None,
                 manufacturer="Govee",
                 sw_version=None,
@@ -3944,6 +4044,25 @@ def test_gvh5126_button_0():
                 event_properties=None,
             )
         },
+    )
+
+
+def test_gvh5124_idle():
+    """An H5124 packet with state code != 1 registers the device but fires no
+    vibration event.
+
+    Pins the ``button_number_pressed == 1`` guard on the VIBRATION branch:
+    battery and signal strength are still emitted, but no vibration event fires.
+    """
+    parser = GoveeBluetoothDeviceData()
+    packet = _build_h512x_packet(model_id=9, battery=100, button=0)
+    result = parser.update(_h512x_service_info("GV51242F68", packet))
+    assert parser.sensor_type is SensorType.VIBRATION
+    assert result.events == {}
+    assert result.devices[None].model == "H5124"
+    assert (
+        result.entity_values[DeviceKey(key="battery", device_id=None)].native_value
+        == 100
     )
 
 
