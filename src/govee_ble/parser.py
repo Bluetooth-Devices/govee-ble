@@ -384,7 +384,20 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.set_device_type("H5112")
             self.set_device_name(f"H5112 {short_address(address)}")
 
-            # Last byte specifies the probe id: 41 for probe 1, 82 for probe 2
+            # The last byte is the probe id: 0x41 = probe 1, 0x82 = probe 2.
+            # This is the ONLY field that distinguishes the two probes; the
+            # temperature/humidity payload (data[2:6]) carries no probe marker.
+            #
+            # Govee firmware writes the probe id and the measurement payload
+            # non-atomically, so a small fraction (~0.8%) of advertisements
+            # pair one probe's id with the other probe's reading (issue #227).
+            # Such a swapped packet is byte-for-byte indistinguishable from a
+            # legitimate reading where that probe happens to sit at the swapped
+            # value (e.g. 010100b0c2640082: byte7=0x82/probe 2 yet temp=+4.5C,
+            # a probe-1 fridge reading). There is no deployment-independent,
+            # per-packet way to detect the swap, so the parser stays faithful
+            # to byte7; any de-glitching must live upstream where cross-packet
+            # state exists.
             probe_id = 0
             if data[7] == 0x41:
                 probe_id = 1
