@@ -98,6 +98,23 @@ GVH5055_SERVICE_INFO_ERROR = BluetoothServiceInfo(
 )
 
 
+# sensor_ids byte (data[3]) = 0x02: maps to probe group 0 but with the first
+# probe's selector bit (0x01) cleared and the second's (0x02) set, so only
+# probe 2 reports — exercises the "first probe bit not set" dispatch branch.
+GVH5055_SERVICE_INFO_PROBE_2_ONLY = BluetoothServiceInfo(
+    name="",
+    address="A4:C1:38:2F:AF:55",
+    rssi=-63,
+    manufacturer_data={
+        44847: b"U\x00d\x02 \x1a\x00\xff\xff\xff\xff \x19\x00\xff\xff\xff\xff\x00\x00",
+        76: b"\x02\x15INTELLI_ROCKS_HWPr\xf2\xff\xc2",
+    },
+    service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 GVH5071_SERVICE_INFO = BluetoothServiceInfo(
     name="Govee_H5071_FD12",
     address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
@@ -1639,6 +1656,73 @@ def test_gvh5055_error(caplog):
     assert (
         "Parsing Govee sensor: 44847 b'\\x55\\x00\\x64\\xfb\\x20\\x1a\\x00\\xff\\xff\\xb1"
         "\\x00\\x20\\x19\\x00\\xff\\xff\\xff\\xff\\x00\\x00'" in caplog.text
+    )
+
+
+def test_gvh5055_unknown_sensor_no_debug():
+    """An H5055 packet whose sensor_ids map to no probe group drops the probe
+    data and reports no temperature. With debug logging off, the unknown-sensor
+    branch returns silently — no "Unknown sensor id" line is emitted."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5055_SERVICE_INFO_ERROR)
+    probe_keys = [
+        key.key
+        for key in result.entity_values
+        if key.key.startswith("temperature_probe")
+    ]
+    assert probe_keys == []
+
+
+def test_gvh5055_first_probe_bit_cleared():
+    """sensor_ids = 0x02 selects probe group 0 with the first probe's bit
+    cleared and the second's set, so only probe 2 reports a temperature."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5055_SERVICE_INFO_PROBE_2_ONLY)
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H5055 AF55",
+                model="H5055",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=DeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=DeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                name="Temperature Probe 2",
+                native_value=25,
+            ),
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-63,
+            ),
+        },
     )
 
 
@@ -5431,6 +5515,17 @@ def test_gvh5184_packet_type_2():
     )
 
 
+def test_gvh5184_unknown_sensor_id_debug_logs(caplog):
+    """With debug logging on, an H5184 sensor_id outside FOUR_PROBES_MAPPING
+    emits an "Unknown sensor id ... for a H5184" debug line before dropping the
+    probe data."""
+    parser = GoveeBluetoothDeviceData()
+    with caplog.at_level(logging.DEBUG):
+        parser.update(GVH5184_UNKNOWN_SENSOR_SERVICE_INFO)
+    assert "Unknown sensor id" in caplog.text
+    assert "for a H5184" in caplog.text
+
+
 def test_gvh5184_unknown_sensor_id():
     """Pins current H5184 behaviour for a sensor_id outside FOUR_PROBES_MAPPING.
 
@@ -5977,6 +6072,17 @@ def test_gvh5198_probe_3_4():
             ),
         },
     )
+
+
+def test_gvh5198_invalid_debug_logs(caplog):
+    """With debug logging on, an H5198 sensor_id outside FOUR_PROBES_MAPPING
+    emits an "Unknown sensor id ... for a H5198" debug line before dropping the
+    probe data."""
+    parser = GoveeBluetoothDeviceData()
+    with caplog.at_level(logging.DEBUG):
+        parser.update(GVH5198_INVALID_SERVICE_INFO)
+    assert "Unknown sensor id" in caplog.text
+    assert "for a H5198" in caplog.text
 
 
 def test_gvh5198_invalid():
