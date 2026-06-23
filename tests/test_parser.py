@@ -1,5 +1,6 @@
 import logging
 
+import pytest
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
 from sensor_state_data import (
     BinarySensorDescription,
@@ -1659,7 +1660,7 @@ def test_gvh5055_error(caplog):
     )
 
 
-def test_gvh5055_unknown_sensor_no_debug():
+def test_gvh5055_unknown_sensor_no_debug(caplog: pytest.LogCaptureFixture) -> None:
     """An H5055 packet whose sensor_ids map to no probe group drops the probe
     data and reports no temperature. With debug logging off, the unknown-sensor
     branch returns silently — no "Unknown sensor id" line is emitted."""
@@ -1671,9 +1672,10 @@ def test_gvh5055_unknown_sensor_no_debug():
         if key.key.startswith("temperature_probe")
     ]
     assert probe_keys == []
+    assert "Unknown sensor id" not in caplog.text
 
 
-def test_gvh5055_first_probe_bit_cleared():
+def test_gvh5055_first_probe_bit_cleared() -> None:
     """sensor_ids = 0x02 selects probe group 0 with the first probe's bit
     cleared and the second's set, so only probe 2 reports a temperature."""
     parser = GoveeBluetoothDeviceData()
@@ -5515,7 +5517,9 @@ def test_gvh5184_packet_type_2():
     )
 
 
-def test_gvh5184_unknown_sensor_id_debug_logs(caplog):
+def test_gvh5184_unknown_sensor_id_debug_logs(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """With debug logging on, an H5184 sensor_id outside FOUR_PROBES_MAPPING
     emits an "Unknown sensor id ... for a H5184" debug line before dropping the
     probe data."""
@@ -6074,7 +6078,7 @@ def test_gvh5198_probe_3_4():
     )
 
 
-def test_gvh5198_invalid_debug_logs(caplog):
+def test_gvh5198_invalid_debug_logs(caplog: pytest.LogCaptureFixture) -> None:
     """With debug logging on, an H5198 sensor_id outside FOUR_PROBES_MAPPING
     emits an "Unknown sensor id ... for a H5198" debug line before dropping the
     probe data."""
