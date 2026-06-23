@@ -187,6 +187,30 @@ GVH5075_SERVICE_INFO_OTHER_VALUES = BluetoothServiceInfo(
 )
 
 
+GVH5072_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH5072_ABCD",
+    address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
+    rssi=-63,
+    manufacturer_data={60552: b"\x00\x03M\xb2d\x00"},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
+# Same 6-byte EC88 payload, but discovered only by manufacturer id (no
+# H5072/H5075 substring in the name) — exercises the shared-model fallback.
+GVH5072_75_GENERIC_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_ABCD",
+    address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
+    rssi=-63,
+    manufacturer_data={60552: b"\x00\x03M\xb2d\x00"},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 GVH5100_SERVICE_INFO = BluetoothServiceInfo(
     name="GVH5100_7738",
     address="C4:35:33:33:77:38",
@@ -751,6 +775,22 @@ GVH5178_UNKNOWN_SENSOR_SERVICE_INFO = BluetoothServiceInfo(
     rssi=-66,
     manufacturer_data={
         1: b"\x01\x01\x07\x00\x2a\xf7\x64\x00\x03",
+        76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\xc2",
+    },
+    service_data={},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    source="local",
+)
+
+
+# 9-byte mgr-id-0x0001 H5178 payload discovered without an "H5178"/"B5178"
+# name prefix — exercises the "H5178" title fallback.
+GVH5178_NO_NAME_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_1234",
+    address="A4:C1:38:75:2B:C8",
+    rssi=-66,
+    manufacturer_data={
+        1: b"\x01\x01\x01\x00\x2a\xf7\x64\x00\x03",
         76: b"\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\xc2",
     },
     service_data={},
@@ -1789,6 +1829,33 @@ def test_gvh5075():
             ),
         },
     )
+
+
+def test_gvh5072():
+    """An H5072 advertised with its model in the name registers as H5072."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5072_SERVICE_INFO)
+    assert parser.device_type == "H5072"
+    temp_key = DeviceKey(key="temperature", device_id=None)
+    humi_key = DeviceKey(key="humidity", device_id=None)
+    batt_key = DeviceKey(key="battery", device_id=None)
+    assert result.entity_values[temp_key].native_value == 21.6
+    assert result.entity_values[humi_key].native_value == 49.8
+    assert result.entity_values[batt_key].native_value == 100
+
+
+def test_gvh5072_75_generic_by_mfr_id():
+    """A 6-byte EC88 payload with no model in the name falls back to the shared
+    H5072/H5075 device type and still decodes its readings."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5072_75_GENERIC_SERVICE_INFO)
+    assert parser.device_type == "H5072/H5075"
+    temp_key = DeviceKey(key="temperature", device_id=None)
+    humi_key = DeviceKey(key="humidity", device_id=None)
+    batt_key = DeviceKey(key="battery", device_id=None)
+    assert result.entity_values[temp_key].native_value == 21.6
+    assert result.entity_values[humi_key].native_value == 49.8
+    assert result.entity_values[batt_key].native_value == 100
 
 
 def test_gvh5075_2():
@@ -4494,6 +4561,27 @@ def test_gvh5178_unknown_sensor_id():
     assert result.entity_values[temp_key].native_value == 1.0
     assert result.entity_values[humi_key].native_value == 99.9
     assert result.entity_values[batt_key].native_value == 100
+
+
+def test_gvh5178_title_fallback_without_name_prefix():
+    """An H5178 discovered only by manufacturer id (no H5178/B5178 name prefix)
+    falls back to the literal "H5178" title while still decoding the reading."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5178_NO_NAME_SERVICE_INFO)
+    assert result.title == "H5178"
+    # sensor_id == 1 routes the reading to the remote device.
+    temp_key = DeviceKey(key="temperature", device_id="remote")
+    assert result.entity_values[temp_key].native_value == 1.0
+    assert "remote" in result.devices
+
+
+def test_gvh5178_unknown_sensor_id_debug_logs(caplog):
+    """With debug logging on, an unknown H5178 sensor_id emits a debug line
+    (and the hex() helper renders the raw bytes without raising)."""
+    parser = GoveeBluetoothDeviceData()
+    with caplog.at_level(logging.DEBUG):
+        parser.update(GVH5178_UNKNOWN_SENSOR_SERVICE_INFO)
+    assert "Unknown sensor id for Govee H5178" in caplog.text
 
 
 def test_gvh5179():
