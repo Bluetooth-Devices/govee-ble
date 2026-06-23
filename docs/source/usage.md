@@ -43,7 +43,7 @@ belongs here and what does not.
 
 The split is intentional: `govee-ble` stays a connection-free parser so it
 can be used anywhere advertisement bytes are available, while anything that
-needs to *talk back* to a device lives in a connection-based package.
+needs to _talk back_ to a device lives in a connection-based package.
 
 ## Quick start
 
