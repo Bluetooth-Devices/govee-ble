@@ -6,6 +6,45 @@ connections — feed it raw advertisement data and it returns a
 [`SensorUpdate`](https://github.com/Bluetooth-Devices/sensor-state-data)
 describing what was decoded.
 
+## Scope
+
+This library has a deliberately narrow scope: **decode passive BLE
+advertisements from Govee sensor devices**. That boundary defines what
+belongs here and what does not.
+
+**In scope**
+
+- Parsing raw advertisement payloads (manufacturer data, service data,
+  local name) into `SensorUpdate` readings.
+- Sensor and event devices: thermometers, hygrometers, BBQ/meat probes,
+  motion/occupancy, door/window, vibration, presence, pressure pads,
+  buttons, and CO₂/air-quality monitors. See
+  [Supported devices](#supported-devices).
+- Stateless, pure per-packet decoding (beyond the small accumulator
+  needed for multi-packet protocols such as the H5178 primary/remote
+  pair). The parser never opens a connection.
+
+**Out of scope**
+
+- **Active GATT control** — connecting to a device, writing
+  characteristics, polling, or sending commands. This library only
+  reads advertisements; it does not import `bleak` or hold connections.
+- **Light / LED control** — Govee BLE lights that require a GATT
+  connection to switch on/off, set brightness, or change colour belong
+  in [`led-ble`](https://github.com/Bluetooth-Devices/led-ble), the
+  org's active-control library for Telink-style LED devices. For
+  example, the iHoment/Govee H6196 light controller raised in
+  [issue #259](https://github.com/Bluetooth-Devices/govee-ble/issues/259)
+  is out of scope here — it advertises a writable Telink service and
+  needs an active connection, which is `led-ble`'s domain.
+- **Smoothing, de-glitching, or filtering readings** — these are
+  stateful concerns that belong in the consumer (e.g. Home Assistant),
+  not in a pure parser.
+
+The split is intentional: `govee-ble` stays a connection-free parser so it
+can be used anywhere advertisement bytes are available, while anything that
+needs to *talk back* to a device lives in a connection-based package.
+
 ## Quick start
 
 ```python
