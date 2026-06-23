@@ -152,9 +152,13 @@ class ModelInfo:
     sensor_type: SensorType
     button_count: int
     sleepy: bool
+    # Payload lives only in the scan response, so the device must be actively
+    # scanned long enough to capture one full broadcast cycle.
+    requires_active_scan: bool = False
 
 
 _MODEL_DB = {
+    "H5074": ModelInfo("H5074", SensorType.THERMOMETER, 0, False, True),
     "H5121": ModelInfo("H5121", SensorType.MOTION, 0, True),
     "H5122": ModelInfo("H5122", SensorType.BUTTON, 1, True),
     "H5123": ModelInfo("H5123", SensorType.WINDOW, 0, True),
@@ -225,6 +229,13 @@ class GoveeBluetoothDeviceData(BluetoothData):
         device_type = self.device_type
         assert device_type is not None
         return get_model_info(device_type).sleepy
+
+    @property
+    def requires_active_scan(self) -> bool:
+        """Return if the device must be actively scanned to read its payload."""
+        device_type = self.device_type
+        assert device_type is not None
+        return get_model_info(device_type).requires_active_scan
 
     def _process_mfr_data(
         self,
