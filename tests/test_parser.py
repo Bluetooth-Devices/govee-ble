@@ -3477,7 +3477,7 @@ def test_gvh5121_motion_2():
     )
 
 
-def test_gvh5121_motion_idle():
+def test_gvh5121_motion_idle() -> None:
     """An H5121 packet with state code != 1 registers the device but fires no
     motion event.
 
@@ -3524,7 +3524,7 @@ def test_gvh512x_bad_crc_dropped():
     )
 
 
-def test_gvh512x_unknown_model_dropped():
+def test_gvh512x_unknown_model_dropped() -> None:
     """A 24-byte encrypted packet whose decrypted model id is unknown is dropped.
 
     Pins the ``else: return`` at the end of the encrypted-model dispatch: a
@@ -4047,7 +4047,7 @@ def test_gvh5126_button_0():
     )
 
 
-def test_gvh5124_idle():
+def test_gvh5124_idle() -> None:
     """An H5124 packet with state code != 1 registers the device but fires no
     vibration event.
 
