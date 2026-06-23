@@ -1109,6 +1109,12 @@ def test_can_create():
     GoveeBluetoothDeviceData()
 
 
+def test_get_model_info_requires_active_scan():
+    assert get_model_info("H5074").requires_active_scan is True
+    assert get_model_info("H5075").requires_active_scan is False
+    assert get_model_info("H5179").requires_active_scan is False
+
+
 def test_gvh5051():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5051_SERVICE_INFO
@@ -1649,6 +1655,7 @@ def test_gvh5074():
     service_info = GVH5074_SERVICE_INFO
     result = parser.update(service_info)
     assert parser.sleepy is False
+    assert parser.requires_active_scan is True
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1711,6 +1718,7 @@ def test_gvh5075():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5075_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.requires_active_scan is False
     assert result == SensorUpdate(
         title=None,
         devices={
