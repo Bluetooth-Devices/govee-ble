@@ -229,6 +229,18 @@ GVH5072_75_GENERIC_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+# Shares the H5075 6-byte EC88 payload but identifies itself as an H5129.
+GVH5129_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH5129_ABCD",
+    address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
+    rssi=-63,
+    manufacturer_data={60552: b"\x00\x03M\xb2d\x00"},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 GVH5100_SERVICE_INFO = BluetoothServiceInfo(
     name="GVH5100_7738",
     address="C4:35:33:33:77:38",
@@ -1197,7 +1209,10 @@ def test_can_create():
 
 def test_get_model_info_requires_active_scan():
     assert get_model_info("H5074").requires_active_scan is True
-    assert get_model_info("H5075").requires_active_scan is False
+    assert get_model_info("H5075").requires_active_scan is True
+    assert get_model_info("H5129").requires_active_scan is True
+    assert get_model_info("H5072/H5075").requires_active_scan is False
+    assert get_model_info("H5072").requires_active_scan is False
     assert get_model_info("H5179").requires_active_scan is False
 
 
@@ -1872,7 +1887,7 @@ def test_gvh5075():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5075_SERVICE_INFO
     result = parser.update(service_info)
-    assert parser.requires_active_scan is False
+    assert parser.requires_active_scan is True
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -1950,6 +1965,20 @@ def test_gvh5072_75_generic_by_mfr_id():
     parser = GoveeBluetoothDeviceData()
     result = parser.update(GVH5072_75_GENERIC_SERVICE_INFO)
     assert parser.device_type == "H5072/H5075"
+    temp_key = DeviceKey(key="temperature", device_id=None)
+    humi_key = DeviceKey(key="humidity", device_id=None)
+    batt_key = DeviceKey(key="battery", device_id=None)
+    assert result.entity_values[temp_key].native_value == 21.6
+    assert result.entity_values[humi_key].native_value == 49.8
+    assert result.entity_values[batt_key].native_value == 100
+
+
+def test_gvh5129():
+    """An H5129 shares the H5075 payload but registers as its own model."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5129_SERVICE_INFO)
+    assert parser.device_type == "H5129"
+    assert parser.requires_active_scan is True
     temp_key = DeviceKey(key="temperature", device_id=None)
     humi_key = DeviceKey(key="humidity", device_id=None)
     batt_key = DeviceKey(key="battery", device_id=None)

@@ -152,32 +152,40 @@ class ModelInfo:
     """Model information for Govee sensors."""
 
     model_id: str
-    sensor_type: SensorType
-    button_count: int
-    sleepy: bool
+    sensor_type: SensorType = SensorType.THERMOMETER
+    button_count: int = 0
+    sleepy: bool = False
     # Payload lives only in the scan response, so the device must be actively
     # scanned long enough to capture one full broadcast cycle.
     requires_active_scan: bool = False
 
 
 _MODEL_DB = {
-    "H5074": ModelInfo("H5074", SensorType.THERMOMETER, 0, False, True),
-    "H5121": ModelInfo("H5121", SensorType.MOTION, 0, True),
-    "H5122": ModelInfo("H5122", SensorType.BUTTON, 1, True),
-    "H5123": ModelInfo("H5123", SensorType.WINDOW, 0, True),
-    "H5124": ModelInfo("H5124", SensorType.VIBRATION, 0, True),
-    "H5125": ModelInfo("H5125", SensorType.BUTTON, 6, True),
-    "H5126": ModelInfo("H5126", SensorType.BUTTON, 2, True),
-    "H5127": ModelInfo("H5127", SensorType.PRESENCE, 0, True),
-    "H5130": ModelInfo("H5130", SensorType.PRESSURE, 1, True),
+    "H5074": ModelInfo("H5074", requires_active_scan=True),
+    "H5075": ModelInfo("H5075", requires_active_scan=True),
+    "H5129": ModelInfo("H5129", requires_active_scan=True),
+    "H5121": ModelInfo("H5121", sensor_type=SensorType.MOTION, sleepy=True),
+    "H5122": ModelInfo(
+        "H5122", sensor_type=SensorType.BUTTON, button_count=1, sleepy=True
+    ),
+    "H5123": ModelInfo("H5123", sensor_type=SensorType.WINDOW, sleepy=True),
+    "H5124": ModelInfo("H5124", sensor_type=SensorType.VIBRATION, sleepy=True),
+    "H5125": ModelInfo(
+        "H5125", sensor_type=SensorType.BUTTON, button_count=6, sleepy=True
+    ),
+    "H5126": ModelInfo(
+        "H5126", sensor_type=SensorType.BUTTON, button_count=2, sleepy=True
+    ),
+    "H5127": ModelInfo("H5127", sensor_type=SensorType.PRESENCE, sleepy=True),
+    "H5130": ModelInfo(
+        "H5130", sensor_type=SensorType.PRESSURE, button_count=1, sleepy=True
+    ),
 }
 
 
 def get_model_info(model_id: str) -> ModelInfo:
     """Get model information for a Govee sensor."""
-    return _MODEL_DB.get(
-        model_id, ModelInfo(model_id, SensorType.THERMOMETER, 0, False)
-    )
+    return _MODEL_DB.get(model_id, ModelInfo(model_id))
 
 
 class GoveeBluetoothDeviceData(BluetoothData):
@@ -375,12 +383,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 6 and (
             (is_5072 := "H5072" in local_name)
             or (is_5075 := "H5075" in local_name)
+            or (is_5129 := "H5129" in local_name)
             or mgr_id == 0xEC88
         ):
             if is_5072:
                 self.set_device_type("H5072")
             elif is_5075:
                 self.set_device_type("H5075")
+            elif is_5129:
+                self.set_device_type("H5129")
             else:
                 self.set_device_type("H5072/H5075")
             temp, humi, batt, err = decode_temp_humid_battery_error(data[1:5])
