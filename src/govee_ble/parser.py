@@ -99,9 +99,12 @@ def hex(data: bytes) -> str:
 def decode_temps_from_4_bytes(packet_value: int) -> float:
     """Decode temperature values (to one decimal place)."""
     if packet_value & 0x80000000:
-        # Handle freezing temperatures
+        # Handle freezing temperatures: the high bit flags a negative value;
+        # the remaining bits pack the magnitude identically to a positive
+        # reading (same as humidity/pm2.5, which mask 0x7FFFFFFF and divide by
+        # 1_000_000 / 1_000). Negate the decoded magnitude.
         packet_value &= 0x7FFFFFFF
-        return float(int(packet_value / -10000000) / -10)
+        return -float(int(packet_value / 1000000) / 10)
     return float(int(packet_value / 1000000) / 10)
 
 
