@@ -1,6 +1,6 @@
 [project]
 name = "govee-ble"
-version = "1.3.1"
+version = "1.3.2"
 license = "Apache-2.0"
 description = "Manage Govee BLE devices"
 authors = [{ name = "J. Nick Koston", email = "nick@koston.org" }]
