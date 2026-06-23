@@ -636,6 +636,19 @@ GVH5127_ABSENT_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+# Firmware 1.00.13 changed the manufacturer id (0x8803 -> 0x8843) and the
+# payload prefix (ec0001... -> ec0002...). See issue #264.
+GVH5127_FW10013_PRESENT_SERVICE_INFO = BluetoothServiceInfo(
+    name="GVH5127969935",
+    address="D0:C9:07:1B:5E:3F",
+    rssi=-60,
+    manufacturer_data={34883: b"\xec\x00\x02\x01\x01\x01"},
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+
+
 GVH5130_OFF_SERVICE_INFO = BluetoothServiceInfo(
     name="GV51307479",
     address="D3:21:C6:06:74:79",
@@ -3943,6 +3956,63 @@ def test_gvh5127_absent():
                 device_key=DeviceKey(key="occupancy", device_id=None),
                 name="Occupancy",
                 native_value=False,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="motion", device_id=None),
+                name="Motion",
+                native_value=False,
+            ),
+        },
+        events={},
+    )
+
+
+def test_gvh5127_fw10013_present():
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5127_FW10013_PRESENT_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.button_count == 0
+    assert parser.sensor_type is SensorType.PRESENCE
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="H51275E3F",
+                model="H5127",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            )
+        },
+        entity_values={
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-60,
+            )
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                device_class=BinarySensorDeviceClass.OCCUPANCY,
+            ),
+            DeviceKey(key="motion", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="motion", device_id=None),
+                device_class=BinarySensorDeviceClass.MOTION,
+            ),
+        },
+        binary_entity_values={
+            DeviceKey(key="occupancy", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="occupancy", device_id=None),
+                name="Occupancy",
+                native_value=True,
             ),
             DeviceKey(key="motion", device_id=None): BinarySensorValue(
                 device_key=DeviceKey(key="motion", device_id=None),

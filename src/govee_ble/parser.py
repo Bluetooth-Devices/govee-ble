@@ -354,6 +354,11 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 6 and (
             (data.startswith(b"\xec\x00\x01\x01") and "H5127" in local_name)
             or mgr_id == 0x8803
+            # Firmware 1.00.13 switched mgr_id 0x8803 -> 0x8843 and the payload
+            # prefix ec0001... -> ec0002...; the present/motion byte offsets are
+            # unchanged. See issue #264.
+            or (data.startswith(b"\xec\x00\x02") and "H5127" in local_name)
+            or mgr_id == 0x8843
         ):
             self.set_device_type("H5127")
             self.set_device_name(f"H5127{short_address(address)}")
