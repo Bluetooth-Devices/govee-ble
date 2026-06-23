@@ -1,7 +1,6 @@
 import logging
 
 from bluetooth_sensor_state_data import BluetoothServiceInfo, DeviceClass, SensorUpdate
-from govee_ble.parser import GoveeBluetoothDeviceData, SensorType, get_model_info
 from sensor_state_data import (
     BinarySensorDescription,
     BinarySensorDeviceClass,
@@ -14,6 +13,8 @@ from sensor_state_data import (
     SensorValue,
     Units,
 )
+
+from govee_ble.parser import GoveeBluetoothDeviceData, SensorType, get_model_info
 
 GVH5051_SERVICE_INFO = BluetoothServiceInfo(
     name="",

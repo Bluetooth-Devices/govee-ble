@@ -71,6 +71,16 @@ exclude_lines = [
     "raise NotImplementedError",
 ]
 
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["govee_ble", "tests"]
+
 [tool.mypy]
 check_untyped_defs = true
 disallow_any_generics = true
