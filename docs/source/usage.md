@@ -106,7 +106,7 @@ The parser decodes ~30 Govee BLE models across several categories:
 
 - **Thermometers / hygrometers** — H5051, H5052, H5055, H5071, H5072,
   H5074, H5075, H5100, H5101, H5102, H5103, H5104, H5105, H5106,
-  H5108, H5174, H5177, H5179, GV5179
+  H5108, H5129, H5174, H5177, H5179, GV5179
 - **Multi-probe thermometers** — H5110, H5112 (dual probe)
 - **BBQ probes** — H5181, H5182, H5183, H5184, H5185, H5191, H5198
   (up to four probes per device with high/low alarm temperatures)
