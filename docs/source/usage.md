@@ -82,12 +82,19 @@ accumulated on the instance.
 
 After at least one successful `update()`, the instance exposes:
 
-| Attribute             | Description                                                                                               |
-| --------------------- | --------------------------------------------------------------------------------------------------------- |
-| `device.device_type`  | Govee model id, e.g. `"H5075"`. `None` until the first packet is decoded.                                 |
-| `device.sensor_type`  | A `SensorType` enum: `THERMOMETER`, `BUTTON`, `MOTION`, `WINDOW`, `VIBRATION`, `PRESENCE`, or `PRESSURE`. |
-| `device.button_count` | Number of buttons, for button-bearing models.                                                             |
-| `device.sleepy`       | `True` for battery-powered sleep-and-wake devices that only advertise on events.                          |
+| Attribute                     | Description                                                                                                                            |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `device.device_type`          | Govee model id, e.g. `"H5075"`. `None` until the first packet is decoded.                                                              |
+| `device.sensor_type`          | A `SensorType` enum: `THERMOMETER`, `BUTTON`, `MOTION`, `WINDOW`, `VIBRATION`, `PRESENCE`, or `PRESSURE`.                              |
+| `device.button_count`         | Number of buttons, for button-bearing models.                                                                                          |
+| `device.sleepy`               | `True` for battery-powered sleep-and-wake devices that only advertise on events.                                                       |
+| `device.requires_active_scan` | `True` for models whose sensor payload lives only in the scan response, so the caller must use an active scan to receive any readings. |
+
+Some Govee thermometers (e.g. H5074, H5075, H5129) place their sensor
+payload only in the BLE scan response rather than the passive
+advertisement. A passive scan never sees a reading from these devices.
+`device.requires_active_scan` lets a consumer such as Home Assistant
+decide whether to request an active scan for the device.
 
 `get_model_info(model_id)` returns the same metadata without needing
 an instance:
