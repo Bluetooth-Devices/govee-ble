@@ -4365,6 +4365,16 @@ def test_gvh1a42_strip_not_detected_as_h5127():
     assert not parser.supported(GVH1A42_STRIP_SERVICE_INFO)
 
 
+def test_unhandled_6_byte_govee_key_debug_logs(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """An unmatched 0x8843 advert logs its payload when debug logging is on."""
+    parser = GoveeBluetoothDeviceData()
+    with caplog.at_level(logging.DEBUG):
+        assert not parser.supported(GVH16B0_LIGHT_SERVICE_INFO)
+    assert "Unhandled 6 byte Govee packet with key 0x8843" in caplog.text
+
+
 def test_gvh5130_no_pressure_detected():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5130_OFF_SERVICE_INFO
