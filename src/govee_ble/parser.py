@@ -393,7 +393,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_binary_sensor(BinarySensorDeviceClass.MOTION, motion)
             return
 
-        if msg_length == 6 and mgr_id in (0x8803, 0x8843):
+        if msg_length == 6 and mgr_id in (0x8803, 0x8843) and debug_logging:
             _LOGGER.debug(
                 "Unhandled 6 byte Govee packet with key 0x%04x: %s %s",
                 mgr_id,
