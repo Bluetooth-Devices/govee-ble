@@ -718,6 +718,46 @@ GVH5127_FW10013_PRESENT_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+# Non-H5127 Govee devices that share the "manufacturer id" 0x8843. That value is
+# not a real company id: Govee packs a flags byte after 0xFF, which BlueZ reads as
+# the low byte of a little-endian company id, so 0x8843 merely means "broadcast v3,
+# encrypted" and is emitted by most of the modern lineup. See issue #283.
+GVH16B0_LIGHT_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H16B0_5BB3",
+    address="E7:AC:AE:B7:5B:B3",
+    rssi=-63,
+    manufacturer_data={34883: b"\xec\x00\x01\x03\x01\x04"},
+    service_data={},
+    service_uuids=[],
+    source="local",
+)
+
+
+GVH1A42_STRIP_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H1A42_ABCD",
+    address="D7:77:A0:53:AB:CD",
+    rssi=-63,
+    manufacturer_data={34883: b"\xec\x00\x01\x02\x01\x00"},
+    service_data={},
+    service_uuids=[],
+    source="local",
+)
+
+
+# Synthetic: the H16B0 payload above re-encoded in the newer ec0002 broadcast
+# format, to pin that the fourth byte is part of the match and not just the
+# ec0001 branch's business.
+GVH16B0_LIGHT_V2_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H16B0_5BB3",
+    address="E7:AC:AE:B7:5B:B3",
+    rssi=-63,
+    manufacturer_data={34883: b"\xec\x00\x02\x03\x01\x04"},
+    service_data={},
+    service_uuids=[],
+    source="local",
+)
+
+
 GVH5130_OFF_SERVICE_INFO = BluetoothServiceInfo(
     name="GV51307479",
     address="D3:21:C6:06:74:79",
@@ -4283,6 +4323,24 @@ def test_gvh5127_fw10013_present():
         },
         events={},
     )
+
+
+def test_gvh16b0_light_not_detected_as_h5127():
+    """A H16B0 light must not be picked up as a H5127 presence sensor."""
+    parser = GoveeBluetoothDeviceData()
+    assert not parser.supported(GVH16B0_LIGHT_SERVICE_INFO)
+
+
+def test_gvh16b0_light_v2_not_detected_as_h5127():
+    """The ec0002 prefix alone must not be enough to claim a device."""
+    parser = GoveeBluetoothDeviceData()
+    assert not parser.supported(GVH16B0_LIGHT_V2_SERVICE_INFO)
+
+
+def test_gvh1a42_strip_not_detected_as_h5127():
+    """A H1A42 LED strip must not be picked up as a H5127 presence sensor."""
+    parser = GoveeBluetoothDeviceData()
+    assert not parser.supported(GVH1A42_STRIP_SERVICE_INFO)
 
 
 def test_gvh5130_no_pressure_detected():
