@@ -746,6 +746,7 @@ GVH16B0_LIGHT_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+# Payload from the #283 table; name/address are placeholders.
 GVH1A42_STRIP_SERVICE_INFO = BluetoothServiceInfo(
     name="Govee_H1A42_ABCD",
     address="D7:77:A0:53:AB:CD",
