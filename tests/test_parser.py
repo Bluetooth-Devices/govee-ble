@@ -718,8 +718,9 @@ GVH5127_FW10013_PRESENT_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
-# A freshly-seen H5127 on a passive scan often arrives without a local name, so
-# the mgr_id arm of the match is the real discovery path. See issue #283.
+# Derived from GVH5127_FW10013_PRESENT_SERVICE_INFO with the local name removed:
+# a passive scan can see the advert before the name, so the mgr_id arm of the
+# match is the real discovery path. See issue #283.
 GVH5127_NO_NAME_SERVICE_INFO = BluetoothServiceInfo(
     name="",
     address="D0:C9:07:1B:5E:3F",
