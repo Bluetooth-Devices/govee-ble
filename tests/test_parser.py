@@ -4372,7 +4372,7 @@ def test_unhandled_6_byte_govee_key_debug_logs(
     parser = GoveeBluetoothDeviceData()
     with caplog.at_level(logging.DEBUG):
         assert not parser.supported(GVH16B0_LIGHT_SERVICE_INFO)
-    assert "Unhandled 6 byte Govee packet with key 0x8843" in caplog.text
+    assert "6 byte Govee packet with key 0x8843 not matched as H5127" in caplog.text
 
 
 def test_gvh5130_no_pressure_detected():

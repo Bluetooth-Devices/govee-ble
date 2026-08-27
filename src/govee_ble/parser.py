@@ -395,7 +395,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
 
         if msg_length == 6 and mgr_id in (0x8803, 0x8843) and debug_logging:
             _LOGGER.debug(
-                "Unhandled 6 byte Govee packet with key 0x%04x: %s %s",
+                "6 byte Govee packet with key 0x%04x not matched as H5127: %s %s",
                 mgr_id,
                 local_name,
                 data.hex(),
