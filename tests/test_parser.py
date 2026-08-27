@@ -718,6 +718,19 @@ GVH5127_FW10013_PRESENT_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+# A freshly-seen H5127 on a passive scan often arrives without a local name, so
+# the mgr_id arm of the match is the real discovery path. See issue #283.
+GVH5127_NO_NAME_SERVICE_INFO = BluetoothServiceInfo(
+    name="",
+    address="D0:C9:07:1B:5E:3F",
+    rssi=-60,
+    manufacturer_data={34883: b"\xec\x00\x02\x01\x01\x01"},
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+
+
 # Non-H5127 Govee devices that share the "manufacturer id" 0x8843. That value is
 # not a real company id: Govee packs a flags byte after 0xFF, which BlueZ reads as
 # the low byte of a little-endian company id, so 0x8843 merely means "broadcast v3,
@@ -4323,6 +4336,15 @@ def test_gvh5127_fw10013_present():
         },
         events={},
     )
+
+
+def test_gvh5127_no_local_name_detected_by_mgr_id():
+    """A H5127 with no local name must still be discovered via its mgr_id."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5127_NO_NAME_SERVICE_INFO
+    assert parser.supported(service_info)
+    assert parser.device_type == "H5127"
+    assert parser.sensor_type is SensorType.PRESENCE
 
 
 def test_gvh16b0_light_not_detected_as_h5127():
