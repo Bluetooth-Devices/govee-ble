@@ -1913,7 +1913,7 @@ def test_gvh5055_first_probe_bit_cleared() -> None:
 
 
 def test_gvh5055_live_frame_probe_moved_to_port_2():
-    """Regression test for "swapping the probe to sensor port 2": 
+    """Regression test for "swapping the probe to sensor port 2":
     real capture from a 6-port H5055 with the probe physically
     moved from port 1 to port 2."""
     parser = GoveeBluetoothDeviceData()
@@ -1942,7 +1942,7 @@ def test_gvh5055_live_frame_probe_moved_to_port_2():
 
 
 def test_gvh5055_live_frame_probe_2_alarm_tracks_real_device_change():
-    """Follow-up to the port-2 fix above: make sure probe 2 alarm 
+    """Follow-up to the port-2 fix above: make sure probe 2 alarm
     gets configured"""
     parser = GoveeBluetoothDeviceData()
 
