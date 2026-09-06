@@ -1859,6 +1859,54 @@ def test_gvh5055_unknown_sensor_no_debug(caplog: pytest.LogCaptureFixture) -> No
     assert "Unknown sensor id" not in caplog.text
 
 
+def test_gvh5055_live_frame_unknown_pair_group_no_debug(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Mirrors test_gvh5055_unknown_sensor_no_debug for the live-frame
+    (mgr_id 592) path."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\xc1\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+    probe_keys = [
+        key.key
+        for key in result.entity_values
+        if key.key.startswith("temperature_probe")
+    ]
+    assert probe_keys == []
+    assert "Unknown frame_type pair group" not in caplog.text
+
+
+def test_gvh5055_live_frame_unknown_pair_group_logs_with_debug(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Companion to the test above: with debug logging on."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\xc1\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    with caplog.at_level(logging.DEBUG):
+        parser.update(service_info)
+    assert "Unknown frame_type pair group: 193" in caplog.text
+
+
 def test_gvh5055_first_probe_bit_cleared() -> None:
     """sensor_ids = 0x02 selects probe group 0 with the first probe's bit
     cleared and the second's set, so only probe 2 reports a temperature."""
