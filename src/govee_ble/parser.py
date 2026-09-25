@@ -537,13 +537,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 7 and ("H5074" in local_name or mgr_id == 0xEC88):
             self.set_device_type("H5074")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
-            self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
-            )
-            self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
-            )
-            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            self._update_temp_humid_battery(temp / 100, humi / 100, batt)
             return
 
         if msg_length == 9 and (
@@ -560,13 +554,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 self.set_device_type("H5051")
                 self.set_device_name(f"H5051 {short_address(address)}")
             (temp, humi, batt) = PACKED_hHB_LITTLE.unpack(data[1:6])
-            self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
-            )
-            self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
-            )
-            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            self._update_temp_humid_battery(temp / 100, humi / 100, batt)
             return
 
         if msg_length == 9 and (
@@ -626,13 +614,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 9 and ("H5179" in local_name or mgr_id == 0x8801):
             self.set_device_type("H5179")
             temp, humi, batt = PACKED_hHB_LITTLE.unpack(data[4:9])
-            self.update_predefined_sensor(
-                SensorLibrary.TEMPERATURE__CELSIUS, temp / 100
-            )
-            self.update_predefined_sensor(
-                SensorLibrary.HUMIDITY__PERCENTAGE, humi / 100
-            )
-            self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
+            self._update_temp_humid_battery(temp / 100, humi / 100, batt)
             return
 
         if msg_length == 14 and (
@@ -852,6 +834,28 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 SensorLibrary.PM25__CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, pm25
             )
             return
+
+    def _update_temp_humid_battery(self, temp: float, humi: float, batt: int) -> None:
+        """Publish a temperature/humidity/battery triple.
+
+        The H5051/H5052/H5071/H5074/H5179 payloads carry no error flag, so a
+        garbled advertisement is indistinguishable from a reading except by
+        plausibility: the signed 16-bit fields decode to +/-327.67, which would
+        otherwise be published verbatim. Flag out-of-range readings the same way
+        the error-flag models do.
+        """
+        if MIN_TEMP <= temp <= MAX_TEMP:
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+        else:
+            _LOGGER.debug(
+                "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f",
+                temp,
+                humi,
+            )
+            self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
+            self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+        self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
 
     def update_temp_probe(self, temp: float | str, probe_id: int) -> None:
         """Update the temperature probe."""

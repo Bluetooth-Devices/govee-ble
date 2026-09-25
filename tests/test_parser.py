@@ -1280,6 +1280,27 @@ def test_gvh5051():
     )
 
 
+GVH5051_OUT_OF_RANGE_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H5051_C400",
+    address="A4:C1:38:6F:C4:00",
+    rssi=-66,
+    # Temperature bytes replaced with -300.00 C; the payload has no error flag.
+    manufacturer_data={60552: b"\x00\xd0\x8a\xf9\x0f\x63\x02\x01\x01"},
+    service_data={},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    source="local",
+)
+
+
+def test_gvh5051_out_of_range_temperature():
+    """An implausible H5051 temperature is flagged, not published verbatim."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5051_OUT_OF_RANGE_SERVICE_INFO)
+    assert result.entity_values[DeviceKey("temperature", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("humidity", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("battery", None)].native_value == 99
+
+
 def test_gvh5052():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5052_SERVICE_INFO
@@ -1883,6 +1904,27 @@ def test_gvh5074():
             ),
         },
     )
+
+
+GVH5074_OUT_OF_RANGE_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H5074_5FF4",
+    address="99214D75-854A-E52B-704D-C5C9B7F5D59C",
+    rssi=-67,
+    # Temperature bytes replaced with -300.00 C; the payload has no error flag.
+    manufacturer_data={60552: b"\x00\xd0\x8a\xbc\x12d\x02"},
+    service_data={},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    source="local",
+)
+
+
+def test_gvh5074_out_of_range_temperature():
+    """An implausible H5074 temperature is flagged, not published verbatim."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5074_OUT_OF_RANGE_SERVICE_INFO)
+    assert result.entity_values[DeviceKey("temperature", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("humidity", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("battery", None)].native_value == 100
 
 
 def test_gvh5075():
@@ -4905,6 +4947,27 @@ def test_gvh5179_2():
         binary_entity_values={},
         events={},
     )
+
+
+GVH5179_OUT_OF_RANGE_SERVICE_INFO = BluetoothServiceInfo(
+    name="Govee_H5179_3CD5",
+    address="A4:C1:38:75:3C:D5",
+    rssi=-68,
+    # Temperature bytes replaced with -300.00 C; the payload has no error flag.
+    manufacturer_data={34817: b"\xec\x00\x01\x01\xd0\x8a\xa4\x06d"},
+    service_data={},
+    service_uuids=[],
+    source="local",
+)
+
+
+def test_gvh5179_out_of_range_temperature():
+    """An implausible H5179 temperature is flagged, not published verbatim."""
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5179_OUT_OF_RANGE_SERVICE_INFO)
+    assert result.entity_values[DeviceKey("temperature", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("humidity", None)].native_value == "error"
+    assert result.entity_values[DeviceKey("battery", None)].native_value == 100
 
 
 def test_gvh5181():
