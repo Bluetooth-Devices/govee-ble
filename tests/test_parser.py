@@ -116,6 +116,37 @@ GVH5055_SERVICE_INFO_PROBE_2_ONLY = BluetoothServiceInfo(
 )
 
 
+# Captured live from a real single-probe H5055 via Home Assistant debug logging.
+# The device rotates through several advertisement sub-frames and only one carries
+# the actual probe-1 reading. Previously the parser read the temperature field out
+# of every sub-frame. These two frames decode the raw probe-1 field to -32284
+# and 16868 respectively which are definitely not right.
+GVH5055_SERVICE_INFO_LIVE_LOW = BluetoothServiceInfo(
+    name="A4:C1:38:50:02:2D",
+    address="A4:C1:38:50:02:2D",
+    rssi=-38,
+    manufacturer_data={
+        592: b"-A\x00\x01\x01\xe4\x81\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+    },
+    service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
+GVH5055_SERVICE_INFO_LIVE_HIGH = BluetoothServiceInfo(
+    name="A4:C1:38:50:02:2D",
+    address="A4:C1:38:50:02:2D",
+    rssi=-40,
+    manufacturer_data={
+        592: b"-A\x00\x01\x01\xe4A\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+    },
+    service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 GVH5071_SERVICE_INFO = BluetoothServiceInfo(
     name="Govee_H5071_FD12",
     address="61DE521B-F0BF-9F44-64D4-75BBE1738105",
@@ -1466,6 +1497,63 @@ def test_gvh5054():
     )
 
 
+def test_gvh5055_non_data_frame_does_not_report_temperature():
+    """Regression test for a real single-probe H5055 capture: two of its
+    sub-frames (discriminator byte data[6] == 0x81 or 0x41) are don't
+    carry meaningful data at all -- over an hour of live capture their
+    payloads never changed. These sub-frames should be skipped rather
+    than reporting a temperature"""
+    parser = GoveeBluetoothDeviceData()
+    for service_info in (
+        GVH5055_SERVICE_INFO_LIVE_LOW,
+        GVH5055_SERVICE_INFO_LIVE_HIGH,
+    ):
+        result = parser.update(service_info)
+        probe_keys = [
+            key.key
+            for key in result.entity_values
+            if key.key.startswith("temperature_probe")
+        ]
+        assert probe_keys == []
+
+
+def test_gvh5055_live_probe_1_frame_decodes_big_endian_centidegrees():
+    """The discriminator == 0x01 sub-frame carries probe 1's real reading,
+    but at a different offset/layout than <hhhchhh> assumes: bytes 8:10 as
+    one big-endian value in hundredths of a degree Celsius. Confirmed
+    against ~55 minutes of real capture: this field held a slow 24.00C ->
+    26.00C ambient drift, then jumped to 32.00C/34.00C/35.00C within 90
+    seconds when the probe was warmed by hand -- physically sane values a
+    <hhhchhh> decode of the same bytes cannot produce."""
+    parser = GoveeBluetoothDeviceData()
+    key = DeviceKey(key="temperature_probe_1", device_id=None)
+    for mfr_bytes, expected_celsius in (
+        (
+            b"-A\x00\x01\x01\xe4\x01\x00\x09\x60\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+            24.0,
+        ),
+        (
+            b"-A\x00\x01\x01\xe4\x01\x00\x0a\x28\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+            26.0,
+        ),
+        (
+            b"-A\x00\x01\x01\xe4\x01\x00\x0d\xac\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+            35.0,
+        ),
+    ):
+        service_info = BluetoothServiceInfo(
+            name="A4:C1:38:50:02:2D",
+            address="A4:C1:38:50:02:2D",
+            rssi=-40,
+            manufacturer_data={592: mfr_bytes},
+            service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+            service_data={},
+            source="local",
+        )
+        result = parser.update(service_info)
+        assert result.entity_values[key].native_value == expected_celsius
+
+
 def test_gvh5055_probe_1_2():
     parser = GoveeBluetoothDeviceData()
     result = parser.update(GVH5055_SERVICE_INFO_PROBE_12)
@@ -1679,6 +1767,73 @@ def test_gvh5055_probe_5_6():
     )
 
 
+def test_gvh5055_live_frame_high_alarm_tracks_real_device_change():
+    """Real capture: the device's high alarm was at 199F, then the user
+    changed it to 200F on the device. Bytes 10:12 of the live sub-frame
+    shifted from 0x243d (92.77C=199.0F) to 0x2475 (93.33C=200.0F) and
+    nothing else changed -- confirms the high-alarm offset."""
+    parser = GoveeBluetoothDeviceData()
+    key = DeviceKey(key="temperature_alarm_probe_1", device_id=None)
+    for mfr_bytes, expected_celsius in (
+        (
+            b"-A\x00\x01\x01\xe4\x01\x00\x1e\x14\x24\x3d\xff\xff\xff\xff\xff\xff\xff\xff",
+            92.77,
+        ),
+        (
+            b"-A\x00\x01\x01\xe4\x01\x00\x1f\x40\x24\x75\xff\xff\xff\xff\xff\xff\xff\xff",
+            93.33,
+        ),
+    ):
+        service_info = BluetoothServiceInfo(
+            name="A4:C1:38:50:02:2D",
+            address="A4:C1:38:50:02:2D",
+            rssi=-40,
+            manufacturer_data={592: mfr_bytes},
+            service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+            service_data={},
+            source="local",
+        )
+        result = parser.update(service_info)
+        assert result.entity_values[key].native_value == expected_celsius
+
+
+def test_gvh5055_live_frame_low_alarm_tracks_real_device_change():
+    """Real capture: the low alarm was unset (0xffff at bytes 12:14), then
+    the user set it to 140F on the device. It shifted to 0x1770 (60.00C=
+    140.0F) while the high alarm (0x24ac here) stayed independent -- both
+    move only when their own setting changes, confirming the offsets."""
+    parser = GoveeBluetoothDeviceData()
+    key = DeviceKey(key="low_temperature_alarm_probe_1", device_id=None)
+
+    unset_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-40,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x01\x00\x1f\x40\x24\x75\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(unset_info)
+    assert key not in result.entity_values
+
+    set_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-40,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x01\x00\x1f\xa4\x24\xac\x17\x70\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(set_info)
+    assert result.entity_values[key].native_value == 60.0
+
+
 def test_gvh5055_error(caplog):
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5055_SERVICE_INFO_ERROR
@@ -1704,6 +1859,54 @@ def test_gvh5055_unknown_sensor_no_debug(caplog: pytest.LogCaptureFixture) -> No
     ]
     assert probe_keys == []
     assert "Unknown sensor id" not in caplog.text
+
+
+def test_gvh5055_live_frame_unknown_pair_group_no_debug(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Mirrors test_gvh5055_unknown_sensor_no_debug for the live-frame
+    (mgr_id 592) path."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\xc1\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+    probe_keys = [
+        key.key
+        for key in result.entity_values
+        if key.key.startswith("temperature_probe")
+    ]
+    assert probe_keys == []
+    assert "Unknown frame_type pair group" not in caplog.text
+
+
+def test_gvh5055_live_frame_unknown_pair_group_logs_with_debug(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Companion to the test above: with debug logging on."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\xc1\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    with caplog.at_level(logging.DEBUG):
+        parser.update(service_info)
+    assert "Unknown frame_type pair group: 193" in caplog.text
 
 
 def test_gvh5055_first_probe_bit_cleared() -> None:
@@ -1757,6 +1960,142 @@ def test_gvh5055_first_probe_bit_cleared() -> None:
             ),
         },
     )
+
+
+def test_gvh5055_live_frame_probe_moved_to_port_2():
+    """Regression test for "swapping the probe to sensor port 2":
+    real capture from a 6-port H5055 with the probe physically
+    moved from port 1 to port 2."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-41,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x02\x00\xff\xff\x24\xac\x17\x70\x08\xfc\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+
+    probe_2_key = DeviceKey(key="temperature_probe_2", device_id=None)
+    assert result.entity_values[probe_2_key].native_value == 23.0
+
+    for absent_key in (
+        DeviceKey(key="temperature_probe_1", device_id=None),
+        DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+        DeviceKey(key="low_temperature_alarm_probe_1", device_id=None),
+    ):
+        assert absent_key not in result.entity_values
+
+
+def test_gvh5055_live_frame_probe_2_alarm_tracks_real_device_change():
+    """Follow-up to the port-2 fix above: make sure probe 2 alarm
+    gets configured"""
+    parser = GoveeBluetoothDeviceData()
+
+    no_alarm_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x02\x00\xff\xff\x24\xac\x17\x70\x09\x60\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(no_alarm_info)
+    assert (
+        DeviceKey(key="temperature_alarm_probe_2", device_id=None)
+        not in result.entity_values
+    )
+    assert (
+        DeviceKey(key="low_temperature_alarm_probe_2", device_id=None)
+        not in result.entity_values
+    )
+
+    alarm_set_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-61,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x02\x00\xff\xff\x24\xac\x17\x70\x09\x60\x24\xe4\x01\x4d",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(alarm_set_info)
+    assert (
+        result.entity_values[
+            DeviceKey(key="temperature_alarm_probe_2", device_id=None)
+        ].native_value
+        == 94.44
+    )
+    assert (
+        result.entity_values[
+            DeviceKey(key="low_temperature_alarm_probe_2", device_id=None)
+        ].native_value
+        == 3.33
+    )
+    for absent_key in (
+        DeviceKey(key="temperature_probe_1", device_id=None),
+        DeviceKey(key="temperature_alarm_probe_1", device_id=None),
+        DeviceKey(key="low_temperature_alarm_probe_1", device_id=None),
+    ):
+        assert absent_key not in result.entity_values
+
+
+def test_gvh5055_frame_type_00_is_a_live_frame_not_static():
+    """Regression test for sub-frame bug that was causing bad data after
+    moving probe to different ports."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-60,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4\x00\x00\xff\xff\x24\xac\x17\x70\xff\xff\x24\xe4\x01\x4d",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+    for absent_key in (
+        DeviceKey(key="temperature_probe_1", device_id=None),
+        DeviceKey(key="temperature_probe_2", device_id=None),
+    ):
+        assert absent_key not in result.entity_values
+
+
+def test_gvh5055_frame_type_top_bits_select_pair_group():
+    """another test based on real data of moving temp probe between
+    probe ports"""
+    parser = GoveeBluetoothDeviceData()
+    key = DeviceKey(key="temperature_probe_3", device_id=None)
+    service_info = BluetoothServiceInfo(
+        name="A4:C1:38:50:02:2D",
+        address="A4:C1:38:50:02:2D",
+        rssi=-59,
+        manufacturer_data={
+            592: b"-A\x00\x01\x01\xe4D\x00\n(\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",
+        },
+        service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+    assert result.entity_values[key].native_value == 26.0
+    for absent_key in (
+        DeviceKey(key="temperature_probe_1", device_id=None),
+        DeviceKey(key="temperature_probe_2", device_id=None),
+        DeviceKey(key="temperature_probe_4", device_id=None),
+    ):
+        assert absent_key not in result.entity_values
 
 
 def test_gvh5071():

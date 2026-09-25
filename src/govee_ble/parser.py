@@ -28,6 +28,9 @@ PACKED_hHB = struct.Struct(">hHB")
 PACKED_hh = struct.Struct(">hh")
 PACKED_hhhchhh_LITTLE = struct.Struct("<hhhchhh")
 PACKED_H = struct.Struct(">H")
+PACKED_HHHHHH = struct.Struct(
+    ">HHHHHH"
+)  # H5055 live sub-frame: 2 probe slots x (reading, high, low)
 
 PACKED_hhhh = struct.Struct(">hhhh")
 PACKED_hhbhh = struct.Struct(">hhbhh")
@@ -89,6 +92,32 @@ def decode_temps_probes_none(packet_value: int) -> float | None:
     if packet_value < 0:
         return None
     return float(packet_value)
+
+
+# The H5055 manufacturer-data payload comes in two different shapes that
+# seem to share the same 20-byte length and service UUID. They can only be
+# distinguished by the manufacturer id (mfr_id) of the payload:
+#
+#   mfr_id == H5055_LIVE_FRAME_MFR_ID (592) - every real capture of this
+#          payload during testing had this MFR_ID.
+H5055_LIVE_FRAME_MFR_ID = 592
+
+
+def decode_h5055_live_probe_slot(
+    raw_temp: int, raw_high_alarm: int, raw_low_alarm: int
+) -> tuple[float, float | None, float | None] | None:
+    """Decode one probe slot from a H5055 live sub-frame.
+
+    0xFFFF in raw_temp means no probe is plugged into this slot right now.
+    0xFFFF in either alarm means that alarm isn't set on the device.
+    """
+    if raw_temp == 0xFFFF:
+        return None
+    return (
+        raw_temp / 100,
+        raw_high_alarm / 100 if raw_high_alarm != 0xFFFF else None,
+        raw_low_alarm / 100 if raw_low_alarm != 0xFFFF else None,
+    )
 
 
 def hex(data: bytes) -> str:
@@ -802,37 +831,78 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 20 and "00005550-0000-1000-8000-00805f9b34fb" in service_uuids:
             self.set_device_type("H5055")
             self.set_device_name(f"H5055 {short_address(address)}")
-            (
-                temp_probe_first,
-                temp_min_first,
-                temp_max_first,
-                _,
-                temp_probe_second,
-                temp_min_second,
-                temp_max_second,
-            ) = PACKED_hhhchhh_LITTLE.unpack(data[5:18])
             sensor_ids = data[3]
-            if not (pids := SIX_PROBES_MAPPING.get(sensor_ids & 0xC0)):
-                if debug_logging:
-                    _LOGGER.debug(
-                        "Unknown sensor id: %s for a H5055, data: %s",
-                        sensor_ids,
-                        hex(data),
-                    )
-                return
-            if sensor_ids & pids[0][1]:
-                self.update_temp_probe_with_alarm(
+
+            # probe_n = (temp, alarm_temp, low_alarm_temp) or None if this
+            # sub-frame doesn't carry a valid reading for that probe.
+            probe_1 = probe_2 = None
+            if mgr_id == H5055_LIVE_FRAME_MFR_ID:
+                # sensor_ids does not track which pair of ports a live
+                # sub-frame belongs to on this hardware -- confirmed across
+                # many real captures, it stayed 0x01 the whole time a probe
+                # was moved from port 1 through port 2 to port 3. The actual
+                # pair-group selector looks to be frame_type's (data[6])
+                # top two bits: every port-1/port-2 capture had frame_type
+                # values 0x00/0x01/0x02/0x04.
+                frame_type = data[6]
+                if not (pids := SIX_PROBES_MAPPING.get(frame_type & 0xC0)):
+                    if debug_logging:
+                        _LOGGER.debug(
+                            "Unknown frame_type pair group: %s for a H5055, data: %s",
+                            frame_type,
+                            hex(data),
+                        )
+                    return
+                (
+                    raw_1,
+                    raw_1_high,
+                    raw_1_low,
+                    raw_2,
+                    raw_2_high,
+                    raw_2_low,
+                ) = PACKED_HHHHHH.unpack(data[8:20])
+                probe_1 = decode_h5055_live_probe_slot(raw_1, raw_1_high, raw_1_low)
+                probe_2 = decode_h5055_live_probe_slot(raw_2, raw_2_high, raw_2_low)
+            else:
+                if not (pids := SIX_PROBES_MAPPING.get(sensor_ids & 0xC0)):
+                    if debug_logging:
+                        _LOGGER.debug(
+                            "Unknown sensor id: %s for a H5055, data: %s",
+                            sensor_ids,
+                            hex(data),
+                        )
+                    return
+                (
                     temp_probe_first,
-                    decode_temps_probes_none(temp_max_first),
-                    pids[0][0],
-                    decode_temps_probes_none(temp_min_first),
-                )
-            if sensor_ids & pids[1][1]:
-                self.update_temp_probe_with_alarm(
+                    temp_min_first,
+                    temp_max_first,
+                    _,
                     temp_probe_second,
-                    decode_temps_probes_none(temp_max_second),
-                    pids[1][0],
-                    decode_temps_probes_none(temp_min_second),
+                    temp_min_second,
+                    temp_max_second,
+                ) = PACKED_hhhchhh_LITTLE.unpack(data[5:18])
+                if sensor_ids & pids[0][1]:
+                    probe_1 = (
+                        float(temp_probe_first),
+                        decode_temps_probes_none(temp_max_first),
+                        decode_temps_probes_none(temp_min_first),
+                    )
+                if sensor_ids & pids[1][1]:
+                    probe_2 = (
+                        float(temp_probe_second),
+                        decode_temps_probes_none(temp_max_second),
+                        decode_temps_probes_none(temp_min_second),
+                    )
+
+            if probe_1 is not None:
+                temp, alarm_temp, low_alarm_temp = probe_1
+                self.update_temp_probe_with_alarm(
+                    temp, alarm_temp, pids[0][0], low_alarm_temp
+                )
+            if probe_2 is not None:
+                temp, alarm_temp, low_alarm_temp = probe_2
+                self.update_temp_probe_with_alarm(
+                    temp, alarm_temp, pids[1][0], low_alarm_temp
                 )
             batt = int(data[2] & 0x7F)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
