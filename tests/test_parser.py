@@ -6505,3 +6505,35 @@ def test_get_model_info():
     assert get_model_info("H5126").button_count == 2
     assert get_model_info("H5124").sensor_type == SensorType.VIBRATION
     assert get_model_info("H5127").sensor_type == SensorType.PRESENCE
+
+
+_ADVERTISEMENT_FIXTURES = [
+    value
+    for value in list(globals().values())
+    if isinstance(value, BluetoothServiceInfo)
+]
+
+
+@pytest.mark.parametrize(
+    "service_info", _ADVERTISEMENT_FIXTURES, ids=lambda si: si.name or "unnamed"
+)
+def test_truncated_advertisement_never_raises(service_info):
+    """Every prefix of a known-good advertisement must parse without raising.
+
+    The parser runs inside the Home Assistant scanner callback, so an
+    IndexError or struct.error on a short packet would break scanning for
+    every device on the adapter, not just the Govee one.
+    """
+    for mfr_id, mfr_data in service_info.manufacturer_data.items():
+        for length in range(len(mfr_data)):
+            GoveeBluetoothDeviceData().update(
+                BluetoothServiceInfo(
+                    name=service_info.name,
+                    address=service_info.address,
+                    rssi=service_info.rssi,
+                    manufacturer_data={mfr_id: mfr_data[:length]},
+                    service_uuids=service_info.service_uuids,
+                    service_data=service_info.service_data,
+                    source=service_info.source,
+                )
+            )
