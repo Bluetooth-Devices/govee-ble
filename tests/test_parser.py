@@ -1211,9 +1211,11 @@ def test_get_model_info_requires_active_scan():
     assert get_model_info("H5074").requires_active_scan is True
     assert get_model_info("H5075").requires_active_scan is True
     assert get_model_info("H5129").requires_active_scan is True
+    assert get_model_info("H5130").requires_active_scan is True
+    assert get_model_info("H5179").requires_active_scan is True
+    assert get_model_info("GV5179").requires_active_scan is True
     assert get_model_info("H5072/H5075").requires_active_scan is False
     assert get_model_info("H5072").requires_active_scan is False
-    assert get_model_info("H5179").requires_active_scan is False
 
 
 def test_gvh5051():
@@ -4289,6 +4291,7 @@ def test_gvh5130_no_pressure_detected():
     result = parser.update(service_info)
     assert parser.button_count == 1
     assert parser.sensor_type is SensorType.PRESSURE
+    assert parser.requires_active_scan is True
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -4779,6 +4782,7 @@ def test_gvh5179():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5179_SERVICE_INFO
     result = parser.update(service_info)
+    assert parser.requires_active_scan is True
     assert result == SensorUpdate(
         title=None,
         devices={
@@ -4841,6 +4845,7 @@ def test_gvh5179_2():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5179_SERVICE_INFO_2
     result = parser.update(service_info)
+    assert parser.requires_active_scan is True
     assert result == SensorUpdate(
         title=None,
         devices={

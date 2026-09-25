@@ -164,6 +164,8 @@ _MODEL_DB = {
     "H5074": ModelInfo("H5074", requires_active_scan=True),
     "H5075": ModelInfo("H5075", requires_active_scan=True),
     "H5129": ModelInfo("H5129", requires_active_scan=True),
+    "H5179": ModelInfo("H5179", requires_active_scan=True),
+    "GV5179": ModelInfo("GV5179", requires_active_scan=True),
     "H5121": ModelInfo("H5121", sensor_type=SensorType.MOTION, sleepy=True),
     "H5122": ModelInfo(
         "H5122", sensor_type=SensorType.BUTTON, button_count=1, sleepy=True
@@ -178,7 +180,11 @@ _MODEL_DB = {
     ),
     "H5127": ModelInfo("H5127", sensor_type=SensorType.PRESENCE, sleepy=True),
     "H5130": ModelInfo(
-        "H5130", sensor_type=SensorType.PRESSURE, button_count=1, sleepy=True
+        "H5130",
+        sensor_type=SensorType.PRESSURE,
+        button_count=1,
+        sleepy=True,
+        requires_active_scan=True,
     ),
 }
 
