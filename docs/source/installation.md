@@ -19,6 +19,7 @@ poetry add govee-ble
 
 ```python
 import govee_ble
+
 print(govee_ble.__version__)
 ```
 
