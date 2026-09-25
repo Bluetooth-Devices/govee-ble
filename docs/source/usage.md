@@ -56,8 +56,7 @@ service_info = BluetoothServiceInfo(
     address="A4:C1:38:00:00:00",
     rssi=-63,
     manufacturer_data={
-        60552: b"\x00\x03A\xc2d\x00L\x00\x02\x15INTELLI_ROCKS_HW"
-        b"Pu\xf2\xff\x0c"
+        60552: b"\x00\x03A\xc2d\x00L\x00\x02\x15INTELLI_ROCKS_HWPu\xf2\xff\x0c"
     },
     service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
     service_data={},
