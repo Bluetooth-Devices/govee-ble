@@ -4728,33 +4728,23 @@ def test_gvh5178_primary():
 
 
 def test_gvh5178_unknown_sensor_id():
-    """Pins current behaviour for an unknown H5178 sensor_id (not 0 or 1).
+    """An unknown H5178 sensor_id (not 0 or 1) is dropped.
 
-    The parser still sets the title, decodes the readings, and emits them
-    under device_id="primary" (the initial default) — but never registers a
-    SensorDeviceInfo for that device_id because the set_device_name/type/
-    manufacturer calls live behind the ``sensor_id == 0`` branch. Values
-    therefore arrive orphaned from any device entry, which is a latent
-    inconsistency worth pinning before any future fix.
+    The set_device_name/type/manufacturer calls live behind the ``sensor_id``
+    branches, so an unknown id registers no device. Publishing anyway would
+    attribute the reading to an unidentified probe and leave device_type
+    unset, which the sensor_type/sleepy/button_count/requires_active_scan
+    properties assert on.
     """
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5178_UNKNOWN_SENSOR_SERVICE_INFO
     result = parser.update(service_info)
-    # set_device_type also lives inside the sensor_id branches, so an unknown
-    # id leaves device_type unset on the parser.
     assert parser.device_type is None
+    # The title is set before the sensor_id branches, so it survives.
     assert result.title == "B51782BC8"
-    # No SensorDeviceInfo is registered for "primary" on an unknown sensor_id.
-    assert "primary" not in result.devices
     assert set(result.devices) == {None}
-    # Readings still route to device_id="primary" — the default initial value
-    # before the sensor_id branches.
-    temp_key = DeviceKey(key="temperature", device_id="primary")
-    humi_key = DeviceKey(key="humidity", device_id="primary")
-    batt_key = DeviceKey(key="battery", device_id="primary")
-    assert result.entity_values[temp_key].native_value == 1.0
-    assert result.entity_values[humi_key].native_value == 99.9
-    assert result.entity_values[batt_key].native_value == 100
+    # No orphaned readings under the unregistered "primary" device_id.
+    assert result.entity_values == {}
 
 
 def test_gvh5178_title_fallback_without_name_prefix():

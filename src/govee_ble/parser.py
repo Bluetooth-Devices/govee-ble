@@ -592,12 +592,19 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 )
                 self.set_device_type("H5178-REMOTE", device_id)
                 self.set_device_manufacturer("Govee", device_id)
-            elif debug_logging:
-                _LOGGER.debug(
-                    "Unknown sensor id for Govee H5178,"
-                    " please report to the developers, data: %s",
-                    hex(data),
-                )
+            else:
+                # Neither device_id was registered, so publishing here would
+                # orphan the readings on an unknown probe and leave
+                # device_type unset (the sensor_type/sleepy/button_count/
+                # requires_active_scan properties assert on that). Drop the
+                # packet, as every other unknown-id branch does.
+                if debug_logging:
+                    _LOGGER.debug(
+                        "Unknown sensor id for Govee H5178,"
+                        " please report to the developers, data: %s",
+                        hex(data),
+                    )
+                return
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(
                     SensorLibrary.TEMPERATURE__CELSIUS, temp, device_id=device_id
