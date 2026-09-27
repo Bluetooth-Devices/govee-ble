@@ -813,6 +813,19 @@ GVH5130_BUTTON_SERVICE_INFO = BluetoothServiceInfo(
 )
 
 
+GVH5130_BUTTON_WITH_PRESSURE_SERVICE_INFO = BluetoothServiceInfo(
+    name="GV51307479",
+    address="D3:21:C6:06:74:79",
+    rssi=-53,
+    manufacturer_data={
+        61320: b"\xf7@\x04\xcd\xc7%l\x95\xbd[\"0\x1cY\xa0\x8f\x7fnws}\x9a\xcd\x9e"
+    },
+    service_data={},
+    service_uuids=[],
+    source="Core Bluetooth",
+)
+
+
 GVH5177_SERVICE_INFO = BluetoothServiceInfo(
     name="GVH5177_2EC8",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
@@ -4537,6 +4550,72 @@ def test_gvh5130_button():
         },
         binary_entity_descriptions={},
         binary_entity_values={},
+        events={
+            DeviceKey(key="button_0", device_id=None): Event(
+                device_key=DeviceKey(key="button_0", device_id=None),
+                name="Button 0",
+                event_type="press",
+                event_properties=None,
+            )
+        },
+    )
+
+
+def test_gvh5130_button_with_pressure():
+    """A press while pressure is applied (0x11) fires the event and keeps presence."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = GVH5130_BUTTON_WITH_PRESSURE_SERVICE_INFO
+    result = parser.update(service_info)
+    assert parser.button_count == 1
+    assert parser.sensor_type is SensorType.PRESSURE
+    assert result == SensorUpdate(
+        title=None,
+        devices={
+            None: SensorDeviceInfo(
+                name="51307479",
+                model="H5130",
+                manufacturer="Govee",
+                sw_version=None,
+                hw_version=None,
+            )
+        },
+        entity_descriptions={
+            DeviceKey(key="battery", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="battery", device_id=None),
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=Units.PERCENTAGE,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                native_unit_of_measurement=Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+            ),
+        },
+        entity_values={
+            DeviceKey(key="battery", device_id=None): SensorValue(
+                device_key=DeviceKey(key="battery", device_id=None),
+                name="Battery",
+                native_value=100,
+            ),
+            DeviceKey(key="signal_strength", device_id=None): SensorValue(
+                device_key=DeviceKey(key="signal_strength", device_id=None),
+                name="Signal Strength",
+                native_value=-53,
+            ),
+        },
+        binary_entity_descriptions={
+            DeviceKey(key="presence", device_id=None): BinarySensorDescription(
+                device_key=DeviceKey(key="presence", device_id=None),
+                device_class=BinarySensorDeviceClass.PRESENCE,
+            )
+        },
+        binary_entity_values={
+            DeviceKey(key="presence", device_id=None): BinarySensorValue(
+                device_key=DeviceKey(key="presence", device_id=None),
+                name="Presence",
+                native_value=True,
+            )
+        },
         events={
             DeviceKey(key="button_0", device_id=None): Event(
                 device_key=DeviceKey(key="button_0", device_id=None),
