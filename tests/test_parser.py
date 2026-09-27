@@ -818,7 +818,7 @@ GVH5130_BUTTON_WITH_PRESSURE_SERVICE_INFO = BluetoothServiceInfo(
     address="D3:21:C6:06:74:79",
     rssi=-53,
     manufacturer_data={
-        61320: b"\xf7@\x04\xcd\xc7%l\x95\xbd[\"0\x1cY\xa0\x8f\x7fnws}\x9a\xcd\x9e"
+        61320: b'\xf7@\x04\xcd\xc7%l\x95\xbd["0\x1cY\xa0\x8f\x7fnws}\x9a\xcd\x9e'
     },
     service_data={},
     service_uuids=[],
