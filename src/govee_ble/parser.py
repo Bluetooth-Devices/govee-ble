@@ -91,6 +91,35 @@ def decode_temps_probes_none(packet_value: int) -> float | None:
     return float(packet_value)
 
 
+# The H5055 manufacturer-data payload comes in two different shapes that
+# share the same 20-byte length and service UUID. They are distinguished
+# by data[1].
+#
+#   data[1] == H5055_LIVE_FRAME_MARKER (0x41, 'A') - the "live" sub-frame
+#          family below. Confirmed stable at this value across every real
+#          capture collected from this hardware.
+#   data[1] == 0x00 - the legacy <hhhchhh little-endian frame (see the
+#          GVH5055_SERVICE_INFO_PROBE_* fixtures below).
+H5055_LIVE_FRAME_MARKER = 0x41
+
+
+def decode_h5055_live_probe_slot(
+    raw_temp: int, raw_high_alarm: int, raw_low_alarm: int
+) -> tuple[float, float | None, float | None] | None:
+    """Decode one probe slot from a H5055 live sub-frame.
+
+    Fields are read as signed 16-bit values (matching the H5198 sibling
+    decoder's use of the same 6-field big-endian layout at this offset).
+    """
+    if raw_temp == -1:
+        return None
+    return (
+        raw_temp / 100,
+        raw_high_alarm / 100 if raw_high_alarm != -1 else None,
+        raw_low_alarm / 100 if raw_low_alarm != -1 else None,
+    )
+
+
 def hex(data: bytes) -> str:
     """Return a string object containing two hexadecimal digits for each byte in the instance."""
     return "b'{}'".format("".join(f"\\x{b:02x}" for b in data))
@@ -820,6 +849,60 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if msg_length == 20 and "00005550-0000-1000-8000-00805f9b34fb" in service_uuids:
             self.set_device_type("H5055")
             self.set_device_name(f"H5055 {short_address(address)}")
+            sensor_ids = data[3]
+
+            # probe_n = (temp, alarm_temp, low_alarm_temp) or None if this
+            # sub-frame doesn't carry a valid reading for that probe.
+            probe_1 = probe_2 = None
+            if data[1] == H5055_LIVE_FRAME_MARKER:
+                # sensor_ids does not track which pair of ports a live
+                # sub-frame belongs to on this hardware -- confirmed across
+                # many real captures, it stayed 0x01 the whole time a probe
+                # was moved from port 1 through port 2 to port 3. The actual
+                # pair-group selector looks to be frame_type's (data[6])
+                # top two bits: every port-1/port-2 capture had frame_type
+                # values 0x00/0x01/0x02/0x04.
+                frame_type = data[6]
+                if not (pids := SIX_PROBES_MAPPING.get(frame_type & 0xC0)):
+                    if debug_logging:
+                        _LOGGER.debug(
+                            "Unknown frame_type pair group: %s for a H5055, data: %s",
+                            frame_type,
+                            hex(data),
+                        )
+                    return
+                (
+                    raw_1,
+                    raw_1_high,
+                    raw_1_low,
+                    raw_2,
+                    raw_2_high,
+                    raw_2_low,
+                ) = PACKED_hhhhhh.unpack(data[8:20])
+                probe_1 = decode_h5055_live_probe_slot(raw_1, raw_1_high, raw_1_low)
+                probe_2 = decode_h5055_live_probe_slot(raw_2, raw_2_high, raw_2_low)
+                # Battery is deliberately not reported for the live frame
+                # as real world data is 0x00 in every live capture collected.
+                if probe_1 is not None:
+                    temp, alarm_temp, low_alarm_temp = probe_1
+                    self.update_temp_probe_with_alarm(
+                        temp, alarm_temp, pids[0][0], low_alarm_temp
+                    )
+                if probe_2 is not None:
+                    temp, alarm_temp, low_alarm_temp = probe_2
+                    self.update_temp_probe_with_alarm(
+                        temp, alarm_temp, pids[1][0], low_alarm_temp
+                    )
+                return
+
+            if not (pids := SIX_PROBES_MAPPING.get(sensor_ids & 0xC0)):
+                if debug_logging:
+                    _LOGGER.debug(
+                        "Unknown sensor id: %s for a H5055, data: %s",
+                        sensor_ids,
+                        hex(data),
+                    )
+                return
             (
                 temp_probe_first,
                 temp_min_first,
@@ -829,28 +912,28 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 temp_min_second,
                 temp_max_second,
             ) = PACKED_hhhchhh_LITTLE.unpack(data[5:18])
-            sensor_ids = data[3]
-            if not (pids := SIX_PROBES_MAPPING.get(sensor_ids & 0xC0)):
-                if debug_logging:
-                    _LOGGER.debug(
-                        "Unknown sensor id: %s for a H5055, data: %s",
-                        sensor_ids,
-                        hex(data),
-                    )
-                return
             if sensor_ids & pids[0][1]:
-                self.update_temp_probe_with_alarm(
-                    temp_probe_first,
+                probe_1 = (
+                    float(temp_probe_first),
                     decode_temps_probes_none(temp_max_first),
-                    pids[0][0],
                     decode_temps_probes_none(temp_min_first),
                 )
             if sensor_ids & pids[1][1]:
-                self.update_temp_probe_with_alarm(
-                    temp_probe_second,
+                probe_2 = (
+                    float(temp_probe_second),
                     decode_temps_probes_none(temp_max_second),
-                    pids[1][0],
                     decode_temps_probes_none(temp_min_second),
+                )
+
+            if probe_1 is not None:
+                temp, alarm_temp, low_alarm_temp = probe_1
+                self.update_temp_probe_with_alarm(
+                    temp, alarm_temp, pids[0][0], low_alarm_temp
+                )
+            if probe_2 is not None:
+                temp, alarm_temp, low_alarm_temp = probe_2
+                self.update_temp_probe_with_alarm(
+                    temp, alarm_temp, pids[1][0], low_alarm_temp
                 )
             batt = int(data[2] & 0x7F)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
