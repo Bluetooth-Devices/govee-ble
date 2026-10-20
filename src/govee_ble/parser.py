@@ -115,7 +115,7 @@ def decode_humi_from_4_bytes(packet_value: int) -> float:
 
 
 def decode_pm25_from_4_bytes(packet_value: int) -> int:
-    """Decode humidity values"""
+    """Decode PM2.5 values"""
     packet_value &= 0x7FFFFFFF
     return int(packet_value % 1000)
 
@@ -357,12 +357,15 @@ class GoveeBluetoothDeviceData(BluetoothData):
                 if button_number_pressed == 1:
                     self.fire_event("motion", "motion")
             elif sensor_type is SensorType.PRESSURE:
-                # H5130 is a pressure sensor
-                if button_number_pressed == 16:
+                # H5130 is a pressure sensor. The status byte is a bitfield:
+                # 0x01 = pressure applied, 0x10 = button pressed. A press while
+                # pressure is applied reports 0x11.
+                if button_number_pressed & 0x10:
                     self.fire_event("button_0", "press")
-                else:
+                if button_number_pressed != 0x10:
                     self.update_predefined_binary_sensor(
-                        BinarySensorDeviceClass.PRESENCE, button_number_pressed == 1
+                        BinarySensorDeviceClass.PRESENCE,
+                        bool(button_number_pressed & 0x01),
                     )
             else:
                 self.fire_event(f"button_{button_number_pressed}", "press")
