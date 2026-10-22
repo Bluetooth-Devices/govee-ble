@@ -472,7 +472,7 @@ class GoveeBluetoothDeviceData(BluetoothData):
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
-        if msg_length == 8 and "5140" in local_name:
+        if msg_length == 8 and local_name.startswith(("GV5140", "GVH5140", "H5140")):
             self.set_device_type("H5140")
             temp, humi = decode_temp_humid(data[2:5])
             (co2,) = PACKED_H.unpack(data[5:7])
