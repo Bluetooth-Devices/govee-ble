@@ -2627,6 +2627,27 @@ def test_gvh5140_error():
     )
 
 
+def test_gvh5108_name_suffix_5140_is_not_h5140():
+    """An H5108 whose name suffix is 5140 must not be decoded as an H5140."""
+    parser = GoveeBluetoothDeviceData()
+    service_info = BluetoothServiceInfo(
+        name="GV51085140",
+        address="A4:C1:38:75:51:40",
+        rssi=-66,
+        manufacturer_data={1: b"\x01\x01\x03\xc70d\x00\x00"},
+        service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = parser.update(service_info)
+    assert result.devices[None].model == "H5108"
+    assert DeviceKey(key="carbon_dioxide", device_id=None) not in result.entity_values
+    assert (
+        result.entity_values[DeviceKey(key="battery", device_id=None)].native_value
+        == 100
+    )
+
+
 def test_gvh5103():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5103_SERVICE_INFO
