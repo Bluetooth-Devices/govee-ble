@@ -838,6 +838,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
                         hex(data),
                     )
                 return
+            # The low bits of sensor_ids flag which probes are plugged in.
+            # Report unplugged probes as ERROR so consumers can mark them
+            # unavailable instead of holding the last reading forever.
             if sensor_ids & pids[0][1]:
                 self.update_temp_probe_with_alarm(
                     temp_probe_first,
@@ -845,6 +848,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     pids[0][0],
                     decode_temps_probes_none(temp_min_first),
                 )
+            else:
+                self.update_temp_probe(ERROR, pids[0][0])
             if sensor_ids & pids[1][1]:
                 self.update_temp_probe_with_alarm(
                     temp_probe_second,
@@ -852,6 +857,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     pids[1][0],
                     decode_temps_probes_none(temp_min_second),
                 )
+            else:
+                self.update_temp_probe(ERROR, pids[1][0])
             batt = int(data[2] & 0x7F)
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return

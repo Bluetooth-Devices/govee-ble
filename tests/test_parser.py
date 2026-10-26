@@ -100,8 +100,9 @@ GVH5055_SERVICE_INFO_ERROR = BluetoothServiceInfo(
 
 
 # sensor_ids byte (data[3]) = 0x02: maps to probe group 0 but with the first
-# probe's selector bit (0x01) cleared and the second's (0x02) set, so only
-# probe 2 reports — exercises the "first probe bit not set" dispatch branch.
+# probe's selector bit (0x01) cleared and the second's (0x02) set, so probe 2
+# reports and probe 1 reports an error — exercises the "first probe bit not
+# set" dispatch branch.
 GVH5055_SERVICE_INFO_PROBE_2_ONLY = BluetoothServiceInfo(
     name="",
     address="A4:C1:38:2F:AF:55",
@@ -1554,6 +1555,11 @@ def test_gvh5055_probe_1_2():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -1570,6 +1576,11 @@ def test_gvh5055_probe_1_2():
                 device_key=DeviceKey(key="temperature_probe_1", device_id=None),
                 name="Temperature Probe 1",
                 native_value=26,
+            ),
+            DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_2", device_id=None),
+                name="Temperature Probe 2",
+                native_value="error",
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -1776,7 +1787,8 @@ def test_gvh5055_unknown_sensor_no_debug(caplog: pytest.LogCaptureFixture) -> No
 
 def test_gvh5055_first_probe_bit_cleared() -> None:
     """sensor_ids = 0x02 selects probe group 0 with the first probe's bit
-    cleared and the second's set, so only probe 2 reports a temperature."""
+    cleared and the second's set, so probe 2 reports a temperature and the
+    unplugged probe 1 reports an error."""
     parser = GoveeBluetoothDeviceData()
     result = parser.update(GVH5055_SERVICE_INFO_PROBE_2_ONLY)
     assert result == SensorUpdate(
@@ -1791,6 +1803,11 @@ def test_gvh5055_first_probe_bit_cleared() -> None:
             )
         },
         entity_descriptions={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorDescription(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                device_class=DeviceClass.TEMPERATURE,
+                native_unit_of_measurement=Units.TEMP_CELSIUS,
+            ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
                 device_class=DeviceClass.TEMPERATURE,
@@ -1808,6 +1825,11 @@ def test_gvh5055_first_probe_bit_cleared() -> None:
             ),
         },
         entity_values={
+            DeviceKey(key="temperature_probe_1", device_id=None): SensorValue(
+                device_key=DeviceKey(key="temperature_probe_1", device_id=None),
+                name="Temperature Probe 1",
+                native_value="error",
+            ),
             DeviceKey(key="temperature_probe_2", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature_probe_2", device_id=None),
                 name="Temperature Probe 2",
@@ -6676,3 +6698,31 @@ def test_get_model_info():
     assert get_model_info("H5126").button_count == 2
     assert get_model_info("H5124").sensor_type == SensorType.VIBRATION
     assert get_model_info("H5127").sensor_type == SensorType.PRESENCE
+
+
+# Real H5055 capture: sensor_ids byte (data[3]) = 0xA0 selects probe group
+# 5/6 with only probe 6's bit (0x20) set. Probe 5 is unplugged (0xFFFF temp)
+# and must be reported as an error rather than silently skipped.
+GVH5055_SERVICE_INFO_PROBE_6_ONLY = BluetoothServiceInfo(
+    name="",
+    address="A4:C1:38:2F:AF:55",
+    rssi=-79,
+    manufacturer_data={
+        37353: bytes(
+            [7, 0, 100, 160, 32, 255, 255, 255, 255, 255, 255, 32, 119, 0]
+            + [255, 255, 255, 255, 0, 0]
+        ),
+    },
+    service_uuids=["00005550-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
+def test_gvh5055_unplugged_probe_reports_error() -> None:
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5055_SERVICE_INFO_PROBE_6_ONLY)
+    values = {k.key: v.native_value for k, v in result.entity_values.items()}
+    assert values["temperature_probe_5"] == "error"
+    assert values["temperature_probe_6"] == 119
+    assert values["battery"] == 100
