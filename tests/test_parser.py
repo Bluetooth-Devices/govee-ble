@@ -473,6 +473,17 @@ GVH5110_SERVICE_INFO_1 = BluetoothServiceInfo(
 )
 
 
+GVH5110_SERVICE_INFO_ERROR = BluetoothServiceInfo(
+    name="GVH5110_2EC8",
+    address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
+    rssi=-56,
+    manufacturer_data={1: b"\x01\x01\x03\x8e\xfe\xe4"},
+    service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+    service_data={},
+    source="local",
+)
+
+
 GVH5110_SERVICE_INFO_2 = BluetoothServiceInfo(
     name="GVH5110_2EC8",
     address="4125DDBA-2774-4851-9889-6AADDD4CAC3D",
@@ -2964,11 +2975,6 @@ def test_gvh5108():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-            DeviceKey(key="humidity", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                device_class=DeviceClass.HUMIDITY,
-                native_unit_of_measurement=Units.PERCENTAGE,
-            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -2985,11 +2991,6 @@ def test_gvh5108():
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
                 native_value=24.7,
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorValue(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                name="Humidity",
-                native_value=60.00,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -3026,11 +3027,6 @@ def test_gvh5108_no_name():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-            DeviceKey(key="humidity", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                device_class=DeviceClass.HUMIDITY,
-                native_unit_of_measurement=Units.PERCENTAGE,
-            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -3047,11 +3043,6 @@ def test_gvh5108_no_name():
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
                 native_value=24.7,
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorValue(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                name="Humidity",
-                native_value=60.00,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -3088,11 +3079,6 @@ def test_gvh5108_error():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-            DeviceKey(key="humidity", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                device_class=DeviceClass.HUMIDITY,
-                native_unit_of_measurement=Units.PERCENTAGE,
-            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -3108,11 +3094,6 @@ def test_gvh5108_error():
             DeviceKey(key="temperature", device_id=None): SensorValue(
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
-                native_value="error",
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorValue(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                name="Humidity",
                 native_value="error",
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
@@ -3150,11 +3131,6 @@ def test_gvh5108_with_external_probe():
                 device_class=DeviceClass.TEMPERATURE,
                 native_unit_of_measurement=Units.TEMP_CELSIUS,
             ),
-            DeviceKey(key="humidity", device_id=None): SensorDescription(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                device_class=DeviceClass.HUMIDITY,
-                native_unit_of_measurement=Units.PERCENTAGE,
-            ),
             DeviceKey(key="battery", device_id=None): SensorDescription(
                 device_key=DeviceKey(key="battery", device_id=None),
                 device_class=DeviceClass.BATTERY,
@@ -3171,11 +3147,6 @@ def test_gvh5108_with_external_probe():
                 device_key=DeviceKey(key="temperature", device_id=None),
                 name="Temperature",
                 native_value=21.4,
-            ),
-            DeviceKey(key="humidity", device_id=None): SensorValue(
-                device_key=DeviceKey(key="humidity", device_id=None),
-                name="Humidity",
-                native_value=60.0,
             ),
             DeviceKey(key="battery", device_id=None): SensorValue(
                 device_key=DeviceKey(key="battery", device_id=None),
@@ -3251,6 +3222,24 @@ def test_gvh5110_1():
             ),
         },
     )
+
+
+def test_gvh5110_error():
+    """Error flag reports both temperature and humidity as error.
+
+    Unlike the H5108 in the same branch, the H5110 has a humidity sensor.
+    """
+    parser = GoveeBluetoothDeviceData()
+    result = parser.update(GVH5110_SERVICE_INFO_ERROR)
+    values = {
+        key.key: value.native_value for key, value in result.entity_values.items()
+    }
+    assert values == {
+        "temperature": "error",
+        "humidity": "error",
+        "battery": 100,
+        "signal_strength": -56,
+    }
 
 
 def test_gvh5110_2():

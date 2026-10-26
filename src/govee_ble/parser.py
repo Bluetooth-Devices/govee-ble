@@ -512,7 +512,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or (is_5179 := "GV5179" in local_name)
             or (mgr_id == 0x0001 and msg_length == 8)
         ):
-            if is_5108 or msg_length == 8:
+            # H5108 has no humidity sensor; its firmware pads the packed value
+            # so humidity always decodes as 60.0%.
+            has_humidity = not (is_5108 or msg_length == 8)
+            if not has_humidity:
                 self.set_device_type("H5108")
             elif is_5100:
                 self.set_device_type("H5100")
@@ -539,7 +542,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
             temp, humi, batt, err = decode_temp_humid_battery_error(data[2:6])
             if temp >= MIN_TEMP and temp <= MAX_TEMP and not err:
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, temp)
-                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, humi)
+                if has_humidity:
+                    self.update_predefined_sensor(
+                        SensorLibrary.HUMIDITY__PERCENTAGE, humi
+                    )
             else:
                 _LOGGER.debug(
                     "Ignoring invalid sensor values, temperature: %.1f, humidity: %.1f, error: %s",
@@ -548,7 +554,10 @@ class GoveeBluetoothDeviceData(BluetoothData):
                     err,
                 )
                 self.update_predefined_sensor(SensorLibrary.TEMPERATURE__CELSIUS, ERROR)
-                self.update_predefined_sensor(SensorLibrary.HUMIDITY__PERCENTAGE, ERROR)
+                if has_humidity:
+                    self.update_predefined_sensor(
+                        SensorLibrary.HUMIDITY__PERCENTAGE, ERROR
+                    )
             self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, batt)
             return
 
