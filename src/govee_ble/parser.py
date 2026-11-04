@@ -499,7 +499,8 @@ class GoveeBluetoothDeviceData(BluetoothData):
             return
 
         if msg_length in (6, 8) and (
-            (is_5108 := "H5108" in local_name)
+            (is_5220 := "GV5220" in local_name)
+            or (is_5108 := "H5108" in local_name)
             or (is_5100 := "H5100" in local_name)
             or (is_5101 := "H5101" in local_name)
             or (is_5102 := "H5102" in local_name)
@@ -512,7 +513,9 @@ class GoveeBluetoothDeviceData(BluetoothData):
             or (is_5179 := "GV5179" in local_name)
             or (mgr_id == 0x0001 and msg_length == 8)
         ):
-            if is_5108 or msg_length == 8:
+            if is_5220:
+                self.set_device_type("H5220")
+            elif is_5108 or msg_length == 8:
                 self.set_device_type("H5108")
             elif is_5100:
                 self.set_device_type("H5100")
