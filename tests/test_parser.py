@@ -1889,6 +1889,33 @@ def test_gvh5071():
     )
 
 
+@pytest.mark.parametrize(
+    "manufacturer_data",
+    [
+        {96: b"\x02\xba\x04\x3e\x1f\x02\x01", 60552: b"\x00\x6f\x0a\x83\x19\x60\x02"},
+        {60552: b"\x00\x6f\x0a\x83\x19\x60\x02", 96: b"\x02\xba\x04\x3e\x1f\x02\x01"},
+    ],
+)
+def test_gvh5074_ignores_extra_manufacturer_block(manufacturer_data):
+    """An extra non-Govee manufacturer block must not override the real reading."""
+    service_info = BluetoothServiceInfo(
+        name="Govee_H5074_83CC",
+        address="A4:C1:38:20:83:CC",
+        rssi=-33,
+        manufacturer_data=manufacturer_data,
+        service_uuids=["0000ec88-0000-1000-8000-00805f9b34fb"],
+        service_data={},
+        source="local",
+    )
+    result = GoveeBluetoothDeviceData().update(service_info)
+    values = {
+        key.key: value.native_value for key, value in result.entity_values.items()
+    }
+    assert values["temperature"] == 26.71
+    assert values["humidity"] == 65.31
+    assert values["battery"] == 96
+
+
 def test_gvh5074():
     parser = GoveeBluetoothDeviceData()
     service_info = GVH5074_SERVICE_INFO

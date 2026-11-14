@@ -41,6 +41,7 @@ MIN_TEMP = -40
 MAX_TEMP = 100
 
 NOT_GOVEE_MANUFACTURER = {76}
+GOVEE_MANUFACTURER_ID = 0xEC88
 
 PROBE_MAPPING_1_2 = [1, 2]
 PROBE_MAPPING_3_4 = [3, 4]
@@ -212,6 +213,14 @@ class GoveeBluetoothDeviceData(BluetoothData):
         if local_name.startswith("GV"):
             self.set_device_name(service_info.name[2:].replace("_", " "))
         self.set_precision(2)
+
+        if "H5074" in local_name and GOVEE_MANUFACTURER_ID in manufacturer_data:
+            # Some H5074 units also advertise a second, stale manufacturer
+            # block. Only the Govee block is trustworthy; otherwise whichever
+            # block is parsed last wins, depending on dict order.
+            manufacturer_data = {
+                GOVEE_MANUFACTURER_ID: manufacturer_data[GOVEE_MANUFACTURER_ID]
+            }
 
         for mfr_id, mfr_data in manufacturer_data.items():
             if mfr_id in NOT_GOVEE_MANUFACTURER:
